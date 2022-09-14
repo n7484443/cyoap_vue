@@ -1,26 +1,48 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="wrapper">
+    <!-- item div 속 HelloWorld를 12개 만든다-->
+    <div class="item" v-for="i in 100" :key="i">
+      <choiceNode>
+      </choiceNode>
+    </div>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import choiceNode from './components/choiceNode.vue'
 
 export default {
   name: 'App',
+
   components: {
-    HelloWorld
-  }
+    choiceNode,
+  },
+
+  data: () => ({
+    //
+  }),
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(auto-fill, min-content);
+  column-gap: 8px;
+  row-gap: 8px;
+  grid-auto-flow: row;
+}
+
+.item:nth-child(2) {
+  grid-column: auto / span 2;
+}
+
+.item:nth-child(5) {
+  grid-column: auto / span 5;
+}
+
+.item:nth-child(6) {
+  grid-column: auto / span 4;
 }
 </style>
