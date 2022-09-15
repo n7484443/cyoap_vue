@@ -37,9 +37,10 @@
     "parserOptions": {
       "parser": "@babel/eslint-parser"
     },
-    "ignorePatterns": ["cyoap_core.js"],
-    "rules": {
-    }
+    "ignorePatterns": [
+      "cyoap_core.js"
+    ],
+    "rules": {}
   },
   "browserslist": [
     "> 1%",
