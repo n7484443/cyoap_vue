@@ -18,9 +18,22 @@ export default {
     choiceNode,
   },
 
-  data: () => ({
-    //
-  }),
+  async mounted() {
+    const url = "/dist/";
+    let platform = await fetch(url + "platform.json");
+    platform = await platform.text();
+    let lineData = await fetch(url + "nodes/list.json");
+    lineData = await lineData.json();
+    let lineSetting = [];
+    for(let dataName in lineData){
+      let innerLine = await fetch(url + "nodes/" + lineData[dataName]);
+      innerLine = await innerLine.text();
+      lineSetting.push(innerLine);
+    }
+
+    window.loadPlatform(platform, lineSetting);
+    console.log(window.lineLength());
+  }
 }
 </script>
 

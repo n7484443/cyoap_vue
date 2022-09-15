@@ -4,5 +4,5 @@ module.exports = defineConfig({
 
     devServer: {
         proxy: 'https://interactiveweb.neocities.org'
-    }
+    },
 })

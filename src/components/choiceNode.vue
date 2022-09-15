@@ -12,18 +12,20 @@ import {QuillDeltaToHtmlConverter} from "quill-delta-to-html";
 
 export default {
   name: "choiceNode",
-  data() {
-    //ajax로 dist/lineSetting_0.json 파일 받아서 parse
+  mounted() {
     const url = "/dist/nodes/lineSetting_0.json";
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", url, false);
-    xhr.send();
-    const jsonObject = JSON.parse(xhr.responseText);
-    let contentsAsString = jsonObject.children[0].contentsString;
-    let delta = JSON.parse(contentsAsString);
-    let converter = new QuillDeltaToHtmlConverter(delta, {});
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        let {contentsString: contentsAsString} = data.children[0];
+        let delta = JSON.parse(contentsAsString);
+        let converter = new QuillDeltaToHtmlConverter(delta, {});
+        this.modelValue = converter.convert();
+      });
+  },
+  data() {
     return {
-      modelValue: converter.convert()
+      modelValue: "",
     }
   }
 }
