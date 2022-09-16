@@ -6,9 +6,19 @@
         <p v-html="modelValue"></p>
       </div>
       <div class="multi-select" v-if="choiceMode === 'multiSelect'">
-        <div class="left" v-on:click="click_down"></div>
-        {{ select }}
-        <div class="right" v-on:click="click_up"></div>
+        <v-btn v-on:click="click_down" elevation="0">
+          <v-icon>
+            mdi-chevron-left
+          </v-icon>
+        </v-btn>
+        <p class="text-center">
+          {{ select }}
+        </p>
+        <v-btn v-on:click="click_up" elevation="0">
+          <v-icon>
+            mdi-chevron-right
+          </v-icon>
+        </v-btn>
       </div>
       <div class="wrapper" v-if="childLength > 0">
         <ChoiceNode class="item" v-for="(n, i) in childLength" :key="n" :pos="i" :before-pos="currentPos">
@@ -132,29 +142,14 @@ export default {
   grid-auto-flow: row;
 }
 
-.left {
-  width: 0px;
-  height: 0px;
-  border-top: 15px solid transparent;
-  border-right: 30px solid red;
-  border-bottom: 15px solid transparent;
-}
-
-.right {
-  width: 0px;
-  height: 0px;
-  border-top: 15px solid transparent;
-  border-left: 30px solid red;
-  border-bottom: 15px solid transparent;
-}
-
 .multi-select {
   display: flex;
   justify-content: space-around;
   margin-bottom: 8px;
+  align-items: center
 }
 
-.image_round{
+.image_round {
   border-radius: 4px;
 }
 </style>
