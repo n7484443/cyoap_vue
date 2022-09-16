@@ -3,9 +3,10 @@
     <span></span>
   </LoadingSpinner>
   <div v-else>
-    <!-- item div 속 HelloWorld를 12개 만든다-->
-    <LineSetting class="item" v-for="(n, i) in child" :key="n" :pos="i" :before-pos="beforePos">
-    </LineSetting>
+    <div v-for="(n, i) in child" :key="n">
+      <LineSetting class="item" :pos="i">
+      </LineSetting>
+    </div>
   </div>
 </template>
 
@@ -42,9 +43,13 @@ export default {
     return {
       isLoading: true,
       modelValue: "",
-      beforePos: [],
       child: 0,
     }
   }
 }
 </script>
+<style>
+.item{
+  padding: 8px;
+}
+</style>

@@ -1,23 +1,21 @@
 <template>
-  <div v-if="visible" :class="[showSelectable ? (selected > 0 ? 'card-outline' : 'card') : 'card-disable']"
-       :id="currentPos"
-       v-on:click="click">
+  <v-card v-if="visible" :class="select ? 'card-outline' : 'card'" v-on:click="click" :disabled="!showSelectable">
     <div class="container">
-      <img :src="image" alt=""/>
+      <v-img :src="image" class="image_round"></v-img>
       <div class="container">
         <p v-html="modelValue"></p>
       </div>
-      <div class="multi-select" v-if="choiceMode == 'multiSelect'">
-        <div class="left"></div>
-        {{ selected }}
-        <div class="right"></div>
+      <div class="multi-select" v-if="choiceMode === 'multiSelect'">
+        <div class="left" v-on:click="click_down"></div>
+        {{ select }}
+        <div class="right" v-on:click="click_up"></div>
       </div>
       <div class="wrapper" v-if="childLength > 0">
         <ChoiceNode class="item" v-for="(n, i) in childLength" :key="n" :pos="i" :before-pos="currentPos">
         </ChoiceNode>
       </div>
     </div>
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -40,7 +38,7 @@ export default {
         gridColumn: 1,
         showSelectable: false,
         selectable: false,
-        selected: false,
+        select: 0,
         visible: false,
         choiceMode: "defaultMode",
         childLength: 0,
@@ -63,6 +61,7 @@ export default {
       default:
         break;
     }
+    console.log(currentPos);
     return {
       image: imagePos,
       modelValue: converter.convert(),
@@ -70,7 +69,7 @@ export default {
       gridColumn: window.getSize(currentPos),
       showSelectable: showSelectable,
       selectable: window.isSelectable(currentPos),
-      selected: window.isSelected(currentPos),
+      select: window.getSelect(currentPos),
       visible: window.isVisible(currentPos),
       choiceMode: choiceMode,
       childLength: window.childLength(currentPos),
@@ -78,14 +77,25 @@ export default {
   },
   methods: {
     click: function () {
-      if (this.selectable) {
+      if (window.isSelectable(this.currentPos)) {
         window.select(this.currentPos, 0);
-        this.selected = window.isSelected(this.currentPos);
+        window.updatePlatform();
+        this.select = window.getSelect(this.currentPos);
       }
+    },
+    click_down: function () {
+      window.select(this.currentPos, -1);
+      window.updatePlatform();
+      this.select = window.getSelect(this.currentPos);
+    },
+    click_up: function () {
+      window.select(this.currentPos, 1);
+      window.updatePlatform();
+      this.select = window.getSelect(this.currentPos);
     },
     update: function () {
       this.selectable = window.isSelectable(this.currentPos);
-      this.selected = window.isSelected(this.currentPos);
+      this.select = window.getSelect(this.currentPos);
       this.visible = window.isVisible(this.currentPos);
     }
   }
@@ -99,41 +109,18 @@ export default {
   grid-column: auto / span v-bind(gridColumn);
 }
 
-.card-disable {
-  /* Add shadows to create the "card" effect */
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  transition: 0.3s;
-  grid-column: auto / span v-bind(gridColumn);
-  color: #e0e0e0;
-}
-
 .card-outline {
   /* Add shadows to create the "card" effect */
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  transition: 0.3s;
+  transition: 0.1s;
   grid-column: auto / span v-bind(gridColumn);
   outline-color: #fe9616;
   outline-style: solid;
 }
 
-
-/* On mouse-over, add a deeper shadow */
-.card:hover {
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-}
-
 /* Add some padding inside the card container */
 .container {
   padding: 4px;
-}
-
-.container img {
-  max-width: 100%;
-  height: auto;
-  object-fit: contain;
-  object-position: 50% 50%;
-  margin: auto;
-  display: block;
 }
 
 .wrapper {
@@ -165,5 +152,9 @@ export default {
   display: flex;
   justify-content: space-around;
   margin-bottom: 8px;
+}
+
+.image_round{
+  border-radius: 4px;
 }
 </style>

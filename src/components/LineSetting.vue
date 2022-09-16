@@ -1,8 +1,12 @@
 <template>
-  <div class="wrapper">
-    <ChoiceNode class="item" v-for="(n, i) in child" :key="n" :pos="i" :before-pos="currentPos">
-    </ChoiceNode>
-  </div>
+  <v-responsive min-height="100">
+    <v-lazy v-model="isActive">
+      <div class="wrapper">
+        <ChoiceNode v-for="(n, i) in child" :key="n" :pos="i" :before-pos="currentPos">
+        </ChoiceNode>
+      </div>
+    </v-lazy>
+  </v-responsive>
 </template>
 
 <script>
@@ -13,14 +17,14 @@ export default {
     ChoiceNode,
   },
   props: {
-    pos : Number,
-    beforePos : Array,
+    pos: Number,
   },
   name: "LineSetting",
   data() {
     return {
-      currentPos: [...this.beforePos, this.pos],
-      child: window.childLength([...this.beforePos, this.pos]),
+      isActive: false,
+      currentPos: [this.pos],
+      child: window.childLength([this.pos]),
     }
   },
 }
