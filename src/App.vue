@@ -2,12 +2,22 @@
   <LoadingSpinner v-if="isLoading">
     <span></span>
   </LoadingSpinner>
-  <div v-else>
+  <v-app v-else>
+    <v-app-bar elevate-on-scroll="true">
+      <v-slide-group show-arrows>
+        <v-slide-item v-for="n in 40" :key="n">
+          <v-btn color="primary">{{ n }}</v-btn>
+        </v-slide-item>
+      </v-slide-group>
+    </v-app-bar>
+    <br/>
+    <br/>
+    <br/>
     <div v-for="(n, i) in child" :key="n">
       <LineSetting class="item" :pos="i">
       </LineSetting>
     </div>
-  </div>
+  </v-app>
 </template>
 
 <script>
@@ -49,7 +59,10 @@ export default {
 }
 </script>
 <style>
-.item{
+.item {
   padding: 8px;
+}
+.v-slide-group{
+  max-width: 100vw;
 }
 </style>
