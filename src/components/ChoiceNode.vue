@@ -1,5 +1,6 @@
 <template>
-  <div :class="[showSelectable ? (selected ? 'card-outline' : 'card') : 'card-disable']" :id="currentPos"
+  <div v-if="visible" :class="[showSelectable ? (selected > 0 ? 'card-outline' : 'card') : 'card-disable']"
+       :id="currentPos"
        v-on:click="click">
     <div class="container">
       <img :src="image" alt=""/>
@@ -40,6 +41,7 @@ export default {
         showSelectable: false,
         selectable: false,
         selected: false,
+        visible: false,
         choiceMode: "defaultMode",
         childLength: 0,
       }
@@ -52,11 +54,9 @@ export default {
     }
     let choiceMode = window.getChoiceNodeMode(currentPos);
     let showSelectable = window.isSelectable(currentPos);
-    let selected = window.isSelected(currentPos);
     switch (choiceMode) {
       case "unSelectableMode":
         showSelectable = true;
-        selected = false;
         break;
       case "onlyCode":
         break;
@@ -70,7 +70,8 @@ export default {
       gridColumn: window.getSize(currentPos),
       showSelectable: showSelectable,
       selectable: window.isSelectable(currentPos),
-      selected: selected,
+      selected: window.isSelected(currentPos),
+      visible: window.isVisible(currentPos),
       choiceMode: choiceMode,
       childLength: window.childLength(currentPos),
     }
@@ -78,15 +79,14 @@ export default {
   methods: {
     click: function () {
       if (this.selectable) {
-        this.selected = !this.selected;
-        window.select(this.currentPos);
+        window.select(this.currentPos, 0);
+        this.selected = window.isSelected(this.currentPos);
       }
     },
     update: function () {
-      this.gridColumn = window.getSize(this.currentPos);
       this.selectable = window.isSelectable(this.currentPos);
       this.selected = window.isSelected(this.currentPos);
-      this.childLength = window.childLength(this.currentPos);
+      this.visible = window.isVisible(this.currentPos);
     }
   }
 }
@@ -143,5 +143,27 @@ export default {
   column-gap: 8px;
   row-gap: 8px;
   grid-auto-flow: row;
+}
+
+.left {
+  width: 0px;
+  height: 0px;
+  border-top: 15px solid transparent;
+  border-right: 30px solid red;
+  border-bottom: 15px solid transparent;
+}
+
+.right {
+  width: 0px;
+  height: 0px;
+  border-top: 15px solid transparent;
+  border-left: 30px solid red;
+  border-bottom: 15px solid transparent;
+}
+
+.multi-select {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 8px;
 }
 </style>
