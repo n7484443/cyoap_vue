@@ -5,9 +5,9 @@
   <v-app v-else>
     <v-app-bar elevate-on-scroll="true">
       <v-slide-group show-arrows>
-        <v-slide-item v-for="n in 40" :key="n">
+        <v-slide-group-item v-for="n in 40" :key="n">
           <v-btn color="primary">{{ n }}</v-btn>
-        </v-slide-item>
+        </v-slide-group-item>
       </v-slide-group>
     </v-app-bar>
     <br/>
