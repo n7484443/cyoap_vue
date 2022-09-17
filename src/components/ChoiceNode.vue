@@ -1,6 +1,6 @@
 <template>
-  <v-card v-if="choiceStatus != 'hide'" :class="select ? 'card-outline' : 'card'" v-on:click="click"
-          :disabled="choiceStatus == 'closed'">
+  <v-card v-if="choiceStatus !== 'hide'" :class="select ? 'card-outline' : 'card'" v-on:click="click"
+          :disabled="choiceStatus === 'closed'">
     <div class="container">
       <v-img :src="image" class="image_round"></v-img>
       <div class="container">
@@ -9,11 +9,11 @@
       <div class="multi-select" v-if="choiceMode === 'multiSelect'">
         <v-btn v-on:click="click_down" elevation="0">
           <v-icon>
-            mdi-chevron-left
+            {{ mdi_left }}
           </v-icon>
         </v-btn>
         <p class="text-center">
-          {{ select }}
+          {{ mdi_right }}
         </p>
         <v-btn v-on:click="click_up" elevation="0">
           <v-icon>
@@ -32,6 +32,8 @@
 
 <script>
 import {QuillDeltaToHtmlConverter} from "quill-delta-to-html";
+import { mdiChevronLeft } from '@mdi/js';
+import { mdiChevronRight } from '@mdi/js';
 
 export default {
   props: {
@@ -52,6 +54,8 @@ export default {
         choiceStatus: "",
         choiceMode: "defaultMode",
         childLength: 0,
+        mdi_left: mdiChevronLeft,
+        mdi_right: mdiChevronRight,
       }
     }
     let delta = JSON.parse(data);
@@ -69,6 +73,8 @@ export default {
       choiceStatus: window.getChoiceStatus(currentPos),
       choiceMode: window.getChoiceNodeMode(currentPos),
       childLength: window.childLength(currentPos),
+      mdi_left: mdiChevronLeft,
+      mdi_right: mdiChevronRight,
     }
   },
   methods: {
