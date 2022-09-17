@@ -34,14 +34,14 @@ export default {
 
   async created() {
     const url = "/dist/";
-    let platform = await fetch(url + "platform.json");
+    let platform = await fetch(url + "platform.json?time=" + new Date().getTime());
     platform = await platform.text();
-    let lineData = await fetch(url + "nodes/list.json");
+    let lineData = await fetch(url + "nodes/list.json?time=" + new Date().getTime());
     lineData = await lineData.json();
     let lineSetting = [];
 
     for (let i = 0; i < lineData.length; i++) {
-      let innerLine = fetch(url + "nodes/" + lineData[i]).then(res => res.text());
+      let innerLine = fetch(url + "nodes/" + lineData[i] + "?time=" + new Date().getTime()).then(res => res.text());
       lineSetting.push(innerLine);
     }
     let output = await Promise.all(lineSetting);

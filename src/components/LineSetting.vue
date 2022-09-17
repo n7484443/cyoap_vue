@@ -1,5 +1,5 @@
 <template>
-  <v-responsive min-height="100">
+  <v-responsive v-if="visible" min-height="100">
     <v-lazy v-model="isActive">
       <div class="wrapper">
         <ChoiceNode v-for="(n, i) in child" ref="choiceNode" :key="n" :pos="i" :before-pos="currentPos" @needUpdate="needUpdate">
@@ -21,14 +21,17 @@ export default {
   },
   name: "LineSetting",
   data() {
+    let currentPos = [this.pos];
     return {
       isActive: false,
-      currentPos: [this.pos],
-      child: window.childLength([this.pos]),
+      currentPos: currentPos,
+      child: window.childLength(currentPos),
+      visible: window.getVisible(currentPos),
     }
   },
   methods: {
     updateChild(){
+      this.visible = window.getVisible(this.currentPos);
       if(this.$refs.choiceNode){
         this.$refs.choiceNode.forEach(function(i){
           if(i){
