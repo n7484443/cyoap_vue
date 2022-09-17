@@ -32,8 +32,7 @@
 
 <script>
 import {QuillDeltaToHtmlConverter} from "quill-delta-to-html";
-import { mdiChevronLeft } from '@mdi/js';
-import { mdiChevronRight } from '@mdi/js';
+import { mdiChevronLeft, mdiChevronRight } from '@mdi/js';
 
 export default {
   props: {

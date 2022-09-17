@@ -3,26 +3,24 @@
     <span></span>
   </LoadingSpinner>
   <v-app v-else>
-    <v-app-bar elevate-on-scroll="true">
-      <v-slide-group show-arrows>
-        <v-slide-group-item v-for="n in 40" :key="n">
-          <v-btn color="primary">{{ n }}</v-btn>
-        </v-slide-group-item>
-      </v-slide-group>
-    </v-app-bar>
-    <br/>
-    <br/>
-    <br/>
+    <v-bottom-navigation height="62">
+      <HorizontalScroll ref="horizontalScroll">
+      </HorizontalScroll>
+    </v-bottom-navigation>
     <div v-for="(n, i) in child" :key="n">
-      <LineSetting class="item" ref="lineSetting" :pos="i"  @needUpdate="needUpdate">
+      <LineSetting class="item" ref="lineSetting" :pos="i" @needUpdate="needUpdate">
       </LineSetting>
     </div>
+    <br/>
+    <br/>
+    <br/>
   </v-app>
 </template>
 
 <script>
 import LineSetting from './components/LineSetting.vue';
 import LoadingSpinner from "@/components/LoadingSpinner";
+import HorizontalScroll from "./components/HorizontalScroll.vue";
 
 export default {
   name: 'App',
@@ -30,6 +28,7 @@ export default {
   components: {
     LoadingSpinner,
     LineSetting,
+    HorizontalScroll,
   },
 
   async created() {
@@ -58,10 +57,11 @@ export default {
     }
   },
   methods: {
-    updateChild(){
+    updateChild() {
+      this.$refs.horizontalScroll.updateList();
       this.$refs.lineSetting.forEach(i => i.updateChild());
     },
-    needUpdate(){
+    needUpdate() {
       this.updateChild();
     }
   }
@@ -71,7 +71,16 @@ export default {
 .item {
   padding: 8px;
 }
-.v-slide-group{
-  max-width: 100vw;
+*::-webkit-scrollbar {
+  width: 16px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #2f3542;
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background-color: grey;
 }
 </style>
