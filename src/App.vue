@@ -39,13 +39,14 @@ export default {
     let lineData = await fetch(url + "nodes/list.json");
     lineData = await lineData.json();
     let lineSetting = [];
-    for (let dataName in lineData) {
-      let innerLine = await fetch(url + "nodes/" + lineData[dataName]);
-      innerLine = await innerLine.text();
+
+    for (let i = 0; i < lineData.length; i++) {
+      let innerLine = fetch(url + "nodes/" + lineData[i]).then(res => res.text());
       lineSetting.push(innerLine);
     }
-    this.child = lineSetting.length;
-    window.loadPlatform(platform, lineSetting);
+    let output = await Promise.all(lineSetting);
+    this.child = output.length;
+    window.loadPlatform(platform, output);
     this.isLoading = false;
   },
 
