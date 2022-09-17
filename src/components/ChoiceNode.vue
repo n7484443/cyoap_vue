@@ -1,5 +1,6 @@
 <template>
-  <v-card v-if="visible" :class="select ? 'card-outline' : 'card'" v-on:click="click" :disabled="!showSelectable">
+  <v-card v-if="choiceStatus != 'hide'" :class="select ? 'card-outline' : 'card'" v-on:click="click"
+          :disabled="choiceStatus == 'closed'">
     <div class="container">
       <v-img :src="image" class="image_round"></v-img>
       <div class="container">
@@ -21,7 +22,8 @@
         </v-btn>
       </div>
       <div class="wrapper" v-if="childLength > 0">
-        <ChoiceNode class="item" v-for="(n, i) in childLength" :key="n" :pos="i" :before-pos="currentPos">
+        <ChoiceNode class="item" v-for="(n, i) in childLength" ref="choiceNode" :key="n" :pos="i"
+                    :before-pos="currentPos" @needUpdate="needUpdate">
         </ChoiceNode>
       </div>
     </div>
@@ -46,10 +48,8 @@ export default {
         modelValue: "",
         currentPos: currentPos,
         gridColumn: 1,
-        showSelectable: false,
-        selectable: false,
         select: 0,
-        visible: false,
+        choiceStatus: "",
         choiceMode: "defaultMode",
         childLength: 0,
       }
@@ -60,53 +60,46 @@ export default {
     if (imagePos) {
       imagePos = "dist/images/" + imagePos;
     }
-    let choiceMode = window.getChoiceNodeMode(currentPos);
-    let showSelectable = window.isSelectable(currentPos);
-    switch (choiceMode) {
-      case "unSelectableMode":
-        showSelectable = true;
-        break;
-      case "onlyCode":
-        break;
-      default:
-        break;
-    }
-    console.log(currentPos);
     return {
       image: imagePos,
       modelValue: converter.convert(),
       currentPos: currentPos,
       gridColumn: window.getSize(currentPos),
-      showSelectable: showSelectable,
-      selectable: window.isSelectable(currentPos),
       select: window.getSelect(currentPos),
-      visible: window.isVisible(currentPos),
-      choiceMode: choiceMode,
+      choiceStatus: window.getChoiceStatus(currentPos),
+      choiceMode: window.getChoiceNodeMode(currentPos),
       childLength: window.childLength(currentPos),
     }
   },
   methods: {
-    click: function () {
-      if (window.isSelectable(this.currentPos)) {
-        window.select(this.currentPos, 0);
-        window.updatePlatform();
-        this.select = window.getSelect(this.currentPos);
-      }
+    click() {
+      window.select(this.currentPos, 0);
+      window.updatePlatform();
+      this.needUpdate();
     },
-    click_down: function () {
+    click_down() {
       window.select(this.currentPos, -1);
       window.updatePlatform();
-      this.select = window.getSelect(this.currentPos);
+      this.needUpdate();
     },
-    click_up: function () {
+    click_up() {
       window.select(this.currentPos, 1);
       window.updatePlatform();
-      this.select = window.getSelect(this.currentPos);
+      this.needUpdate();
     },
-    update: function () {
-      this.selectable = window.isSelectable(this.currentPos);
+    updateChild() {
+      if(this.$refs.choiceNode){
+        this.$refs.choiceNode.forEach(function(i){
+          if(i){
+            i.updateChild();
+          }
+        });
+      }
       this.select = window.getSelect(this.currentPos);
-      this.visible = window.isVisible(this.currentPos);
+      this.choiceStatus = window.getChoiceStatus(this.currentPos);
+    },
+    needUpdate() {
+      this.$emit('needUpdate',);
     }
   }
 }

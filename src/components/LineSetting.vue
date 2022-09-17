@@ -2,7 +2,7 @@
   <v-responsive min-height="100">
     <v-lazy v-model="isActive">
       <div class="wrapper">
-        <ChoiceNode v-for="(n, i) in child" :key="n" :pos="i" :before-pos="currentPos">
+        <ChoiceNode v-for="(n, i) in child" ref="choiceNode" :key="n" :pos="i" :before-pos="currentPos" @needUpdate="needUpdate">
         </ChoiceNode>
       </div>
     </v-lazy>
@@ -27,6 +27,20 @@ export default {
       child: window.childLength([this.pos]),
     }
   },
+  methods: {
+    updateChild(){
+      if(this.$refs.choiceNode){
+        this.$refs.choiceNode.forEach(function(i){
+          if(i){
+            i.updateChild();
+          }
+        });
+      }
+    },
+    needUpdate(){
+      this.$emit('needUpdate', );
+    }
+  }
 }
 </script>
 

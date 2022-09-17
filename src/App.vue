@@ -14,7 +14,7 @@
     <br/>
     <br/>
     <div v-for="(n, i) in child" :key="n">
-      <LineSetting class="item" :pos="i">
+      <LineSetting class="item" ref="lineSetting" :pos="i"  @needUpdate="needUpdate">
       </LineSetting>
     </div>
   </v-app>
@@ -55,6 +55,14 @@ export default {
       isLoading: true,
       modelValue: "",
       child: 0,
+    }
+  },
+  methods: {
+    updateChild(){
+      this.$refs.lineSetting.forEach(i => i.updateChild());
+    },
+    needUpdate(){
+      this.updateChild();
     }
   }
 }
