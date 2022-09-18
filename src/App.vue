@@ -1,9 +1,9 @@
 <template>
-  <LoadingSpinner v-if="isLoading">
-    <span></span>
-  </LoadingSpinner>
+  <div v-if="isLoading" class="spinner-container">
+    <v-progress-circular size="72" width="8" indeterminate color="red"></v-progress-circular>
+  </div>
   <v-app v-else>
-    <v-bottom-navigation height="62">
+    <v-bottom-navigation>
       <HorizontalScroll ref="horizontalScroll">
       </HorizontalScroll>
     </v-bottom-navigation>
@@ -19,14 +19,12 @@
 
 <script>
 import LineSetting from './components/LineSetting.vue';
-import LoadingSpinner from "@/components/LoadingSpinner";
 import HorizontalScroll from "./components/HorizontalScroll.vue";
 
 export default {
   name: 'App',
 
   components: {
-    LoadingSpinner,
     LineSetting,
     HorizontalScroll,
   },
@@ -82,5 +80,11 @@ export default {
 
 *::-webkit-scrollbar-track {
   background-color: grey;
+}
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 240px;
 }
 </style>

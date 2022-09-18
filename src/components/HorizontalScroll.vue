@@ -2,9 +2,11 @@
   <div class="scrolling-wrapper">
     <div class="card" v-for="n in list" :key="n">
       <v-card>
-        <h3>
-          {{ n }}
-        </h3>
+        <div class="inner">
+          <h2>
+            {{ n }}
+          </h2>
+        </div>
       </v-card>
     </div>
   </div>
@@ -31,6 +33,7 @@ export default {
 .scrolling-wrapper {
   display: flex;
   flex-wrap: nowrap;
+  align-items: center;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -49,6 +52,9 @@ export default {
 }
 
 .card{
-  margin: 6px;
+  padding: 10px;
+}
+.inner{
+  padding: 4px;
 }
 </style>

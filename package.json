@@ -11,6 +11,8 @@
     "core-js": "^3.8.3",
     "quill-delta-to-html": "^0.12.1",
     "roboto-fontface": "*",
+    "sass": "^1.54.9",
+    "sass-loader": "^13.0.2",
     "vue": "^3.2.13",
     "vuetify": "^3.0.0-beta.0",
     "webfontloader": "^1.0.0"
@@ -18,7 +20,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.16",
     "@babel/eslint-parser": "^7.12.16",
-    "@mdi/js": "^7.0.96",
+    "@mdi/font": "^7.0.96",
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-service": "~5.0.0",

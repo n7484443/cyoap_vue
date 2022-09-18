@@ -1,24 +1,26 @@
 <template>
-  <v-card v-if="choiceStatus !== 'hide'" :class="select ? 'card-outline' : 'card'" v-on:click="click"
-          :disabled="choiceStatus === 'closed'">
+  <v-card v-if="choiceStatus !== 'hide'"
+          :class="['card', {outline: select > 0}, choiceNodeDesign['isRound'] ? 'rounded-lg' : 'rounded-0']"
+          v-on:click="click"
+          :disabled="choiceStatus === 'closed'" :elevation="choiceNodeDesign['isCard'] ? 10 : 0">
     <div class="container">
-      <v-img :src="image" class="image_round"></v-img>
-      <div class="container">
-        <p v-html="modelValue"></p>
-      </div>
+      <ChoiceNodeContents :imagePosition="choiceNodeDesign['imagePosition']" :image="image" :maximizing-image="choiceNodeDesign['maximizingImage']">
+        <template v-slot:title v-if="!choiceNodeDesign['hideTitle']">
+          {{ title }}
+        </template>
+        <template v-slot:contents>
+          <p v-html="modelValue" class="container"></p>
+        </template>
+      </ChoiceNodeContents>
       <div class="multi-select" v-if="choiceMode === 'multiSelect'">
         <v-btn v-on:click="click_down" elevation="0">
-          <v-icon>
-            {{ mdi_left }}
-          </v-icon>
+          <v-icon icon="mdi:mdi-chevron-left" />
         </v-btn>
         <p class="text-center">
-          {{ mdi_right }}
+          {{ select }}
         </p>
         <v-btn v-on:click="click_up" elevation="0">
-          <v-icon>
-            mdi-chevron-right
-          </v-icon>
+          <v-icon icon="mdi:mdi-chevron-right" />
         </v-btn>
       </div>
       <div class="wrapper" v-if="childLength > 0">
@@ -32,31 +34,20 @@
 
 <script>
 import {QuillDeltaToHtmlConverter} from "quill-delta-to-html";
-import { mdiChevronLeft, mdiChevronRight } from '@mdi/js';
+import ChoiceNodeContents from "./ChoiceNodeContents";
 
 export default {
   props: {
     pos: Number,
     beforePos: Array,
   },
+  components: {
+    ChoiceNodeContents
+  },
   name: "ChoiceNode",
   data() {
     let currentPos = [...this.beforePos, this.pos];
     let data = window.getContents(currentPos);
-    if (!data) {
-      return {
-        image: "",
-        modelValue: "",
-        currentPos: currentPos,
-        gridColumn: 1,
-        select: 0,
-        choiceStatus: "",
-        choiceMode: "defaultMode",
-        childLength: 0,
-        mdi_left: mdiChevronLeft,
-        mdi_right: mdiChevronRight,
-      }
-    }
     let delta = JSON.parse(data);
     let converter = new QuillDeltaToHtmlConverter(delta, {});
     let imagePos = window.getImage(currentPos);
@@ -65,6 +56,7 @@ export default {
     }
     return {
       image: imagePos,
+      title: window.getTitle(currentPos),
       modelValue: converter.convert(),
       currentPos: currentPos,
       gridColumn: window.getSize(currentPos),
@@ -72,8 +64,7 @@ export default {
       choiceStatus: window.getChoiceStatus(currentPos),
       choiceMode: window.getChoiceNodeMode(currentPos),
       childLength: window.childLength(currentPos),
-      mdi_left: mdiChevronLeft,
-      mdi_right: mdiChevronRight,
+      choiceNodeDesign: JSON.parse(window.getChoiceNodeDesign(currentPos)),
     }
   },
   methods: {
@@ -93,9 +84,9 @@ export default {
       this.needUpdate();
     },
     updateChild() {
-      if(this.$refs.choiceNode){
-        this.$refs.choiceNode.forEach(function(i){
-          if(i){
+      if (this.$refs.choiceNode) {
+        this.$refs.choiceNode.forEach(function (i) {
+          if (i) {
             i.updateChild();
           }
         });
@@ -111,17 +102,12 @@ export default {
 </script>
 <style scoped>
 .card {
-  /* Add shadows to create the "card" effect */
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  transition: 0.3s;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+  background-color: #fff;
   grid-column: auto / span v-bind(gridColumn);
 }
 
-.card-outline {
-  /* Add shadows to create the "card" effect */
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  transition: 0.1s;
-  grid-column: auto / span v-bind(gridColumn);
+.outline {
   outline-color: #fe9616;
   outline-style: solid;
 }
@@ -147,7 +133,4 @@ export default {
   align-items: center
 }
 
-.image_round {
-  border-radius: 4px;
-}
 </style>
