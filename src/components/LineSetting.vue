@@ -1,5 +1,5 @@
 <template>
-  <v-responsive v-if="visible" min-height="100">
+  <v-responsive v-if="choiceStatus !== 'hide'" min-height="100">
     <v-lazy v-model="isActive">
       <div class="wrapper">
         <ChoiceNode v-for="(n, i) in child" ref="choiceNode" :key="n" :pos="i" :before-pos="currentPos" @needUpdate="needUpdate">
@@ -26,12 +26,12 @@ export default {
       isActive: false,
       currentPos: currentPos,
       child: window.childLength(currentPos),
-      visible: window.getVisible(currentPos),
+      choiceStatus: window.getChoiceStatus(currentPos),
     }
   },
   methods: {
     updateChild(){
-      this.visible = window.getVisible(this.currentPos);
+      this.choiceStatus = window.getChoiceStatus(this.currentPos);
       if(this.$refs.choiceNode){
         this.$refs.choiceNode.forEach(function(i){
           if(i){

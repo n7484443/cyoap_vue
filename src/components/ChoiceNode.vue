@@ -1,6 +1,6 @@
 <template>
   <v-card v-if="choiceStatus !== 'hide'"
-          :class="['card', {outline: select > 0}, choiceNodeDesign['isRound'] ? 'rounded-lg' : 'rounded-0']"
+          :class="['card', {'outline': select > 0}, choiceNodeDesign['isRound'] ? 'rounded-lg' : 'rounded-0']"
           v-on:click="click"
           :disabled="choiceStatus === 'closed'" :elevation="choiceNodeDesign['isCard'] ? 10 : 0">
     <div class="container">
@@ -24,8 +24,8 @@
         </v-btn>
       </div>
       <div class="wrapper" v-if="childLength > 0">
-        <ChoiceNode class="item" v-for="(n, i) in childLength" ref="choiceNode" :key="n" :pos="i"
-                    :before-pos="currentPos" @needUpdate="needUpdate">
+        <ChoiceNode class="item" v-for="(n, i) in childLength" ref="choiceNodeChild" :key="n"
+                    :pos="i" :before-pos="currentPos" @needUpdate="needUpdate">
         </ChoiceNode>
       </div>
     </div>
@@ -84,15 +84,15 @@ export default {
       this.needUpdate();
     },
     updateChild() {
-      if (this.$refs.choiceNode) {
-        this.$refs.choiceNode.forEach(function (i) {
+      this.select = window.getSelect(this.currentPos);
+      this.choiceStatus = window.getChoiceStatus(this.currentPos);
+      if (this.$refs.choiceNodeChild) {
+        this.$refs.choiceNodeChild.forEach(function (i) {
           if (i) {
             i.updateChild();
           }
         });
       }
-      this.select = window.getSelect(this.currentPos);
-      this.choiceStatus = window.getChoiceStatus(this.currentPos);
     },
     needUpdate() {
       this.$emit('needUpdate',);
