@@ -20,6 +20,7 @@
 <script>
 import LineSetting from './components/LineSetting.vue';
 import HorizontalScroll from "./components/HorizontalScroll.vue";
+import WebFont from "webfontloader/webfontloader";
 
 export default {
   name: 'App',
@@ -44,6 +45,29 @@ export default {
     let output = await Promise.all(lineSetting);
     this.child = output.length;
     window.loadPlatform(platform, output);
+
+    let textFontList = {
+      "jua": "Jua",
+      "notoSans": "Noto Sans KR",
+      "notoSerif": "Noto Serif KR",
+      "나눔고딕": "Nanum Gothic",
+      "나눔손글씨 붓": "Nanum Brush Script",
+      "나눔손글씨 펜": "Nanum Pen Script",
+      "Poor Story": "Poor Story",
+      "East Sea Dokdo": "East Sea Dokdo",
+      "Black Han Sans": "Black Han Sans",
+      "Black And White Picture": "Black And White Picture",
+      "Neo 둥근모": 'NeoDunggeunmo',
+    };
+    let design = JSON.parse(window.getPlatformDesign());
+    this.titleFont = textFontList[design['titleFont']];
+    this.contentFont = textFontList[design['mainFont']];
+    this.variableFont = textFontList[design['variableFont']];
+    WebFont.load({
+      google: {
+        families: [this.titleFont, this.contentFont, this.variableFont]
+      }
+    });
     this.isLoading = false;
   },
 
@@ -52,6 +76,9 @@ export default {
       isLoading: true,
       modelValue: "",
       child: 0,
+      titleFont: "",
+      contentFont: "",
+      variableFont: "",
     }
   },
   methods: {
@@ -69,6 +96,7 @@ export default {
 .item {
   padding: 8px;
 }
+
 *::-webkit-scrollbar {
   width: 16px;
 }
@@ -81,10 +109,21 @@ export default {
 *::-webkit-scrollbar-track {
   background-color: grey;
 }
+
 .spinner-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 240px;
+}
+
+.title_font {
+  font-family: v-bind(titleFont);
+}
+.content_font {
+  font-family: v-bind(contentFont);
+}
+.variable_font {
+  font-family: v-bind(variableFont);
 }
 </style>

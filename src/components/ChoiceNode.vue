@@ -6,10 +6,12 @@
     <div class="container">
       <ChoiceNodeContents :imagePosition="choiceNodeDesign['imagePosition']" :image="image" :maximizing-image="choiceNodeDesign['maximizingImage']">
         <template v-slot:title v-if="!choiceNodeDesign['hideTitle']">
-          {{ title }}
+          <div class="title_font">
+            {{ title }}
+          </div>
         </template>
         <template v-slot:contents>
-          <p v-html="modelValue" class="container"></p>
+          <p v-html="modelValue" class="container content_font"></p>
         </template>
       </ChoiceNodeContents>
       <div class="multi-select" v-if="choiceMode === 'multiSelect'">

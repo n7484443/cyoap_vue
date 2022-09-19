@@ -2,7 +2,7 @@
   <div class="scrolling-wrapper">
     <div class="card" v-for="n in list" :key="n">
       <v-card>
-        <div class="inner">
+        <div class="inner variable_font">
           <h2>
             {{ n }}
           </h2>
