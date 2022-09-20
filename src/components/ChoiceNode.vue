@@ -4,25 +4,22 @@
           v-on:click="click"
           :disabled="choiceStatus === 'closed'" :elevation="choiceNodeDesign['isCard'] ? 10 : 0">
     <div class="container">
-      <ChoiceNodeContents :imagePosition="choiceNodeDesign['imagePosition']" :image="image" :maximizing-image="choiceNodeDesign['maximizingImage']">
-        <template v-slot:title v-if="!choiceNodeDesign['hideTitle']">
-          <div class="title_font">
-            {{ title }}
-          </div>
-        </template>
+      <ChoiceNodeContents :imagePosition="choiceNodeDesign['imagePosition']" :image="image"
+                          :maximizing-image="choiceNodeDesign['maximizingImage']"
+                          :hide-title="choiceNodeDesign['hideTitle']" :title="title">
         <template v-slot:contents>
           <p v-html="modelValue" class="container content_font"></p>
         </template>
       </ChoiceNodeContents>
       <div class="multi-select" v-if="choiceMode === 'multiSelect'">
         <v-btn v-on:click="click_down" elevation="0">
-          <v-icon icon="mdi:mdi-chevron-left" />
+          <v-icon icon="mdi:mdi-chevron-left"/>
         </v-btn>
         <p class="text-center">
           {{ select }}
         </p>
         <v-btn v-on:click="click_up" elevation="0">
-          <v-icon icon="mdi:mdi-chevron-right" />
+          <v-icon icon="mdi:mdi-chevron-right"/>
         </v-btn>
       </div>
       <div class="wrapper" v-if="childLength > 0">

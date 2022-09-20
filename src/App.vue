@@ -60,6 +60,7 @@ export default {
       "Neo 둥근모": 'NeoDunggeunmo',
     };
     let design = JSON.parse(window.getPlatformDesign());
+    this.$store.commit('setPlatformDesign', design);
     this.titleFont = textFontList[design['titleFont']];
     this.contentFont = textFontList[design['mainFont']];
     this.variableFont = textFontList[design['variableFont']];
