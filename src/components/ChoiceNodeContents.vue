@@ -1,12 +1,14 @@
 <template>
-  <div v-if="!titlePosition && !hideTitle" :class="['title_font', {titleOutline: titleOutline}]">
-    {{ title }}
+  <div v-if="!titlePosition && !hideTitle" :class="['title_font', {'title_font_outline': titleOutline}]">
+    <div class="title_color">
+      {{ title }}
+    </div>
   </div>
-  <div v-if="imagePosition == 0">
+  <div v-if="imagePosition === 0">
     <v-img :src="image" :max-height="maximizingImage ? '80vh' : '50vh'"></v-img>
     <slot name="contents"></slot>
   </div>
-  <div v-else-if="imagePosition == 1" class="flex-default">
+  <div v-else-if="imagePosition === 1" class="flex-default">
     <v-img :src="image" :max-height="maximizingImage ? '80vh' : '50vh'"></v-img>
     <slot name="contents"></slot>
   </div>
@@ -14,8 +16,10 @@
     <slot name="contents"></slot>
     <v-img :src="image" :max-height="maximizingImage ? '80vh' : '50vh'"></v-img>
   </div>
-  <div v-if="titlePosition && !hideTitle" :class="['title_font', {titleOutline: titleOutline}]">
-    {{ title }}
+  <div v-if="titlePosition && !hideTitle" :class="['title_font', {'title_font_outline': titleOutline}]">
+    <div class="title_color">
+      {{ title }}
+    </div>
   </div>
 </template>
 
@@ -29,11 +33,13 @@ export default {
     image: String,
     title: String,
   },
-  data(){
+  data() {
     let platformDesign = this.$store.getters.getPlatformDesign;
+    let colorTitle = '#' + (platformDesign.colorTitle ?? 0xFF000000).toString(16);
     return {
       titlePosition: platformDesign.titlePosition,
-      titleOutline: platformDesign.titleOutline
+      titleOutline: platformDesign.titleOutline,
+      colorTitle: colorTitle,
     }
   }
 }
@@ -43,7 +49,12 @@ export default {
 .flex-default {
   display: flex;
 }
-.title_font_outline{
-  text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 red, 1px 1px 0 white;
+
+.title_font_outline {
+  text-shadow: -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 2px 2px 0 white;
+}
+
+.title_color{
+  color: v-bind(colorTitle)
 }
 </style>

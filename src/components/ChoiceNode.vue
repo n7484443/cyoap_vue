@@ -53,6 +53,10 @@ export default {
     if (imagePos) {
       imagePos = "dist/images/" + imagePos;
     }
+
+    let platformDesign = this.$store.getters.getPlatformDesign;
+    let colorOutline = '#' + (platformDesign.colorOutline ?? 0xFF40C4FF).toString(16);
+    let colorNode = '#' + (platformDesign.colorNode ?? 0xFFFFFFFF).toString(16);
     return {
       image: imagePos,
       title: window.getTitle(currentPos),
@@ -64,6 +68,8 @@ export default {
       choiceMode: window.getChoiceNodeMode(currentPos),
       childLength: window.childLength(currentPos),
       choiceNodeDesign: JSON.parse(window.getChoiceNodeDesign(currentPos)),
+      colorOutline: colorOutline,
+      colorNode: colorNode,
     }
   },
   methods: {
@@ -102,12 +108,12 @@ export default {
 <style scoped>
 .card {
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
-  background-color: #fff;
+  background-color: v-bind(colorNode);
   grid-column: auto / span v-bind(gridColumn);
 }
 
 .outline {
-  outline-color: #fe9616;
+  outline-color: v-bind(colorOutline);
   outline-style: solid;
 }
 

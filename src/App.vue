@@ -69,6 +69,11 @@ export default {
         families: [this.titleFont, this.contentFont, this.variableFont]
       }
     });
+
+
+    this.colorBackground = '#' + (design.colorTitle ?? 0xFFFFFFFF).toString(16);
+
+
     this.isLoading = false;
   },
 
@@ -80,6 +85,7 @@ export default {
       titleFont: "",
       contentFont: "",
       variableFont: "",
+      colorBackground: "",
     }
   },
   methods: {
@@ -121,9 +127,11 @@ export default {
 .title_font {
   font-family: v-bind(titleFont);
 }
+
 .content_font {
   font-family: v-bind(contentFont);
 }
+
 .variable_font {
   font-family: v-bind(variableFont);
 }
