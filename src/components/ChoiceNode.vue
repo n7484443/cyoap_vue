@@ -55,8 +55,11 @@ export default {
     }
 
     let platformDesign = this.$store.getters.getPlatformDesign;
-    let colorOutline = '#' + (platformDesign.colorOutline ?? 0xFF40C4FF).toString(16);
-    let colorNode = '#' + (platformDesign.colorNode ?? 0xFFFFFFFF).toString(16);
+    let colorOutline = (platformDesign.colorOutline ?? 0xFF40C4FF).toString(16);
+    colorOutline = '#' + colorOutline.substring(2) + colorOutline.substring(0, 2);
+
+    let colorNode = (platformDesign.colorNode ?? 0xFFFFFFFF).toString(16);
+    colorNode = '#' + colorNode.substring(2) + colorNode.substring(0, 2);
     return {
       image: imagePos,
       title: window.getTitle(currentPos),

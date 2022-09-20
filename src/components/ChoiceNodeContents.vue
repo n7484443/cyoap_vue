@@ -35,11 +35,12 @@ export default {
   },
   data() {
     let platformDesign = this.$store.getters.getPlatformDesign;
-    let colorTitle = '#' + (platformDesign.colorTitle ?? 0xFF000000).toString(16);
+    let color = (platformDesign.colorTitle ?? 0xFF000000).toString(16);
+    color = '#' + color.substring(2) + color.substring(0, 2);
     return {
       titlePosition: platformDesign.titlePosition,
       titleOutline: platformDesign.titleOutline,
-      colorTitle: colorTitle,
+      colorTitle: color,
     }
   }
 }

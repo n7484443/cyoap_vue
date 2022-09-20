@@ -7,7 +7,7 @@
       <HorizontalScroll ref="horizontalScroll">
       </HorizontalScroll>
     </v-bottom-navigation>
-    <div v-for="(n, i) in child" :key="n">
+    <div v-for="(n, i) in child" :key="n" class="background">
       <LineSetting class="item" ref="lineSetting" :pos="i" @needUpdate="needUpdate">
       </LineSetting>
     </div>
@@ -70,10 +70,8 @@ export default {
       }
     });
 
-
-    this.colorBackground = '#' + (design.colorTitle ?? 0xFFFFFFFF).toString(16);
-
-
+    let color = (design.colorBackground ?? 0xFFFFFFFF).toString(16);
+    this.colorBackground = '#' + color.substring(2) + color.substring(0, 2);
     this.isLoading = false;
   },
 
@@ -134,5 +132,9 @@ export default {
 
 .variable_font {
   font-family: v-bind(variableFont);
+}
+
+.background{
+  background-color: v-bind(colorBackground);
 }
 </style>
