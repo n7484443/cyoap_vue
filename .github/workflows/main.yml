@@ -1,0 +1,24 @@
+name: CYOAP release
+on:
+  push:
+    tags:
+      - "v*.*.*"
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: npm run build --release
+
+      - name: Get latest release version number
+        id: get_version
+        uses: battila7/get-version-action@v2
+
+      - run: 7z a dist/cyoap_vue_${{ steps.get_version.outputs.version-without-v }}.zip ./dist/*
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/cyoap_vue_${{ steps.get_version.outputs.version-without-v }}.zip
