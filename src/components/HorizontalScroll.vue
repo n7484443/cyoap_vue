@@ -1,15 +1,15 @@
 <template>
-  <div class="scrolling-wrapper">
-    <div class="card" v-for="n in list" :key="n">
-      <v-card>
+  <v-slide-group show-arrows class="scrolling">
+    <v-slide-group-item v-for="n in list" :key="n">
+      <v-card class="card" >
         <div class="inner variable_font">
           <h2>
             {{ n }}
           </h2>
         </div>
       </v-card>
-    </div>
-  </div>
+    </v-slide-group-item>
+  </v-slide-group>
 </template>
 
 <script>
@@ -30,25 +30,8 @@ export default {
 </script>
 
 <style scoped>
-.scrolling-wrapper {
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.scrolling-wrapper::-webkit-scrollbar {
-  width: 10px;
-}
-
-.scrolling-wrapper::-webkit-scrollbar-thumb {
-  background-color: #2f3542;
-  border-radius: 10px;
-}
-
-.scrolling-wrapper::-webkit-scrollbar-track {
-  background-color: grey;
+.scrolling {
+  max-width: 100vw;
 }
 
 .card{
