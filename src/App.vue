@@ -12,6 +12,28 @@
       </LineSetting>
     </div>
     <br/>
+    <div class="result">
+      <v-dialog v-model="dialog" scrollable>
+        <template v-slot:activator="{ props }">
+          <v-btn
+              color="primary"
+              v-bind="props"
+          >
+            결과창 보기
+          </v-btn>
+        </template>
+        <v-card>
+          <v-card-text>
+            <SelectedResult id="capture"></SelectedResult>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn color="primary" @click="saveAsImage">이미지로 저장</v-btn>
+            <v-btn color="primary" @click="dialog = false">결과창 닫기</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </div>
+    <br/>
     <br/>
     <br/>
   </v-app>
@@ -21,6 +43,8 @@
 import LineSetting from './components/LineSetting.vue';
 import HorizontalScroll from "./components/HorizontalScroll.vue";
 import WebFont from "webfontloader/webfontloader";
+import SelectedResult from "./components/SelectedResult.vue";
+import domtoimage from "dom-to-image-more";
 
 export default {
   name: 'App',
@@ -28,6 +52,7 @@ export default {
   components: {
     LineSetting,
     HorizontalScroll,
+    SelectedResult
   },
 
   async created() {
@@ -84,6 +109,7 @@ export default {
       contentFont: "",
       variableFont: "",
       colorBackground: "",
+      dialog: false,
     }
   },
   methods: {
@@ -93,6 +119,21 @@ export default {
     },
     needUpdate() {
       this.updateChild();
+    },
+    async saveAsImage(){
+      let element = document.querySelector("#capture");
+      let blob = await domtoimage.toBlob(element, );
+      //blob download as result.png
+      let link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = "result.png";
+      link.click();
+
+      // let canvas = await html2canvas(element)
+      // let a = document.createElement('a');
+      // a.href = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+      // a.download = 'result.png';
+      // a.click();
     }
   }
 }
@@ -136,5 +177,10 @@ export default {
 
 .background{
   background-color: v-bind(colorBackground);
+}
+
+.result{
+  display: flex;
+  justify-content: center;
 }
 </style>

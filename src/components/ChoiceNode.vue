@@ -22,9 +22,9 @@
           <v-icon icon="mdi:mdi-chevron-right"/>
         </v-btn>
       </div>
-      <div class="wrapper" v-if="childLength > 0">
+      <div class="wrapper" v-if="childLength > 0 && renderChild">
         <ChoiceNode class="item" v-for="(n, i) in childLength" ref="choiceNodeChild" :key="n"
-                    :pos="i" :before-pos="currentPos" @needUpdate="needUpdate">
+                    :currentPos="[...currentPos, i]" :render-child="renderChild" :clickable="clickable" @needUpdate="needUpdate">
         </ChoiceNode>
       </div>
     </div>
@@ -37,19 +37,19 @@ import ChoiceNodeContents from "./ChoiceNodeContents";
 
 export default {
   props: {
-    pos: Number,
-    beforePos: Array,
+    currentPos: Array,
+    renderChild: Boolean,
+    clickable: Boolean,
   },
   components: {
     ChoiceNodeContents
   },
   name: "ChoiceNode",
   data() {
-    let currentPos = [...this.beforePos, this.pos];
-    let data = window.getContents(currentPos);
+    let data = window.getContents(this.currentPos);
     let delta = JSON.parse(data);
     let converter = new QuillDeltaToHtmlConverter(delta, {});
-    let imagePos = window.getImage(currentPos);
+    let imagePos = window.getImage(this.currentPos);
     if (imagePos) {
       imagePos = "dist/images/" + imagePos;
     }
@@ -62,34 +62,39 @@ export default {
     colorNode = '#' + colorNode.substring(2) + colorNode.substring(0, 2);
     return {
       image: imagePos,
-      title: window.getTitle(currentPos),
+      title: window.getTitle(this.currentPos),
       modelValue: converter.convert(),
-      currentPos: currentPos,
-      gridColumn: window.getSize(currentPos),
-      select: window.getSelect(currentPos),
-      choiceStatus: window.getChoiceStatus(currentPos),
-      choiceMode: window.getChoiceNodeMode(currentPos),
-      childLength: window.childLength(currentPos),
-      choiceNodeDesign: JSON.parse(window.getChoiceNodeDesign(currentPos)),
+      gridColumn: window.getSize(this.currentPos),
+      select: window.getSelect(this.currentPos),
+      choiceStatus: window.getChoiceStatus(this.currentPos),
+      choiceMode: window.getChoiceNodeMode(this.currentPos),
+      childLength: window.childLength(this.currentPos),
+      choiceNodeDesign: JSON.parse(window.getChoiceNodeDesign(this.currentPos)),
       colorOutline: colorOutline,
       colorNode: colorNode,
     }
   },
   methods: {
     click() {
-      window.select(this.currentPos, 0);
-      window.updatePlatform();
-      this.needUpdate();
+      if (this.clickable) {
+        window.select(this.currentPos, 0);
+        window.updatePlatform();
+        this.needUpdate();
+      }
     },
     click_down() {
-      window.select(this.currentPos, -1);
-      window.updatePlatform();
-      this.needUpdate();
+      if (this.clickable) {
+        window.select(this.currentPos, -1);
+        window.updatePlatform();
+        this.needUpdate();
+      }
     },
     click_up() {
-      window.select(this.currentPos, 1);
-      window.updatePlatform();
-      this.needUpdate();
+      if (this.clickable) {
+        window.select(this.currentPos, 1);
+        window.updatePlatform();
+        this.needUpdate();
+      }
     },
     updateChild() {
       this.select = window.getSelect(this.currentPos);

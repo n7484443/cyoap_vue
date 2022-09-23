@@ -2,7 +2,8 @@
   <v-responsive v-if="choiceStatus !== 'hide'" min-height="100">
     <v-lazy v-model="isActive">
       <div class="wrapper">
-        <ChoiceNode v-for="(n, i) in child" ref="choiceNode" :key="n" :pos="i" :before-pos="currentPos" @needUpdate="needUpdate">
+        <ChoiceNode v-for="(n, i) in child" ref="choiceNode" :key="n" :current-pos="[...currentPos, i]"
+                    :render-child=true :clickable="true" @needUpdate="needUpdate">
         </ChoiceNode>
       </div>
     </v-lazy>
@@ -30,18 +31,18 @@ export default {
     }
   },
   methods: {
-    updateChild(){
+    updateChild() {
       this.choiceStatus = window.getChoiceStatus(this.currentPos);
-      if(this.$refs.choiceNode){
-        this.$refs.choiceNode.forEach(function(i){
-          if(i){
+      if (this.$refs.choiceNode) {
+        this.$refs.choiceNode.forEach(function (i) {
+          if (i) {
             i.updateChild();
           }
         });
       }
     },
-    needUpdate(){
-      this.$emit('needUpdate', );
+    needUpdate() {
+      this.$emit('needUpdate',);
     }
   }
 }
