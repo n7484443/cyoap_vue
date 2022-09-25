@@ -60,16 +60,23 @@ export default {
 
     let colorNode = (platformDesign.colorNode ?? 0xFFFFFFFF).toString(16);
     colorNode = '#' + colorNode.substring(2) + colorNode.substring(0, 2);
+
+    let choiceNodeDesign = JSON.parse(window.getChoiceNodeDesign(this.currentPos));
+    let choiceStatus = window.getChoiceStatus(this.currentPos);
+    let gridColumn = window.getSize(this.currentPos);
+    if(!choiceNodeDesign['occupySpace'] && choiceStatus === 'hide'){
+      gridColumn = 0;
+    }
     return {
       image: imagePos,
       title: window.getTitle(this.currentPos),
       modelValue: converter.convert(),
-      gridColumn: window.getSize(this.currentPos),
+      gridColumn: gridColumn,
       select: window.getSelect(this.currentPos),
-      choiceStatus: window.getChoiceStatus(this.currentPos),
+      choiceStatus: choiceStatus,
       choiceMode: window.getChoiceNodeMode(this.currentPos),
       childLength: window.childLength(this.currentPos),
-      choiceNodeDesign: JSON.parse(window.getChoiceNodeDesign(this.currentPos)),
+      choiceNodeDesign: choiceNodeDesign,
       colorOutline: colorOutline,
       colorNode: colorNode,
     }
@@ -99,6 +106,11 @@ export default {
     updateChild() {
       this.select = window.getSelect(this.currentPos);
       this.choiceStatus = window.getChoiceStatus(this.currentPos);
+      if(!this.choiceNodeDesign['occupySpace'] && this.choiceStatus === 'hide'){
+        this.gridColumn = 0;
+      }else{
+        this.gridColumn = window.getSize(this.currentPos);
+      }
       if (this.$refs.choiceNodeChild) {
         this.$refs.choiceNodeChild.forEach(function (i) {
           if (i) {
