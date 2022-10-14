@@ -1,6 +1,6 @@
 <template>
-  <div v-if="isLoading" class="spinner-container">
-    <v-progress-circular size="72" width="8" indeterminate color="red"></v-progress-circular>
+  <div v-if="isLoading !== -1" class="spinner-container">
+    <v-progress-circular size="72" width="8" :model-value="isLoading / isLoadingMax * 100" color="red"></v-progress-circular>
   </div>
   <v-app v-else>
     <v-bottom-navigation>
@@ -63,8 +63,11 @@ export default {
     lineData = await lineData.json();
     let lineSetting = [];
 
+    this.isLoadingMax = lineData.length;
+
     for (let i = 0; i < lineData.length; i++) {
       let innerLine = fetch(url + "nodes/" + lineData[i] + "?time=" + new Date().getTime()).then(res => res.text());
+      innerLine.then(() => this.isLoading += 1);
       lineSetting.push(innerLine);
     }
     let output = await Promise.all(lineSetting);
@@ -97,12 +100,13 @@ export default {
 
     let color = (design.colorBackground ?? 0xFFFFFFFF).toString(16);
     this.colorBackground = '#' + color.substring(2) + color.substring(0, 2);
-    this.isLoading = false;
+    this.isLoading = -1;
   },
 
   data() {
     return {
-      isLoading: true,
+      isLoading: 0,
+      isLoadingMax: 100,
       modelValue: "",
       child: 0,
       titleFont: "",
