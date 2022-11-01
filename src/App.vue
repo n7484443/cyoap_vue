@@ -7,7 +7,7 @@
       <HorizontalScroll ref="horizontalScroll">
       </HorizontalScroll>
     </v-bottom-navigation>
-    <div v-for="(n, i) in child" :key="n" class="background">
+    <div v-for="(n, i) in child" :key="n" class="background" v-bind:style="{ backgroundImage: 'url(' + imageBackground + ')'}">
       <LineSetting class="item" ref="lineSetting" :pos="i" @needUpdate="needUpdate">
       </LineSetting>
     </div>
@@ -100,7 +100,23 @@ export default {
 
     let color = (design.colorBackground ?? 0xFFFFFFFF).toString(16);
     this.colorBackground = '#' + color.substring(2) + color.substring(0, 2);
+    this.imageBackground = "dist/images/" + design.backgroundImage;
+    switch (design.backgroundAttribute) {
+      case "fit":
+        this.backgroundSize = "contain";
+        break;
+      case "fill":
+        this.backgroundSize = "cover";
+        break;
+      case "pattern":
+        this.backgroundRepeat = "repeat";
+        break;
+      case "stretch":
+        this.backgroundSize = "100vw 100vh";
+        break;
+    }
     this.isLoading = -1;
+    this.marginVertical= design.marginVertical + 'px';
   },
 
   data() {
@@ -113,7 +129,11 @@ export default {
       contentFont: "",
       variableFont: "",
       colorBackground: "",
+      imageBackground: "",
+      backgroundRepeat: "no-repeat",
+      backgroundSize: "auto",
       dialog: false,
+      marginVertical: '8px',
     }
   },
   methods: {
@@ -144,7 +164,7 @@ export default {
 </script>
 <style>
 .item {
-  padding: 8px;
+  padding: v-bind(marginVertical) 8px;
 }
 
 *::-webkit-scrollbar {
@@ -181,6 +201,9 @@ export default {
 
 .background{
   background-color: v-bind(colorBackground);
+  background-attachment: fixed;
+  background-size: v-bind(backgroundSize);
+  background-position: center;
 }
 
 .result{

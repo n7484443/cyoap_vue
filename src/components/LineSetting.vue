@@ -28,6 +28,7 @@ export default {
       currentPos: currentPos,
       child: window.childLength(currentPos),
       choiceStatus: window.getChoiceStatus(currentPos),
+      marginVertical: this.$store.getters.getPlatformDesign.marginVertical + 'px',
     }
   },
   methods: {
@@ -54,7 +55,7 @@ export default {
   grid-template-columns: repeat(12, 1fr);
   grid-template-rows: repeat(auto-fill, min-content);
   column-gap: 8px;
-  row-gap: 8px;
+  row-gap: v-bind(marginVertical);
   grid-auto-flow: row;
 }
 
