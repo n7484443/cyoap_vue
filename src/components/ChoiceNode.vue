@@ -2,7 +2,8 @@
   <v-card v-if="choiceStatus !== 'hide'"
           :class="['card', {'outline': select > 0}, choiceNodeDesign['isRound'] ? 'rounded-lg' : 'rounded-0']"
           v-on:click="click"
-          :disabled="choiceStatus === 'closed'" :elevation="choiceNodeDesign['isCard'] ? 10 : 0">
+          :disabled="choiceStatus === 'closed'" :elevation="choiceNodeDesign['isCard'] ? 10 : 0"
+          :color="colorNode">
     <div class="container">
       <ChoiceNodeContents :imagePosition="choiceNodeDesign['imagePosition']" :image="image"
                           :maximizing-image="choiceNodeDesign['maximizingImage']"
@@ -55,13 +56,14 @@ export default {
     }
 
     let platformDesign = this.$store.getters.getPlatformDesign;
+    let choiceNodeDesign = JSON.parse(window.getChoiceNodeDesign(this.currentPos));
+
     let colorOutline = (platformDesign.colorOutline ?? 0xFF40C4FF).toString(16);
     colorOutline = '#' + colorOutline.substring(2) + colorOutline.substring(0, 2);
 
-    let colorNode = (platformDesign.colorNode ?? 0xFFFFFFFF).toString(16);
+    let colorNode = (choiceNodeDesign.colorNode ?? platformDesign.colorNode ?? 0xFFFFFFFF).toString(16);
     colorNode = '#' + colorNode.substring(2) + colorNode.substring(0, 2);
 
-    let choiceNodeDesign = JSON.parse(window.getChoiceNodeDesign(this.currentPos));
     let choiceStatus = window.getChoiceStatus(this.currentPos);
     let gridColumn = window.getSize(this.currentPos);
     if(!choiceNodeDesign['occupySpace'] && choiceStatus === 'hide'){
