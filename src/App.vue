@@ -3,7 +3,7 @@
     <v-progress-circular size="72" width="8" :model-value="isLoading / isLoadingMax * 100" color="red"></v-progress-circular>
   </div>
   <v-app v-else>
-    <v-bottom-navigation>
+    <v-bottom-navigation height="40">
       <HorizontalScroll ref="horizontalScroll">
       </HorizontalScroll>
     </v-bottom-navigation>

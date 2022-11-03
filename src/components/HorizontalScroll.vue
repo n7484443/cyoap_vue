@@ -3,9 +3,9 @@
     <v-slide-group-item v-for="n in list" :key="n">
       <v-card class="card" >
         <div class="inner variable_font">
-          <h2>
+          <h3>
             {{ n }}
-          </h2>
+          </h3>
         </div>
       </v-card>
     </v-slide-group-item>
@@ -35,7 +35,7 @@ export default {
 }
 
 .card{
-  padding: 10px;
+  padding: 6px;
 }
 .inner{
   padding: 4px;
