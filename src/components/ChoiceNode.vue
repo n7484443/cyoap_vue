@@ -48,8 +48,13 @@ export default {
   name: "ChoiceNode",
   data() {
     let data = window.getContents(this.currentPos);
-    let delta = JSON.parse(data);
-    let converter = new QuillDeltaToHtmlConverter(delta, {});
+    let modalValue = "";
+    if(data){
+      let delta = JSON.parse(data);
+      console.log(delta);
+      let converter = new QuillDeltaToHtmlConverter(delta, {});
+      modalValue = converter.convert();
+    }
     let imagePos = window.getImage(this.currentPos);
     if (imagePos) {
       imagePos = "dist/images/" + imagePos;
@@ -72,7 +77,7 @@ export default {
     return {
       image: imagePos,
       title: window.getTitle(this.currentPos),
-      modelValue: converter.convert(),
+      modelValue: modalValue,
       gridColumn: gridColumn,
       select: window.getSelect(this.currentPos),
       choiceStatus: choiceStatus,
