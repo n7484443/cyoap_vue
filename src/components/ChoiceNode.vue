@@ -1,35 +1,38 @@
 <template>
-  <v-card v-if="choiceStatus !== 'hide'"
-          :class="['card', {'outline': select > 0}, choiceNodeDesign['isRound'] ? 'rounded-lg' : 'rounded-0']"
-          v-on:click="click"
-          :disabled="choiceStatus === 'closed'" :elevation="choiceNodeDesign['isCard'] ? 10 : 0"
-          :color="colorNode">
-    <div class="container">
-      <ChoiceNodeContents :imagePosition="choiceNodeDesign['imagePosition']" :image="image"
-                          :maximizing-image="choiceNodeDesign['maximizingImage']"
-                          :hide-title="choiceNodeDesign['hideTitle']" :title="title">
-        <template v-slot:contents>
-          <p v-html="modelValue" class="container content_font"></p>
-        </template>
-      </ChoiceNodeContents>
-      <div class="multi-select" v-if="choiceMode === 'multiSelect'">
-        <v-btn v-on:click="click_down" elevation="0">
-          <v-icon icon="mdi:mdi-chevron-left"/>
-        </v-btn>
-        <p class="text-center">
-          {{ select }}
-        </p>
-        <v-btn v-on:click="click_up" elevation="0">
-          <v-icon icon="mdi:mdi-chevron-right"/>
-        </v-btn>
+  <div v-if="choiceNodeDesign['isOccupySpace'] && !visible" class="gridStyle" />
+  <div v-else-if="visible" class="gridStyle">
+    <v-card :class="['card', {'outline': select > 0}, choiceNodeDesign['isRound'] ? 'rounded-lg' : 'rounded-0']"
+            v-on:click="click"
+            :disabled="choiceStatus === 'closed'" :elevation="choiceNodeDesign['isCard'] ? 10 : 0"
+            :color="colorNode">
+      <div class="container">
+        <ChoiceNodeContents :imagePosition="choiceNodeDesign['imagePosition']" :image="image"
+                            :maximizing-image="choiceNodeDesign['maximizingImage']"
+                            :hide-title="choiceNodeDesign['hideTitle']" :title="title">
+          <template v-slot:contents>
+            <p v-html="modelValue" class="container content_font"></p>
+          </template>
+        </ChoiceNodeContents>
+        <div class="multi-select" v-if="choiceMode === 'multiSelect'">
+          <v-btn v-on:click="click_down" variant="tonal">
+            <v-icon icon="mdi:mdi-chevron-left"/>
+          </v-btn>
+          <p class="text-center">
+            {{ select }}
+          </p>
+          <v-btn v-on:click="click_up" variant="tonal">
+            <v-icon icon="mdi:mdi-chevron-right"/>
+          </v-btn>
+        </div>
+        <div class="wrapper" v-if="childLength > 0 && renderChild">
+          <ChoiceNode class="item" v-for="(n, i) in childLength" ref="choiceNodeChild" :key="n"
+                      :currentPos="[...currentPos, i]" :render-child="renderChild" :clickable="clickable" @needUpdate="needUpdate">
+          </ChoiceNode>
+        </div>
       </div>
-      <div class="wrapper" v-if="childLength > 0 && renderChild">
-        <ChoiceNode class="item" v-for="(n, i) in childLength" ref="choiceNodeChild" :key="n"
-                    :currentPos="[...currentPos, i]" :render-child="renderChild" :clickable="clickable" @needUpdate="needUpdate">
-        </ChoiceNode>
-      </div>
-    </div>
-  </v-card>
+    </v-card>
+  </div>
+
 </template>
 
 <script>
@@ -49,9 +52,8 @@ export default {
   data() {
     let data = window.getContents(this.currentPos);
     let modalValue = "";
-    if(data){
+    if(data && data !== ""){
       let delta = JSON.parse(data);
-      console.log(delta);
       let converter = new QuillDeltaToHtmlConverter(delta, {});
       modalValue = converter.convert();
     }
@@ -70,10 +72,13 @@ export default {
     colorNode = '#' + colorNode.substring(2) + colorNode.substring(0, 2);
 
     let choiceStatus = window.getChoiceStatus(this.currentPos);
+    let choiceMode = window.getChoiceNodeMode(this.currentPos);
     let gridColumn = window.getSize(this.currentPos);
     if(!choiceNodeDesign['occupySpace'] && choiceStatus === 'hide'){
       gridColumn = 0;
     }
+
+    let visible = choiceStatus !== 'hide' && choiceMode !== 'onlyCode';
     return {
       image: imagePos,
       title: window.getTitle(this.currentPos),
@@ -81,11 +86,12 @@ export default {
       gridColumn: gridColumn,
       select: window.getSelect(this.currentPos),
       choiceStatus: choiceStatus,
-      choiceMode: window.getChoiceNodeMode(this.currentPos),
+      choiceMode: choiceMode,
       childLength: window.childLength(this.currentPos),
       choiceNodeDesign: choiceNodeDesign,
       colorOutline: colorOutline,
       colorNode: colorNode,
+      visible: visible,
     }
   },
   methods: {
@@ -133,10 +139,14 @@ export default {
 }
 </script>
 <style scoped>
-.card {
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
-  background-color: v-bind(colorNode);
+
+.gridStyle {
   grid-column: auto / span v-bind(gridColumn);
+}
+
+.card {
+  background-color: v-bind(colorNode);
+  height: 100%;
 }
 
 .outline {

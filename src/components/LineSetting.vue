@@ -59,6 +59,7 @@ export default {
   column-gap: 8px;
   row-gap: v-bind(marginVertical);
   grid-auto-flow: row;
+  padding: 4px;
 }
 
 </style>

@@ -191,6 +191,7 @@ export default {
 
 .title_font {
   font-family: v-bind(titleFont);
+  text-align: center;
 }
 
 .content_font {
