@@ -1,13 +1,15 @@
 <template>
-  <v-responsive v-if="choiceStatus !== 'hide'" min-height="100">
-    <v-lazy v-model="isActive">
-      <div class="wrapper">
-        <ChoiceNode v-for="(n, i) in child" ref="choiceNode" :key="n" :current-pos="[...currentPos, i]"
-                    :render-child=true :clickable="true" @needUpdate="needUpdate">
-        </ChoiceNode>
-      </div>
-    </v-lazy>
-  </v-responsive>
+  <div v-if="choiceStatus !== 'hide'">
+    <v-responsive min-height="100">
+      <v-lazy v-model="isActive">
+        <div class="wrapper">
+          <ChoiceNode v-for="(n, i) in child" ref="choiceNode" :key="n" :current-pos="[...currentPos, i]"
+                      :render-child=true :clickable="true" @needUpdate="needUpdate">
+          </ChoiceNode>
+        </div>
+      </v-lazy>
+    </v-responsive>
+  </div>
 </template>
 
 <script>

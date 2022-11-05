@@ -100,7 +100,9 @@ export default {
 
     let color = (design.colorBackground ?? 0xFFFFFFFF).toString(16);
     this.colorBackground = '#' + color.substring(2) + color.substring(0, 2);
-    this.imageBackground = "dist/images/" + design.backgroundImage;
+    if(design.backgroundImage){
+      this.imageBackground = "dist/images/" + design.backgroundImage;
+    }
     switch (design.backgroundAttribute) {
       case "fit":
         this.backgroundSize = "contain";
@@ -115,8 +117,8 @@ export default {
         this.backgroundSize = "100vw 100vh";
         break;
     }
-    this.isLoading = -1;
     this.marginVertical= design.marginVertical + 'px';
+    this.isLoading = -1;
   },
 
   data() {
