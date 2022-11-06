@@ -54,7 +54,15 @@ export default {
     let modalValue = "";
     if(data && data !== ""){
       let delta = JSON.parse(data);
-      let converter = new QuillDeltaToHtmlConverter(delta, {});
+      let converter = new QuillDeltaToHtmlConverter(delta, {
+        inlineStyles: {
+          size: {
+            'small': 'font-size: 0.75em',
+            'large': 'font-size: 1.25em',
+            'huge': 'font-size: 1.5em'
+          },
+        }
+      });
       modalValue = converter.convert();
     }
     let imagePos = window.getImage(this.currentPos);
@@ -119,6 +127,7 @@ export default {
     updateChild() {
       this.select = window.getSelect(this.currentPos);
       this.choiceStatus = window.getChoiceStatus(this.currentPos);
+      this.visible = this.choiceStatus !== 'hide' && this.choiceMode !== 'onlyCode';
       if(!this.choiceNodeDesign['occupySpace'] && this.choiceStatus === 'hide'){
         this.gridColumn = 0;
       }else{

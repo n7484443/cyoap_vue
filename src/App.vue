@@ -194,14 +194,17 @@ export default {
 .title_font {
   font-family: v-bind(titleFont);
   text-align: center;
+  font-size: calc(8.75px + 0.33vw);
 }
 
 .content_font {
   font-family: v-bind(contentFont);
+  font-size: calc(8.75px + 0.33vw);
 }
 
 .variable_font {
   font-family: v-bind(variableFont);
+  font-size: calc(8.75px + 0.33vw);
 }
 
 .background {
