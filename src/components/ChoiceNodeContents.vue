@@ -9,8 +9,8 @@
 
   <div v-else-if="imagePosition === 1" class="flex-default">
     <div class="flex-default">
-      <v-img :src="image" :max-height="maximizingImage ? '80vh' : '50vh'"></v-img>
       <slot name="contents"></slot>
+      <v-img :src="image" :max-height="maximizingImage ? '80vh' : '50vh'"></v-img>
     </div>
     <div v-if="!hideTitle" class="title_color title_font">
       {{ title }}
@@ -19,8 +19,8 @@
 
   <div v-else>
     <div class="flex-default">
-      <slot name="contents"></slot>
       <v-img :src="image" :max-height="maximizingImage ? '80vh' : '50vh'"></v-img>
+      <slot name="contents"></slot>
     </div>
     <div v-if="!hideTitle" class="title_color title_font">
       {{ title }}

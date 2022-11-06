@@ -1,13 +1,15 @@
 <template>
   <div v-if="isLoading !== -1" class="spinner-container">
-    <v-progress-circular size="72" width="8" :model-value="isLoading / isLoadingMax * 100" color="red"></v-progress-circular>
+    <v-progress-circular size="72" width="8" :model-value="isLoading / isLoadingMax * 100"
+                         color="red"></v-progress-circular>
   </div>
   <v-app v-else>
     <v-bottom-navigation height="40">
       <HorizontalScroll ref="horizontalScroll">
       </HorizontalScroll>
     </v-bottom-navigation>
-    <div v-for="(n, i) in child" :key="n" class="background" v-bind:style="{ backgroundImage: 'url(' + imageBackground + ')'}">
+    <div v-for="(n, i) in child" :key="n" class="background"
+         v-bind:style="{ backgroundImage: 'url(' + imageBackground + ')'}">
       <LineSetting class="item" ref="lineSetting" :pos="i" @needUpdate="needUpdate">
       </LineSetting>
     </div>
@@ -100,7 +102,7 @@ export default {
 
     let color = (design.colorBackground ?? 0xFFFFFFFF).toString(16);
     this.colorBackground = '#' + color.substring(2) + color.substring(0, 2);
-    if(design.backgroundImage){
+    if (design.backgroundImage) {
       this.imageBackground = "dist/images/" + design.backgroundImage;
     }
     switch (design.backgroundAttribute) {
@@ -117,7 +119,7 @@ export default {
         this.backgroundSize = "100vw 100vh";
         break;
     }
-    this.marginVertical= design.marginVertical + 'px';
+    this.marginVertical = design.marginVertical + 'px';
     this.isLoading = -1;
   },
 
@@ -146,9 +148,9 @@ export default {
     needUpdate() {
       this.updateChild();
     },
-    async saveAsImage(){
+    async saveAsImage() {
       let element = document.querySelector("#capture");
-      let blob = await domtoimage.toBlob(element, );
+      let blob = await domtoimage.toBlob(element,);
       //blob download as result.png
       let link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
@@ -202,15 +204,27 @@ export default {
   font-family: v-bind(variableFont);
 }
 
-.background{
+.background {
   background-color: v-bind(colorBackground);
   background-attachment: fixed;
   background-size: v-bind(backgroundSize);
   background-position: center;
 }
 
-.result{
+.result {
   display: flex;
   justify-content: center;
+}
+
+.ql-align-center {
+  text-align: center;
+}
+
+.ql-align-justify {
+  text-align: justify;
+}
+
+.ql-align-right {
+  text-align: right;
 }
 </style>
