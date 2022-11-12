@@ -105,7 +105,7 @@ export default {
     if (design.backgroundImage) {
       this.imageBackground = "dist/images/" + design.backgroundImage;
     }
-    switch (design.backgroundAttribute) {
+    switch (design['backgroundAttribute']) {
       case "fit":
         this.backgroundSize = "contain";
         break;
