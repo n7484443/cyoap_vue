@@ -6,11 +6,14 @@
             :disabled="choiceStatus === 'closed'" :elevation="choiceNodeDesign['isCard'] ? 10 : 0"
             :color="colorNode">
       <div class="container">
-        <ChoiceNodeContents :imagePosition="choiceNodeDesign['imagePosition']" :image="image"
-                            :maximizing-image="choiceNodeDesign['maximizingImage']"
+        <ChoiceNodeContents :imagePosition="choiceNodeDesign['imagePosition']"
                             :hide-title="choiceNodeDesign['hideTitle']" :title="title">
           <template v-slot:contents>
             <p v-html="modelValue" class="container content_font"></p>
+          </template>
+          <template v-slot:image>
+            <v-img v-if="renderChild" :src="image" :max-height="imageMaxHeight"/>
+            <img v-else :src="image" class="image-result"/>
           </template>
         </ChoiceNodeContents>
         <div class="multi-select" v-if="choiceMode === 'multiSelect'">
@@ -89,6 +92,7 @@ export default {
     let visible = choiceStatus !== 'hide' && choiceMode !== 'onlyCode';
     return {
       image: imagePos,
+      imageMaxHeight: choiceNodeDesign['maximizingImage'] ? '80vh' : '50vh',
       title: window.getTitle(this.currentPos),
       modelValue: modalValue,
       gridColumn: gridColumn,
@@ -182,6 +186,12 @@ export default {
   justify-content: space-around;
   margin-bottom: 8px;
   align-items: center
+}
+
+.image-result{
+  max-height: v-bind(imageMaxHeight);
+  object-fit: contain;
+  width: 100%;
 }
 
 </style>
