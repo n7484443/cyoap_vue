@@ -156,12 +156,6 @@ export default {
       link.href = window.URL.createObjectURL(blob);
       link.download = "result.png";
       link.click();
-
-      // let canvas = await html2canvas(element)
-      // let a = document.createElement('a');
-      // a.href = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-      // a.download = 'result.png';
-      // a.click();
     }
   }
 }
