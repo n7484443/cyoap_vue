@@ -7,7 +7,7 @@
             :color="colorNode">
       <div class="container">
         <ChoiceNodeContents :imagePosition="choiceNodeDesign['imagePosition']"
-                            :hide-title="choiceNodeDesign['hideTitle']" :title="title">
+                            :hide-title="choiceNodeDesign['hideTitle']" :title="title" :renderAsResult="!renderChild">
           <template v-slot:contents>
             <p v-html="modelValue" class="container content_font"></p>
           </template>

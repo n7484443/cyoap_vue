@@ -1,5 +1,5 @@
 <template>
-  <div v-if="imagePosition === 0">
+  <div v-if="renderAsResult || imagePosition === 0">
     <div v-if="!hideTitle" class="title_color title_font">
       {{ title }}
     </div>
@@ -35,6 +35,7 @@ export default {
     imagePosition: Number,
     hideTitle: Boolean,
     title: String,
+    renderAsResult: Boolean,
   },
   data() {
     let platformDesign = this.$store.getters.getPlatformDesign;
