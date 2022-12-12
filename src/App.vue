@@ -11,7 +11,7 @@
 
     <div class="background" v-bind:style="{ backgroundImage: 'url(' + imageBackground + ')'}">
       <v-btn color="primary" variant="text" icon="mdi-content-save" v-on:click="saveCurrentStatus" />
-      <v-btn color="primary" variant="text" icon="mdi-tray-arrow-up" v-on:click="loadCurrentStatus" />
+      <v-btn color="primary" variant="text" icon="mdi-upload" v-on:click="loadCurrentStatus" />
       <div v-for="(n, i) in child" :key="n">
         <LineSetting class="item" ref="lineSetting" :pos="i" @needUpdate="needUpdate">
         </LineSetting>
