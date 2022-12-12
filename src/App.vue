@@ -8,36 +8,38 @@
       <HorizontalScroll ref="horizontalScroll">
       </HorizontalScroll>
     </v-bottom-navigation>
-    <div v-for="(n, i) in child" :key="n" class="background"
-         v-bind:style="{ backgroundImage: 'url(' + imageBackground + ')'}">
-      <LineSetting class="item" ref="lineSetting" :pos="i" @needUpdate="needUpdate">
-      </LineSetting>
+
+    <div class="background" v-bind:style="{ backgroundImage: 'url(' + imageBackground + ')'}">
+      <v-btn color="primary" variant="text" icon="mdi-content-save" v-on:click="saveCurrentStatus" />
+      <v-btn color="primary" variant="text" icon="mdi-tray-arrow-up" v-on:click="loadCurrentStatus" />
+      <div v-for="(n, i) in child" :key="n">
+        <LineSetting class="item" ref="lineSetting" :pos="i" @needUpdate="needUpdate">
+        </LineSetting>
+      </div>
+
+      <div class="result my-3">
+        <v-dialog v-model="dialog" scrollable>
+          <template v-slot:activator="{ props }">
+            <v-btn color="primary" class="mx-3" v-bind="props">
+              결과창 보기
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-text>
+              <SelectedResult id="capture"></SelectedResult>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="primary" @click="saveAsImage">이미지로 저장</v-btn>
+              <v-btn color="primary" @click="dialog = false">결과창 닫기</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </div>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
     </div>
-    <br/>
-    <div class="result">
-      <v-dialog v-model="dialog" scrollable>
-        <template v-slot:activator="{ props }">
-          <v-btn
-              color="primary"
-              v-bind="props"
-          >
-            결과창 보기
-          </v-btn>
-        </template>
-        <v-card>
-          <v-card-text>
-            <SelectedResult id="capture"></SelectedResult>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn color="primary" @click="saveAsImage">이미지로 저장</v-btn>
-            <v-btn color="primary" @click="dialog = false">결과창 닫기</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </div>
-    <br/>
-    <br/>
-    <br/>
   </v-app>
 </template>
 
@@ -156,6 +158,32 @@ export default {
       link.href = window.URL.createObjectURL(blob);
       link.download = "result.png";
       link.click();
+    },
+    saveCurrentStatus(){
+      let data = window.getSelectedPos();
+      let blob = new Blob([data], {type: "text/plain;charset=utf-8"});
+      let link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = "save.json";
+      link.click();
+    },
+    loadCurrentStatus(){
+      //json file select and upload
+      let input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      input.onchange = (e) => {
+        let file = e.target.files[0];
+        let reader = new FileReader();
+        reader.onload = (e) => {
+          let data = e.target.result;
+          console.log(data);
+          window.setSelectedPos(data);
+          this.needUpdate();
+        };
+        reader.readAsText(file);
+      };
+      input.click();
     }
   }
 }

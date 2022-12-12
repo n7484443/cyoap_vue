@@ -21,7 +21,7 @@ export default {
     let color = (platformDesign.colorBackground ?? 0xFFFFFFFF).toString(16);
     color = '#' + color.substring(2);
     return {
-      posList: JSON.parse(window.getSelectedPos()),
+      posList: JSON.parse(window.getSelectedPos()).map((n) => n['pos']),
       backgroundColor: color,
     }
   },
