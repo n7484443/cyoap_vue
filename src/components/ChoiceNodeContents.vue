@@ -33,18 +33,18 @@ export default {
   name: "ChoiceNodeContents",
   props: {
     imagePosition: Number,
-    hideTitle: Boolean,
     title: String,
     renderAsResult: Boolean,
+    preset: Object
   },
   data() {
-    let platformDesign = this.$store.getters.getPlatformDesign;
-    let color = (platformDesign.colorTitle ?? 0xFF000000).toString(16);
+    let color = (this.preset.colorTitle ?? 0xFF000000).toString(16);
     color = '#' + color.substring(2) + color.substring(0, 2);
     return {
-      titlePosition: platformDesign.titlePosition,
-      titleOutline: platformDesign.titleOutline,
+      titlePosition: this.preset.titlePosition,
+      titleOutline: this.preset.titleOutline,
       colorTitle: color,
+      hideTitle: this.preset.hideTitle,
     }
   }
 }
@@ -55,7 +55,13 @@ export default {
   display: flex;
 }
 
-.title_color{
+.title_color {
   color: v-bind(colorTitle)
+}
+
+.title_font {
+  font-family: v-bind(preset['titleFont']);
+  text-align: center;
+  font-size: calc(8.75px + 0.33vw);
 }
 </style>

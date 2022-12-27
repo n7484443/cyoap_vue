@@ -93,12 +93,17 @@ export default {
     };
     let design = JSON.parse(window.getPlatformDesign());
     this.$store.commit('setPlatformDesign', design);
-    this.titleFont = textFontList[design['titleFont']];
-    this.contentFont = textFontList[design['mainFont']];
+    let presetList = JSON.parse(window.getPresetList());
+    let fontHashSet = new Set();
+    presetList.forEach(function(e){
+      fontHashSet.add(e['titleFont']);
+      fontHashSet.add(e['mainFont']);
+    });
+    this.$store.commit('setPresets', presetList);
     this.variableFont = textFontList[design['variableFont']];
     WebFont.load({
       google: {
-        families: [this.titleFont, this.contentFont, this.variableFont]
+        families: [...fontHashSet, this.variableFont]
       }
     });
 
@@ -131,8 +136,6 @@ export default {
       isLoadingMax: 100,
       modelValue: "",
       child: 0,
-      titleFont: "",
-      contentFont: "",
       variableFont: "",
       colorBackground: "",
       imageBackground: "",
@@ -177,7 +180,6 @@ export default {
         let reader = new FileReader();
         reader.onload = (e) => {
           let data = e.target.result;
-          console.log(data);
           window.setSelectedPos(data);
           this.needUpdate();
         };
@@ -211,17 +213,6 @@ export default {
   justify-content: center;
   align-items: center;
   height: 240px;
-}
-
-.title_font {
-  font-family: v-bind(titleFont);
-  text-align: center;
-  font-size: calc(8.75px + 0.33vw);
-}
-
-.content_font {
-  font-family: v-bind(contentFont);
-  font-size: calc(8.75px + 0.33vw);
 }
 
 .variable_font {

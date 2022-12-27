@@ -1,13 +1,13 @@
 <template>
-  <div v-if="choiceNodeDesign['isOccupySpace'] && !visible" class="gridStyle" />
+  <div v-if="choiceNodeOption['isOccupySpace'] && !visible" class="gridStyle"/>
   <div v-else-if="visible" class="gridStyle">
-    <v-card :class="['card', {'outline': select > 0}, choiceNodeDesign['isRound'] ? 'rounded-lg' : 'rounded-0']"
+    <v-card :class="['card', {'outline': select > 0}, preset.round]"
             v-on:click="click"
-            :disabled="choiceStatus === 'closed'" :elevation="choiceNodeDesign['isCard'] ? 10 : 0"
+            :disabled="choiceStatus === 'closed'" :elevation="preset.elevation"
             :color="colorNode">
       <div class="container">
-        <ChoiceNodeContents :imagePosition="choiceNodeDesign['imagePosition']"
-                            :hide-title="choiceNodeDesign['hideTitle']" :title="title" :renderAsResult="!renderChild">
+        <ChoiceNodeContents :imagePosition="preset['imagePosition']" :title="title" :renderAsResult="!renderChild"
+                            :preset="preset">
           <template v-slot:contents>
             <p v-html="modelValue" class="container content_font"></p>
           </template>
@@ -15,7 +15,7 @@
             <v-img v-if="renderChild" :src="image" :max-height="imageMaxHeight">
               <template v-slot:placeholder>
                 <v-row class="fill-height ma-0" align="center" justify="center">
-                  <v-progress-circular indeterminate color="primary" />
+                  <v-progress-circular indeterminate color="primary"/>
                 </v-row>
               </template>
             </v-img>
@@ -35,7 +35,8 @@
         </div>
         <div class="wrapper" v-if="childLength > 0 && renderChild">
           <ChoiceNode class="item" v-for="(n, i) in childLength" ref="choiceNodeChild" :key="n"
-                      :currentPos="[...currentPos, i]" :render-child="renderChild" :clickable="clickable" @needUpdate="needUpdate">
+                      :currentPos="[...currentPos, i]" :render-child="renderChild" :clickable="clickable"
+                      @needUpdate="needUpdate">
           </ChoiceNode>
         </div>
       </div>
@@ -61,7 +62,7 @@ export default {
   data() {
     let data = window.getContents(this.currentPos);
     let modalValue = "";
-    if(data && data !== ""){
+    if (data && data !== "") {
       let delta = JSON.parse(data);
       let converter = new QuillDeltaToHtmlConverter(delta, {
         inlineStyles: {
@@ -79,26 +80,26 @@ export default {
       imagePos = "dist/images/" + imagePos;
     }
 
-    let platformDesign = this.$store.getters.getPlatformDesign;
-    let choiceNodeDesign = JSON.parse(window.getChoiceNodeDesign(this.currentPos));
+    let choiceNodeOption = JSON.parse(window.getChoiceNodeOption(this.currentPos));
+    let preset = this.$store.getters.getPresets[choiceNodeOption['presetName']];
 
-    let colorOutline = (platformDesign.colorOutline ?? 0xFF40C4FF).toString(16);
+    let colorOutline = (preset.colorOutline ?? 0xFF40C4FF).toString(16);
     colorOutline = '#' + colorOutline.substring(2) + colorOutline.substring(0, 2);
 
-    let colorNode = (choiceNodeDesign.colorNode ?? platformDesign.colorNode ?? 0xFFFFFFFF).toString(16);
+    let colorNode = (preset.colorNode ?? preset.colorNode ?? 0xFFFFFFFF).toString(16);
     colorNode = '#' + colorNode.substring(2) + colorNode.substring(0, 2);
 
     let choiceStatus = window.getChoiceStatus(this.currentPos);
     let choiceMode = window.getChoiceNodeMode(this.currentPos);
     let gridColumn = window.getSize(this.currentPos);
-    if(!choiceNodeDesign['occupySpace'] && choiceStatus === 'hide'){
+    if (!choiceNodeOption['occupySpace'] && choiceStatus === 'hide') {
       gridColumn = 0;
     }
 
     let visible = choiceStatus !== 'hide' && choiceMode !== 'onlyCode';
     return {
       image: imagePos,
-      imageMaxHeight: choiceNodeDesign['maximizingImage'] ? '80vh' : '50vh',
+      imageMaxHeight: preset['maximizingImage'] ? '80vh' : '50vh',
       title: window.getTitle(this.currentPos),
       modelValue: modalValue,
       gridColumn: gridColumn,
@@ -106,10 +107,11 @@ export default {
       choiceStatus: choiceStatus,
       choiceMode: choiceMode,
       childLength: window.childLength(this.currentPos),
-      choiceNodeDesign: choiceNodeDesign,
+      choiceNodeOption: choiceNodeOption,
       colorOutline: colorOutline,
       colorNode: colorNode,
       visible: visible,
+      preset: preset,
     }
   },
   methods: {
@@ -138,9 +140,9 @@ export default {
       this.select = window.getSelect(this.currentPos);
       this.choiceStatus = window.getChoiceStatus(this.currentPos);
       this.visible = this.choiceStatus !== 'hide' && this.choiceMode !== 'onlyCode';
-      if(!this.choiceNodeDesign['occupySpace'] && this.choiceStatus === 'hide'){
+      if (!this.choiceNodeOption['occupySpace'] && this.choiceStatus === 'hide') {
         this.gridColumn = 0;
-      }else{
+      } else {
         this.gridColumn = window.getSize(this.currentPos);
       }
       if (this.$refs.choiceNodeChild) {
@@ -194,10 +196,15 @@ export default {
   align-items: center
 }
 
-.image-result{
+.image-result {
   max-height: v-bind(imageMaxHeight);
   object-fit: contain;
   width: 100%;
+}
+
+.content_font {
+  font-family: v-bind(preset['mainFont']);
+  font-size: calc(8.75px + 0.33vw);
 }
 
 </style>
