@@ -1,10 +1,11 @@
 <template>
   <div v-if="choiceNodeOption['isOccupySpace'] && !visible" class="gridStyle"/>
   <div v-else-if="visible" class="gridStyle">
-    <v-card :class="['card', {'outline': select > 0}, preset.round]"
+    <v-card :class="['card', {'outline': select > 0}]"
             v-on:click="click"
             :disabled="choiceStatus === 'closed'" :elevation="preset.elevation"
-            :color="colorNode">
+            :color="colorNode"
+            :rounded="preset.round">
       <div class="container">
         <ChoiceNodeContents :imagePosition="preset['imagePosition']" :title="title" :renderAsResult="!renderChild"
                             :preset="preset">
@@ -203,7 +204,7 @@ export default {
 }
 
 .content_font {
-  font-family: v-bind(preset['mainFont']);
+  font-family: v-bind(preset ['mainFont']);
   font-size: calc(8.75px + 0.33vw);
 }
 
