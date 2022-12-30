@@ -3,9 +3,11 @@
     <v-responsive min-height="100">
       <v-lazy v-model="isActive">
         <div class="item">
-          <v-divider v-if="!preset['alwaysVisibleLine']" thickness="5" length="100vw" class="line" :color="colorLine">
-          </v-divider>
-          <div class="line_text">최대 {{ maxSelect }}개만큼 선택 가능</div>
+          <div v-if="!preset['alwaysVisibleLine']">
+            <v-divider thickness="5" length="100vw" class="line" :color="colorLine">
+            </v-divider>
+            <div v-if="maxSelect != -1" class="line_text">최대 {{ maxSelect }}개만큼 선택 가능</div>
+          </div>
           <div class="wrapper">
             <ChoiceNode v-for="(n, i) in child" ref="choiceNode" :key="n" :current-pos="[...currentPos, i]"
                         :render-child=true :clickable="true" @needUpdate="needUpdate">
