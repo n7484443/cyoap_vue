@@ -81,7 +81,7 @@ export default {
     }
 
     let choiceNodeOption = JSON.parse(window.getChoiceNodeOption(this.currentPos));
-    let preset = this.$store.getters.getPresets[choiceNodeOption['presetName']];
+    let preset = this.$store.getters.getNodePresets[choiceNodeOption['presetName']];
 
     let colorOutline = (preset.colorOutline ?? 0xFF40C4FF).toString(16);
     colorOutline = '#' + colorOutline.substring(2) + colorOutline.substring(0, 2);

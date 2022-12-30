@@ -13,7 +13,7 @@
       <v-btn color="primary" variant="text" icon="mdi-content-save" v-on:click="saveCurrentStatus" />
       <v-btn color="primary" variant="text" icon="mdi-upload" v-on:click="loadCurrentStatus" />
       <div v-for="(n, i) in child" :key="n">
-        <LineSetting class="item" ref="lineSetting" :pos="i" @needUpdate="needUpdate">
+        <LineSetting ref="lineSetting" :pos="i" @needUpdate="needUpdate">
         </LineSetting>
       </div>
 
@@ -93,13 +93,15 @@ export default {
     };
     let design = JSON.parse(window.getPlatformDesign());
     this.$store.commit('setPlatformDesign', design);
-    let presetList = JSON.parse(window.getPresetList());
+    let nodePresetList = JSON.parse(window.getNodePresetList());
+    let linePresetList = JSON.parse(window.getLinePresetList());
     let fontHashSet = new Set();
-    presetList.forEach(function(e){
+    nodePresetList.forEach(function(e){
       fontHashSet.add(e['titleFont']);
       fontHashSet.add(e['mainFont']);
     });
-    this.$store.commit('setPresets', presetList);
+    this.$store.commit('setNodePresets', nodePresetList);
+    this.$store.commit('setLinePresets', linePresetList);
     this.variableFont = textFontList[design['variableFont']];
     WebFont.load({
       google: {
@@ -107,8 +109,6 @@ export default {
       }
     });
 
-    let color = (design.colorBackground ?? 0xFFFFFFFF).toString(16);
-    this.colorBackground = '#' + color.substring(2) + color.substring(0, 2);
     if (design.backgroundImage) {
       this.imageBackground = "dist/images/" + design.backgroundImage;
     }
@@ -137,7 +137,6 @@ export default {
       modelValue: "",
       child: 0,
       variableFont: "",
-      colorBackground: "",
       imageBackground: "",
       backgroundRepeat: "no-repeat",
       backgroundSize: "auto",
@@ -191,9 +190,6 @@ export default {
 }
 </script>
 <style>
-.item {
-  padding: v-bind(marginVertical) 8px;
-}
 
 *::-webkit-scrollbar {
   width: 16px;
@@ -221,7 +217,6 @@ export default {
 }
 
 .background {
-  background-color: v-bind(colorBackground);
   background-attachment: fixed;
   background-size: v-bind(backgroundSize);
   background-position: center;
