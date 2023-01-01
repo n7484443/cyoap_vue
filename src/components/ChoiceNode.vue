@@ -4,8 +4,7 @@
     <v-card :class="['card', {'outline': select > 0}]"
             v-on:click="click"
             :disabled="choiceStatus === 'closed'" :elevation="preset.elevation"
-            :color="colorNode"
-            :rounded="preset.round">
+            :color="colorNode">
       <div class="container">
         <ChoiceNodeContents :imagePosition="preset['imagePosition']" :title="title" :renderAsResult="!renderChild"
                             :preset="preset">
@@ -113,6 +112,7 @@ export default {
       colorNode: colorNode,
       visible: visible,
       preset: preset,
+      round: preset.round + "px",
     }
   },
   methods: {
@@ -169,6 +169,7 @@ export default {
 .card {
   background-color: v-bind(colorNode);
   height: 100%;
+  border-radius: v-bind(round);
 }
 
 .outline {
