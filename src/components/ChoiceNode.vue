@@ -78,14 +78,14 @@ export default {
     }
     let imagePos = window.getImage(this.currentPos);
     if (imagePos) {
-      imagePos = "dist/images/" + imagePos;
+      imagePos = "/dist/images/" + imagePos;
     }
 
     let choiceNodeOption = JSON.parse(window.getChoiceNodeOption(this.currentPos));
     let preset = this.$store.getters.getNodePresets[choiceNodeOption['presetName']];
 
-    let colorOutline = (preset.colorOutline ?? 0xFF40C4FF).toString(16);
-    colorOutline = '#' + colorOutline.substring(2) + colorOutline.substring(0, 2);
+    let colorSelectNode = (preset.colorSelectNode ?? 0xFF40C4FF).toString(16);
+    colorSelectNode = '#' + colorSelectNode.substring(2) + colorSelectNode.substring(0, 2);
 
     let colorNode = (preset.colorNode ?? preset.colorNode ?? 0xFFFFFFFF).toString(16);
     colorNode = '#' + colorNode.substring(2) + colorNode.substring(0, 2);
@@ -99,7 +99,7 @@ export default {
 
     let visible = choiceStatus !== 'hide' && choiceMode !== 'onlyCode';
     return {
-      image: imagePos,
+      image: imagePos.replaceAll(" ", "%20"),
       imageMaxHeight: preset['maximizingImage'] ? '80vh' : '50vh',
       title: window.getTitle(this.currentPos),
       modelValue: modalValue,
@@ -109,7 +109,7 @@ export default {
       choiceMode: choiceMode,
       childLength: window.childLength(this.currentPos),
       choiceNodeOption: choiceNodeOption,
-      colorOutline: colorOutline,
+      colorOutline: colorSelectNode,
       colorNode: colorNode,
       visible: visible,
       preset: preset,

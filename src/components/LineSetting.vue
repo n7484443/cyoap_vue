@@ -34,11 +34,14 @@ export default {
     let currentPos = [this.pos];
     let presetName = window.getLinePresetName(this.pos);
     let preset = this.$store.getters.getLinePresets[presetName];
-    let colorBefore = (preset['background_color'] ?? 0xFFFFFFFF).toString(16);
-    let color = '#' + colorBefore.substring(2) + colorBefore.substring(0, 2);
+    let color = "#1fe0";
     let colorLine;
     let colorText;
-    if (!color) {
+    if(preset['background_color']){
+      let colorBefore = (preset['background_color'] ?? 0xFFFFFFFF).toString(16);
+      color = '#' + colorBefore.substring(2) + colorBefore.substring(0, 2);
+    }
+    if (color) {
       colorLine = "#000000";
       colorText = "#FFFFFF";
     }else if (this.getLuminance(color) > 0.5) {

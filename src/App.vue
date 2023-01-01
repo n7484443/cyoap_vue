@@ -9,7 +9,7 @@
       </HorizontalScroll>
     </v-bottom-navigation>
 
-    <div class="background" v-bind:style="{ backgroundImage: 'url(' + imageBackground + ')'}">
+    <div class="background">
       <v-btn color="primary" variant="text" icon="mdi-content-save" v-on:click="saveCurrentStatus" />
       <v-btn color="primary" variant="text" icon="mdi-upload" v-on:click="loadCurrentStatus" />
       <div v-for="(n, i) in child" :key="n">
@@ -110,7 +110,7 @@ export default {
     });
 
     if (design.backgroundImage) {
-      this.imageBackground = "dist/images/" + design.backgroundImage;
+      this.imageBackground = "url(/dist/images/" + design.backgroundImage.replaceAll(" ", "%20") + ")";
     }
     switch (design['backgroundAttribute']) {
       case "fit":
@@ -217,6 +217,7 @@ export default {
 }
 
 .background {
+  background: v-bind(imageBackground);
   background-attachment: fixed;
   background-size: v-bind(backgroundSize);
   background-position: center;
