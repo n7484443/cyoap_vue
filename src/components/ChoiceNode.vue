@@ -22,16 +22,23 @@
             <img v-else :src="image" class="image-result"/>
           </template>
         </ChoiceNodeContents>
-        <div class="multi-select" v-if="choiceMode === 'multiSelect'">
-          <v-btn v-on:click="click_down" variant="tonal">
-            <v-icon icon="mdi:mdi-chevron-left"/>
-          </v-btn>
-          <p class="text-center">
-            {{ select }}
-          </p>
-          <v-btn v-on:click="click_up" variant="tonal">
-            <v-icon icon="mdi:mdi-chevron-right"/>
-          </v-btn>
+        <div v-if="choiceMode === 'multiSelect'">
+          <div v-if="choiceNodeOption.showAsSlider" class="multi-select-slider">
+            <v-slider min="0" :max="choiceMaximumStatus" step="1" thumb-label v-on:update:model-value="click_slider"
+                      :model-value="select"></v-slider>
+            <p class="text-center">{{ select }}</p>
+          </div>
+          <div v-else class="multi-select">
+            <v-btn v-on:click="click_down" variant="tonal">
+              <v-icon icon="mdi:mdi-chevron-left"/>
+            </v-btn>
+            <p class="text-center">
+              {{ select }}
+            </p>
+            <v-btn v-on:click="click_up" variant="tonal">
+              <v-icon icon="mdi:mdi-chevron-right"/>
+            </v-btn>
+          </div>
         </div>
         <div class="wrapper" v-if="childLength > 0 && renderChild">
           <ChoiceNode class="item" v-for="(n, i) in childLength" ref="choiceNodeChild" :key="n"
@@ -106,6 +113,7 @@ export default {
       select: window.getSelect(this.currentPos),
       choiceStatus: choiceStatus,
       choiceMode: choiceMode,
+      choiceMaximumStatus: window.getMaximumStatus(this.currentPos),
       childLength: window.childLength(this.currentPos),
       choiceNodeOption: choiceNodeOption,
       colorOutline: colorSelectNode,
@@ -133,6 +141,13 @@ export default {
     click_up() {
       if (this.clickable) {
         window.select(this.currentPos, 1);
+        window.updatePlatform();
+        this.needUpdate();
+      }
+    },
+    click_slider(number) {
+      if (this.clickable) {
+        window.select(this.currentPos, number - this.select);
         window.updatePlatform();
         this.needUpdate();
       }
@@ -196,6 +211,14 @@ export default {
   justify-content: space-around;
   margin-bottom: 8px;
   align-items: center
+}
+
+.multi-select-slider {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+  align-items: stretch;
+  flex-direction: column;
 }
 
 .image-result {
