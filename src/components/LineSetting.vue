@@ -32,8 +32,8 @@ export default {
   name: "LineSetting",
   data() {
     let currentPos = [this.pos];
-    let presetName = window.getLinePresetName(this.pos);
-    let preset = this.$store.getters.getLinePresets[presetName];
+    let lineOption = JSON.parse(window.getLineOption(this.pos));
+    let preset = this.$store.getters.getLinePresets[lineOption.presetName];
     let color = "#1fe0";
     let colorLine;
     let colorText;
@@ -62,7 +62,7 @@ export default {
       preset: preset,
       colorLine: colorLine + "FF",
       colorText: colorText + "FF",
-      maxSelect: window.getLineMaxSelect(this.pos)
+      maxSelect: lineOption.maxSelect
     }
   },
   methods: {
