@@ -18,7 +18,7 @@ export default {
   },
   data() {
     let platformDesign = this.$store.getters.getPlatformDesign;
-    let color = (platformDesign.colorBackground ?? 0xFFFFFFFF).toString(16);
+    let color = (platformDesign.backgroundColor ?? 0xFFFFFFFF).toString(16);
     color = '#' + color.substring(2);
     return {
       posList: JSON.parse(window.getSelectedPos()).map((n) => n['pos']),
