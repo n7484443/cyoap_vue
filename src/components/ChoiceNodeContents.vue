@@ -7,10 +7,12 @@
     <slot name="contents"></slot>
   </div>
 
-  <div v-else-if="imagePosition === 1" class="flex-default">
+  <div v-else-if="imagePosition === 1">
     <div class="flex-default">
       <slot name="contents"></slot>
-      <slot name="image"></slot>
+      <div class="flex-item">
+        <slot name="image"></slot>
+      </div>
     </div>
     <div v-if="!hideTitle" class="title_color title_font">
       {{ title }}
@@ -19,7 +21,9 @@
 
   <div v-else>
     <div class="flex-default">
-      <slot name="image"></slot>
+      <div class="flex-item">
+        <slot name="image"></slot>
+      </div>
       <slot name="contents"></slot>
     </div>
     <div v-if="!hideTitle" class="title_color title_font">
@@ -55,12 +59,18 @@ export default {
   display: flex;
 }
 
+.flex-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
 .title_color {
   color: v-bind(colorTitle)
 }
 
 .title_font {
-  font-family: v-bind(preset['titleFont']);
+  font-family: v-bind(preset ['titleFont']);
   text-align: center;
   font-size: calc(8.75px + 0.33vw);
 }

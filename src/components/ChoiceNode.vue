@@ -12,7 +12,7 @@
             <p v-html="modelValue" class="container content_font"></p>
           </template>
           <template v-slot:image>
-            <v-img v-if="renderChild" :src="image" :max-height="imageMaxHeight">
+            <v-img v-if="renderChild" :src="image" :max-height="imageMaxHeight" class="rounded-xl">
               <template v-slot:placeholder>
                 <v-row class="fill-height ma-0" align="center" justify="center">
                   <v-progress-circular indeterminate color="primary"/>
