@@ -60,7 +60,7 @@ export default {
   },
 
   async created() {
-    const url = "/dist/";
+    const url = "dist/";
     let platform = await fetch(url + "platform.json?time=" + new Date().getTime());
     platform = await platform.text();
     let lineData = await fetch(url + "nodes/list.json?time=" + new Date().getTime());
