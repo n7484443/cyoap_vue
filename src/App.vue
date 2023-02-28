@@ -217,10 +217,8 @@ export default {
 }
 
 .background {
-  background: v-bind(imageBackground);
-  background-attachment: fixed;
+  background: fixed center v-bind(imageBackground);
   background-size: v-bind(backgroundSize);
-  background-position: center;
 }
 
 .result {
