@@ -3,7 +3,7 @@
     <v-progress-circular size="72" width="8" :model-value="isLoading / isLoadingMax * 100"
                          color="red"></v-progress-circular>
   </div>
-  <v-app v-else>
+  <v-app v-else class="background-color">
     <v-bottom-navigation height="40">
       <HorizontalScroll ref="horizontalScroll">
       </HorizontalScroll>
@@ -112,6 +112,9 @@ export default {
     if (design.backgroundImage) {
       this.imageBackground = "url(/dist/images/" + design.backgroundImage.replaceAll(" ", "%20") + ")";
     }
+    if (design.backgroundColor) {
+      this.backgroundColor = this.$getColor(design.backgroundColor, 0xFFFFFFFF);
+    }
     switch (design['backgroundAttribute']) {
       case "fit":
         this.backgroundSize = "contain";
@@ -140,6 +143,7 @@ export default {
       imageBackground: "",
       backgroundRepeat: "no-repeat",
       backgroundSize: "auto",
+      backgroundColor: "",
       dialog: false,
       marginVertical: '8px',
     }
@@ -219,6 +223,10 @@ export default {
 .background {
   background: fixed center v-bind(imageBackground);
   background-size: v-bind(backgroundSize);
+}
+
+.background-color{
+  background-color: v-bind(backgroundColor);
 }
 
 .result {

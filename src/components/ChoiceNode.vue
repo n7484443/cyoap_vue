@@ -90,8 +90,7 @@ export default {
     let choiceNodeOption = JSON.parse(window.getChoiceNodeOption(this.currentPos));
     let preset = this.$store.getters.getNodePresets[choiceNodeOption['presetName']];
 
-    let colorSelectNode = (preset.colorSelectNode ?? 0xFF40C4FF).toString(16);
-    colorSelectNode = '#' + colorSelectNode.substring(2) + colorSelectNode.substring(0, 2);
+    let colorSelectNode = this.$getColor(preset.colorSelectNode, 0xFF40C4FF);
 
     let colorNode = (preset.colorNode ?? preset.colorNode ?? 0xFFFFFFFF).toString(16);
     colorNode = '#' + colorNode.substring(2) + colorNode.substring(0, 2);
