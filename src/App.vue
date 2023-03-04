@@ -21,7 +21,7 @@
         <v-dialog v-model="dialog" scrollable>
           <template v-slot:activator="{ props }">
             <v-btn color="primary" class="mx-3" v-bind="props">
-              결과창 보기
+              {{ summary }}
             </v-btn>
           </template>
           <v-card>
@@ -146,6 +146,7 @@ export default {
       backgroundColor: "",
       dialog: false,
       marginVertical: '8px',
+      summary: this.$getLanguage() == 'ko' ? '결과창 보기' : 'SUMMARIZE',
     }
   },
   methods: {
