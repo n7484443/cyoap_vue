@@ -5,7 +5,7 @@ module.exports = defineConfig({
     productionSourceMap: false,
 
     devServer: {
-        proxy: 'https://dragonswhore-cyoas.neocities.org/cyoap/'
+        proxy: 'https://interactiveweb.neocities.org/'
     },
 
     pluginOptions: {
