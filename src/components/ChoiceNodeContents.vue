@@ -9,7 +9,9 @@
 
   <div v-else-if="imagePosition === 1">
     <div class="flex-default">
-      <slot name="contents"></slot>
+      <div class="flex-text">
+        <slot name="contents"></slot>
+      </div>
       <div class="flex-item">
         <slot name="image"></slot>
       </div>
@@ -24,7 +26,9 @@
       <div class="flex-item">
         <slot name="image"></slot>
       </div>
-      <slot name="contents"></slot>
+      <div class="flex-text">
+        <slot name="contents"></slot>
+      </div>
     </div>
     <div v-if="!hideTitle" class="title_color title_font">
       {{ title }}
@@ -63,6 +67,10 @@ export default {
   display: flex;
   align-items: center;
   width: 100%;
+}
+
+.flex-text{
+  max-width: 60%;
 }
 
 .title_color {

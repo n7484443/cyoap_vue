@@ -3,15 +3,15 @@
     <v-progress-circular size="72" width="8" :model-value="isLoading / isLoadingMax * 100"
                          color="red"></v-progress-circular>
   </div>
-  <v-app v-else class="background-color">
+  <v-app v-else v-bind:class="{'background-color': true, 'mobile': smallSize}">
     <v-bottom-navigation height="40">
       <HorizontalScroll ref="horizontalScroll">
       </HorizontalScroll>
     </v-bottom-navigation>
 
     <div class="background">
-      <v-btn color="primary" variant="text" icon="mdi-content-save" v-on:click="saveCurrentStatus" />
-      <v-btn color="primary" variant="text" icon="mdi-upload" v-on:click="loadCurrentStatus" />
+      <v-btn color="primary" variant="text" icon="mdi-content-save" v-on:click="saveCurrentStatus"/>
+      <v-btn color="primary" variant="text" icon="mdi-upload" v-on:click="loadCurrentStatus"/>
       <div v-for="(n, i) in child" :key="n">
         <LineSetting ref="lineSetting" :pos="i" @needUpdate="needUpdate">
         </LineSetting>
@@ -96,7 +96,7 @@ export default {
     let nodePresetList = JSON.parse(window.getNodePresetList());
     let linePresetList = JSON.parse(window.getLinePresetList());
     let fontHashSet = new Set();
-    nodePresetList.forEach(function(e){
+    nodePresetList.forEach(function (e) {
       fontHashSet.add(e['titleFont']);
       fontHashSet.add(e['mainFont']);
     });
@@ -134,6 +134,7 @@ export default {
   },
 
   data() {
+    let smallSize = screen.availWidth <= 700;
     return {
       isLoading: 0,
       isLoadingMax: 100,
@@ -147,6 +148,7 @@ export default {
       dialog: false,
       marginVertical: '8px',
       summary: this.$getLanguage() == 'ko' ? '결과창 보기' : 'SUMMARIZE',
+      smallSize: smallSize,
     }
   },
   methods: {
@@ -166,7 +168,7 @@ export default {
       link.download = "result.png";
       link.click();
     },
-    saveCurrentStatus(){
+    saveCurrentStatus() {
       let data = window.getSelectedPos();
       let blob = new Blob([data], {type: "text/plain;charset=utf-8"});
       let link = document.createElement('a');
@@ -174,7 +176,7 @@ export default {
       link.download = "save.json";
       link.click();
     },
-    loadCurrentStatus(){
+    loadCurrentStatus() {
       //json file select and upload
       let input = document.createElement('input');
       input.type = 'file';
@@ -226,8 +228,12 @@ export default {
   background-size: v-bind(backgroundSize);
 }
 
-.background-color{
+.background-color {
   background-color: v-bind(backgroundColor);
+}
+
+.mobile {
+  width: 700px;
 }
 
 .result {
