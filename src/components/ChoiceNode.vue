@@ -84,7 +84,7 @@ export default {
     }
     let imagePos = window.getImage(this.currentPos);
     if (imagePos) {
-      imagePos = "/dist/images/" + imagePos;
+      imagePos = "dist/images/" + imagePos;
     }
 
     let choiceNodeOption = JSON.parse(window.getChoiceNodeOption(this.currentPos));

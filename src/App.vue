@@ -29,8 +29,8 @@
               <SelectedResult id="capture"></SelectedResult>
             </v-card-text>
             <v-card-actions>
-              <v-btn color="primary" @click="saveAsImage">이미지로 저장</v-btn>
-              <v-btn color="primary" @click="dialog = false">결과창 닫기</v-btn>
+              <v-btn color="primary" @click="saveAsImage">{{ save_as_image }}</v-btn>
+              <v-btn color="primary" @click="dialog = false">{{ close }}</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -147,8 +147,10 @@ export default {
       backgroundColor: "",
       dialog: false,
       marginVertical: '8px',
-      summary: this.$getLanguage() == 'ko' ? '결과창 보기' : 'SUMMARIZE',
+      summary: this.$getTranslation('summary'),
       smallSize: smallSize,
+      save_as_image: this.$getTranslation('save_as_image'),
+      close: this.$getTranslation('close')
     }
   },
   methods: {
