@@ -6,7 +6,8 @@ export default {
             return color;
         };
         app.config.globalProperties.$getTranslation = (input: string): string => {
-            const language: string = navigator.language ?? "en";
+            let language: string = navigator.language ?? "en";
+            language = language.substring(0, 2).toLowerCase();
             return translation[language][input];
         };
     }
