@@ -8,6 +8,9 @@ export default {
         app.config.globalProperties.$getTranslation = (input: string): string => {
             let language: string = navigator.language ?? "en";
             language = language.substring(0, 2).toLowerCase();
+            if(!translation[language]){
+                language = "en";
+            }
             return translation[language][input];
         };
     }
