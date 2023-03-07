@@ -5,7 +5,7 @@
             v-on:click="click"
             :disabled="choiceStatus === 'closed'" :elevation="preset.elevation"
             :color="colorNode">
-      <div class="container">
+      <div class="container padding">
         <ChoiceNodeContents :imagePosition="preset['imagePosition']" :title="title" :renderAsResult="!renderChild"
                             :preset="preset">
           <template v-slot:contents>
@@ -120,6 +120,7 @@ export default {
       visible: visible,
       preset: preset,
       round: preset.round + "px",
+      padding: preset.padding + "px",
     }
   },
   methods: {
@@ -218,6 +219,10 @@ export default {
   margin-bottom: 8px;
   align-items: stretch;
   flex-direction: column;
+}
+
+.padding{
+  padding: v-bind(padding);
 }
 
 .image-result {
