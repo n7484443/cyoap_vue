@@ -74,9 +74,9 @@ export default {
       let converter = new QuillDeltaToHtmlConverter(delta, {
         inlineStyles: {
           size: {
-            'small': 'font-size: 0.75em',
-            'large': 'font-size: 1.25em',
-            'huge': 'font-size: 1.5em'
+            'small': 'font-size: 0.77rem',
+            'large': 'font-size: 1.38rem',
+            'huge': 'font-size: 1.69rem'
           },
         }
       });
@@ -233,7 +233,6 @@ export default {
 
 .content_font {
   font-family: v-bind(preset ['mainFont']);
-  font-size: calc(8.75px + 0.33vw);
 }
 
 </style>

@@ -80,6 +80,6 @@ export default {
 .title_font {
   font-family: v-bind(preset ['titleFont']);
   text-align: center;
-  font-size: calc(8.75px + 0.33vw);
+  font-size: 1.25rem;
 }
 </style>

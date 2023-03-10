@@ -3,7 +3,7 @@
     <v-progress-circular size="72" width="8" :model-value="isLoading / isLoadingMax * 100"
                          color="red"></v-progress-circular>
   </div>
-  <v-app v-else v-bind:class="{'background-color': true, 'mobile': smallSize}">
+  <v-app v-else v-bind:class="{'background-color': true, 'mobile': smallSize, 'default-font-size': true}">
     <v-bottom-navigation height="40">
       <HorizontalScroll ref="horizontalScroll">
       </HorizontalScroll>
@@ -222,7 +222,7 @@ export default {
 
 .variable_font {
   font-family: v-bind(variableFont);
-  font-size: calc(8.75px + 0.33vw);
+  font-size: 1rem;
 }
 
 .background {
@@ -253,5 +253,9 @@ export default {
 
 .ql-align-right {
   text-align: right;
+}
+
+.default-font-size {
+  font-size: 14px;
 }
 </style>
