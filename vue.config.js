@@ -5,7 +5,7 @@ module.exports = defineConfig({
     productionSourceMap: false,
 
     devServer: {
-        proxy: 'https://kikoin.neocities.org/'
+        proxy: 'https://interactiveweb.neocities.org/'
     },
 
     pluginOptions: {

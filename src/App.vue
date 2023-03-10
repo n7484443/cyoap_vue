@@ -3,13 +3,8 @@
     <v-progress-circular size="72" width="8" :model-value="isLoading / isLoadingMax * 100"
                          color="red"></v-progress-circular>
   </div>
-  <v-app v-else v-bind:class="{'background-color': true, 'mobile': smallSize, 'default-font-size': true}">
-    <v-bottom-navigation height="40">
-      <HorizontalScroll ref="horizontalScroll">
-      </HorizontalScroll>
-    </v-bottom-navigation>
-
-    <div class="background">
+  <v-app v-else class="background-color default-font-size">
+    <body v-bind:class="{'background': true, 'mobile': smallSize}">
       <v-btn color="primary" variant="text" icon="mdi-content-save" v-on:click="saveCurrentStatus"/>
       <v-btn color="primary" variant="text" icon="mdi-upload" v-on:click="loadCurrentStatus"/>
       <div v-for="(n, i) in child" :key="n">
@@ -35,10 +30,10 @@
           </v-card>
         </v-dialog>
       </div>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
+    </body>
+    <div class="bottom-variable">
+      <HorizontalScroll ref="horizontalScroll">
+      </HorizontalScroll>
     </div>
   </v-app>
 </template>
@@ -134,7 +129,7 @@ export default {
   },
 
   data() {
-    let smallSize = screen.availWidth <= 700;
+    let smallSize = screen.availWidth <= 800;
     return {
       isLoading: 0,
       isLoadingMax: 100,
@@ -235,7 +230,7 @@ export default {
 }
 
 .mobile {
-  width: 700px;
+  width: 800px;
 }
 
 .result {
@@ -257,5 +252,19 @@ export default {
 
 .default-font-size {
   font-size: 14px;
+}
+
+.bottom-variable{
+  height: 40px;
+  width: 100%;
+  color: whitesmoke;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+body{
+  padding-bottom: 40px;
 }
 </style>
