@@ -4,14 +4,15 @@
                          color="red"></v-progress-circular>
   </div>
   <v-app v-else class="background-color default-font-size">
-    <body v-bind:class="{'background': true, 'mobile': smallSize}">
+    <body class="background">
       <v-btn color="primary" variant="text" icon="mdi-content-save" v-on:click="saveCurrentStatus"/>
       <v-btn color="primary" variant="text" icon="mdi-upload" v-on:click="loadCurrentStatus"/>
-      <div v-for="(n, i) in child" :key="n">
-        <LineSetting ref="lineSetting" :pos="i" @needUpdate="needUpdate">
-        </LineSetting>
-      </div>
-
+      <main>
+        <div v-for="(n, i) in child" :key="n" class="minimum-width">
+          <LineSetting ref="lineSetting" :pos="i" @needUpdate="needUpdate">
+          </LineSetting>
+        </div>
+      </main>
       <div class="result my-3">
         <v-dialog v-model="dialog" scrollable>
           <template v-slot:activator="{ props }">
@@ -121,7 +122,7 @@ export default {
         this.backgroundRepeat = "repeat";
         break;
       case "stretch":
-        this.backgroundSize = "100vw 100vh";
+        this.backgroundSize = "100% 100%";
         break;
     }
     this.marginVertical = design.marginVertical + 'px';
@@ -129,7 +130,6 @@ export default {
   },
 
   data() {
-    let smallSize = screen.availWidth <= 800;
     return {
       isLoading: 0,
       isLoadingMax: 100,
@@ -143,7 +143,6 @@ export default {
       dialog: false,
       marginVertical: '8px',
       summary: this.$getTranslation('summary'),
-      smallSize: smallSize,
       save_as_image: this.$getTranslation('save_as_image'),
       close: this.$getTranslation('close')
     }
@@ -229,8 +228,12 @@ export default {
   background-color: v-bind(backgroundColor);
 }
 
-.mobile {
-  width: 800px;
+main {
+  overflow-x: auto;
+}
+
+.minimum-width{
+  min-width: 800px;
 }
 
 .result {
@@ -256,7 +259,7 @@ export default {
 
 .bottom-variable{
   height: 40px;
-  width: 100%;
+  width: 100vw;
   color: whitesmoke;
   position: fixed;
   bottom: 0;
