@@ -9,7 +9,7 @@
         <ChoiceNodeContents :imagePosition="preset['imagePosition']" :title="title" :renderAsResult="!renderChild"
                             :preset="preset">
           <template v-slot:contents>
-            <p v-html="modelValue" class="container content_font"></p>
+            <p v-html="contentsHtml" class="container content_font"></p>
           </template>
           <template v-slot:image>
             <v-img v-if="renderChild" :src="image" :max-height="imageMaxHeight" class="rounded-xl">
@@ -67,21 +67,8 @@ export default {
   },
   name: "ChoiceNode",
   data() {
-    let data = window.getContents(this.currentPos);
-    let modalValue = "";
-    if (data && data !== "") {
-      let delta = JSON.parse(data);
-      let converter = new QuillDeltaToHtmlConverter(delta, {
-        inlineStyles: {
-          size: {
-            'small': 'font-size: 0.77rem',
-            'large': 'font-size: 1.38rem',
-            'huge': 'font-size: 1.69rem'
-          },
-        }
-      });
-      modalValue = converter.convert();
-    }
+    let contentsString = window.getContents(this.currentPos);
+    let contentsHtml = this.htmlFromQuill(contentsString);
     let imagePos = window.getImage(this.currentPos);
     if (imagePos) {
       imagePos = "dist/images/" + imagePos;
@@ -107,7 +94,8 @@ export default {
       image: imagePos.replaceAll(" ", "%20"),
       imageMaxHeight: preset['maximizingImage'] ? '80vh' : '50vh',
       title: window.getTitle(this.currentPos),
-      modelValue: modalValue,
+      contentsHtml: contentsHtml,
+      contentsString: contentsString,
       gridColumn: gridColumn,
       select: window.getSelect(this.currentPos),
       choiceStatus: choiceStatus,
@@ -124,6 +112,23 @@ export default {
     }
   },
   methods: {
+    htmlFromQuill(data){
+      let modalValue = "";
+      if (data && data !== "") {
+        let delta = JSON.parse(data);
+        let converter = new QuillDeltaToHtmlConverter(delta, {
+          inlineStyles: {
+            size: {
+              'small': 'font-size: 0.77rem',
+              'large': 'font-size: 1.38rem',
+              'huge': 'font-size: 1.69rem'
+            },
+          }
+        });
+        modalValue = converter.convert();
+      }
+      return modalValue;
+    },
     click() {
       if (this.clickable) {
         window.select(this.currentPos, 0);
@@ -153,9 +158,15 @@ export default {
       }
     },
     updateChild() {
+      let newContents = window.getContents(this.currentPos);
+      if(this.contentsString !== newContents){
+        this.contentsString = newContents;
+        this.contentsHtml = this.htmlFromQuill(newContents);
+      }
       this.select = window.getSelect(this.currentPos);
       this.choiceStatus = window.getChoiceStatus(this.currentPos);
       this.visible = this.choiceStatus !== 'hide' && this.choiceMode !== 'onlyCode';
+
       if (!this.choiceNodeOption['occupySpace'] && this.choiceStatus === 'hide') {
         this.gridColumn = 0;
       } else {
