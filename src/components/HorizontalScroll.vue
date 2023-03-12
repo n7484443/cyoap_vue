@@ -2,11 +2,13 @@
   <v-card>
     <v-slide-group show-arrows class="scrolling">
       <v-slide-group-item v-for="n in list" :key="n">
-        <v-card class="card">
+        <v-card class="card" variant="outlined">
           <div class="inner variable_font">
-            <h3>
-              {{ n }}
-            </h3>
+            <strong>
+              <h4>
+                {{ n }}
+              </h4>
+            </strong>
           </div>
         </v-card>
       </v-slide-group-item>
@@ -32,10 +34,6 @@ export default {
 </script>
 
 <style scoped>
-.scrolling {
-  max-width: 100%;
-}
-
 .card{
   padding: 2px;
   margin: 2px;

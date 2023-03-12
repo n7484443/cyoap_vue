@@ -12,10 +12,6 @@
         <div v-for="(n, i) in child" :key="n" class="minimum-width">
           <LineSetting ref="lineSetting" :pos="i" @needUpdate="needUpdate">
           </LineSetting>
-          <LineSetting ref="lineSetting" :pos="i" @needUpdate="needUpdate">
-          </LineSetting>
-          <LineSetting ref="lineSetting" :pos="i" @needUpdate="needUpdate">
-          </LineSetting>
         </div>
       </main>
     </body>
@@ -266,7 +262,7 @@ main::-webkit-scrollbar {
 
 .top-scrollbar {
   overflow-x: auto;
-  height: 20px;
+  height: 18px;
   position: sticky;
   top: 40px;
   z-index: 1;
