@@ -2,7 +2,7 @@
   <v-card>
     <v-slide-group show-arrows class="scrolling">
       <v-slide-group-item v-for="n in list" :key="n">
-        <v-card class="card" >
+        <v-card class="card">
           <div class="inner variable_font">
             <h3>
               {{ n }}
@@ -37,9 +37,14 @@ export default {
 }
 
 .card{
-  padding: 6px;
+  padding: 2px;
+  margin: 2px;
 }
+
 .inner{
-  padding: 4px;
+  display: flex;
+  align-items: center; /* 수직 중앙 정렬 */
+  justify-content: center; /* 수평 중앙 정렬 */
 }
+
 </style>

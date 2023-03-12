@@ -4,16 +4,31 @@
                          color="red"></v-progress-circular>
   </div>
   <v-app v-else class="background-color default-font-size">
+    <div class="top-scrollbar">
+      <div class="minimum-width"></div>
+    </div>
     <body class="background">
-      <v-btn color="primary" variant="text" icon="mdi-content-save" v-on:click="saveCurrentStatus"/>
-      <v-btn color="primary" variant="text" icon="mdi-upload" v-on:click="loadCurrentStatus"/>
       <main>
         <div v-for="(n, i) in child" :key="n" class="minimum-width">
           <LineSetting ref="lineSetting" :pos="i" @needUpdate="needUpdate">
           </LineSetting>
+          <LineSetting ref="lineSetting" :pos="i" @needUpdate="needUpdate">
+          </LineSetting>
+          <LineSetting ref="lineSetting" :pos="i" @needUpdate="needUpdate">
+          </LineSetting>
         </div>
       </main>
-      <div class="result my-3">
+    </body>
+    <div class="bottom-variable">
+      <HorizontalScroll ref="horizontalScroll">
+      </HorizontalScroll>
+    </div>
+    <div class="top-toolbar">
+      <div class="result">
+        <div class="button">
+          <v-btn color="primary" variant="text" icon="mdi-content-save" width="36" height="36" v-on:click="saveCurrentStatus"/>
+          <v-btn color="primary" variant="text" icon="mdi-upload" width="36" height="36" v-on:click="loadCurrentStatus"/>
+        </div>
         <v-dialog v-model="dialog" scrollable>
           <template v-slot:activator="{ props }">
             <v-btn color="primary" class="mx-3" v-bind="props">
@@ -31,10 +46,6 @@
           </v-card>
         </v-dialog>
       </div>
-    </body>
-    <div class="bottom-variable">
-      <HorizontalScroll ref="horizontalScroll">
-      </HorizontalScroll>
     </div>
   </v-app>
 </template>
@@ -129,6 +140,22 @@ export default {
     this.isLoading = -1;
   },
 
+  updated(){
+    if(this.isLoading == -1 && !this.addedEventListener){
+      const topScrollbar = document.querySelector('.top-scrollbar');
+      const body = document.querySelector('main');
+      topScrollbar.addEventListener('scroll', (event) => {
+        const scrollLeft = event.target.scrollLeft;
+        body.scrollLeft = scrollLeft;
+      });
+      body.addEventListener('scroll', (event) => {
+        const scrollLeft = event.target.scrollLeft;
+        topScrollbar.scrollLeft = scrollLeft;
+      });
+      this.addedEventListener = true;
+    }
+  },
+
   data() {
     return {
       isLoading: 0,
@@ -144,7 +171,8 @@ export default {
       marginVertical: '8px',
       summary: this.$getTranslation('summary'),
       save_as_image: this.$getTranslation('save_as_image'),
-      close: this.$getTranslation('close')
+      close: this.$getTranslation('close'),
+      addedEventListener: false,
     }
   },
   methods: {
@@ -232,13 +260,35 @@ main {
   overflow-x: auto;
 }
 
-.minimum-width{
+main::-webkit-scrollbar {
+  display: none;
+}
+
+.top-scrollbar {
+  overflow-x: auto;
+  height: 20px;
+  position: sticky;
+  top: 40px;
+  z-index: 1;
+  background-color: v-bind(backgroundColor);
+}
+
+.minimum-width {
   min-width: 800px;
 }
 
 .result {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-content: stretch;
+  height: 40px;
+  padding: 2px;
+  background-color: v-bind(backgroundColor);
+}
+
+.button{
+  display: flex;
+  align-content: stretch;
 }
 
 .ql-align-center {
@@ -257,8 +307,7 @@ main {
   font-size: 14px;
 }
 
-.bottom-variable{
-  height: 40px;
+.bottom-variable {
   width: 100vw;
   color: whitesmoke;
   position: fixed;
@@ -267,7 +316,17 @@ main {
   right: 0;
 }
 
-body{
-  padding-bottom: 40px;
+.top-toolbar {
+  width: 100vw;
+  color: whitesmoke;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+body {
+  padding-top: 40px;
+  padding-bottom: 20px;
 }
 </style>
