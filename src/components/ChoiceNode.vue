@@ -54,7 +54,7 @@
 
 <script>
 import {QuillDeltaToHtmlConverter} from "quill-delta-to-html";
-import ChoiceNodeContents from "./ChoiceNodeContents";
+import ChoiceNodeContents from "@/components/ChoiceNodeContents.vue";
 
 export default {
   props: {

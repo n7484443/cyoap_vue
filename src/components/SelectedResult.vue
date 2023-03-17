@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import ChoiceNode from "@/components/ChoiceNode";
+import ChoiceNode from "@/components/ChoiceNode.vue";
 
 export default {
   name: "SelectedResult",
