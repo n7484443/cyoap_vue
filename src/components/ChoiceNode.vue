@@ -24,7 +24,7 @@
         </ChoiceNodeContents>
         <div v-if="choiceMode === 'multiSelect'">
           <div v-if="choiceNodeOption.showAsSlider" class="multi-select-slider">
-            <v-slider min="0" :max="choiceMaximumStatus" step="1" thumb-label v-on:update:model-value="click_slider"
+            <v-slider :min="0" :max="choiceMaximumStatus" :step="1" thumb-label v-on:update:model-value="click_slider"
                       :model-value="select"></v-slider>
             <p class="text-center">{{ select }}</p>
           </div>

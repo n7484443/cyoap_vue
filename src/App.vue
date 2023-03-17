@@ -3,44 +3,46 @@
     <v-progress-circular size="72" width="8" :model-value="isLoading / isLoadingMax * 100"
                          color="red"></v-progress-circular>
   </div>
-  <v-app v-else class="background-color default-font-size default-padding">
-    <div class="top-scrollbar">
-      <div class="minimum-width"></div>
-    </div>
-    <body class="background">
+  <v-app v-else class="default-font-size default-padding" :full-height="true">
+    <div class="background-color">
+      <div class="top-scrollbar">
+        <div class="minimum-width"></div>
+      </div>
+      <body class="background">
       <main>
         <div v-for="(n, i) in child" :key="n" class="minimum-width">
           <LineSetting ref="lineSetting" :pos="i" @needUpdate="needUpdate">
           </LineSetting>
         </div>
       </main>
-    </body>
-    <div class="bottom-variable">
-      <HorizontalScroll ref="horizontalScroll">
-      </HorizontalScroll>
-    </div>
-    <div class="top-toolbar">
-      <div class="result">
-        <div class="button">
-          <v-btn color="primary" variant="text" icon="mdi-content-save" width="36" height="36" v-on:click="saveCurrentStatus"/>
-          <v-btn color="primary" variant="text" icon="mdi-upload" width="36" height="36" v-on:click="loadCurrentStatus"/>
+      </body>
+      <div class="bottom-variable">
+        <HorizontalScroll ref="horizontalScroll">
+        </HorizontalScroll>
+      </div>
+      <div class="top-toolbar">
+        <div class="result">
+          <div class="button">
+            <v-btn color="primary" variant="text" icon="mdi-content-save" width="36" height="36" v-on:click="saveCurrentStatus"/>
+            <v-btn color="primary" variant="text" icon="mdi-upload" width="36" height="36" v-on:click="loadCurrentStatus"/>
+          </div>
+          <v-dialog v-model="dialog" scrollable>
+            <template v-slot:activator="{ props }">
+              <v-btn color="primary" class="mx-3" v-bind="props">
+                {{ summary }}
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-text>
+                <SelectedResult id="capture"></SelectedResult>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="primary" @click="saveAsImage">{{ save_as_image }}</v-btn>
+                <v-btn color="primary" @click="dialog = false">{{ close }}</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </div>
-        <v-dialog v-model="dialog" scrollable>
-          <template v-slot:activator="{ props }">
-            <v-btn color="primary" class="mx-3" v-bind="props">
-              {{ summary }}
-            </v-btn>
-          </template>
-          <v-card>
-            <v-card-text>
-              <SelectedResult id="capture"></SelectedResult>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="primary" @click="saveAsImage">{{ save_as_image }}</v-btn>
-              <v-btn color="primary" @click="dialog = false">{{ close }}</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
       </div>
     </div>
   </v-app>
@@ -257,6 +259,7 @@ export default {
 
 .background-color {
   background-color: v-bind(backgroundColor);
+  height: 100%;
 }
 
 main {
