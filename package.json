@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.8.3",
-    "dom-to-image-more": "^2.12.0",
+    "dom-to-image-more": "^3.1.0",
     "quill-delta-to-html": "^0.12.1",
     "roboto-fontface": "*",
     "vue": "^3.2.13",
@@ -27,10 +27,10 @@
     "@vue/cli-plugin-eslint": "^5.0.8",
     "@vue/cli-plugin-typescript": "~5.0.0",
     "@vue/cli-service": "^5.0.8",
-    "@vue/eslint-config-typescript": "^9.1.0",
+    "@vue/eslint-config-typescript": "^11.0.2",
     "eslint": "^8.27.0",
-    "eslint-plugin-vue": "^9.7.0",
-    "typescript": "~4.5.5",
+    "eslint-plugin-vue": "^9.9.0",
+    "typescript": "~5.0.2",
     "vue-cli-plugin-vuetify": "^2.5.8",
     "webpack-plugin-vuetify": "^2.0.0-alpha.0"
   },
