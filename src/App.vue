@@ -3,7 +3,7 @@
     <v-progress-circular size="72" width="8" :model-value="isLoading / isLoadingMax * 100"
                          color="red"></v-progress-circular>
   </div>
-  <v-app v-else class="background-color default-font-size">
+  <v-app v-else class="background-color default-font-size default-padding">
     <div class="top-scrollbar">
       <div class="minimum-width"></div>
     </div>
@@ -219,7 +219,14 @@ export default {
 <style>
 
 *::-webkit-scrollbar {
-  width: 16px;
+  -webkit-appearance: none;
+}
+*::-webkit-scrollbar:vertical {
+  width: 10px;
+}
+
+*::-webkit-scrollbar:horizontal {
+  height: 16px;
 }
 
 *::-webkit-scrollbar-thumb {
@@ -300,7 +307,7 @@ main::-webkit-scrollbar {
 }
 
 .default-font-size {
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .bottom-variable {
@@ -324,5 +331,19 @@ main::-webkit-scrollbar {
 body {
   padding-top: 40px;
   padding-bottom: 20px;
+}
+
+li{
+  margin-top: 12px;
+  padding-top: 0;
+  margin-left: 2em;
+  padding-left: 0;
+}
+
+blockquote{
+  border-left: 6px solid #ccc;
+  margin: 6px;
+  padding: 6px;
+
 }
 </style>
