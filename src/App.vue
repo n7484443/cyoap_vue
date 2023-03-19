@@ -5,12 +5,9 @@
   </div>
   <v-app v-else class="default-font-size default-padding" :full-height="true">
     <div class="background-color">
-      <div class="top-scrollbar">
-        <div class="minimum-width"></div>
-      </div>
       <body class="background">
       <main>
-        <div v-for="(n, i) in child" :key="n" class="minimum-width">
+        <div v-for="(n, i) in child" :key="n">
           <LineSetting ref="lineSetting" :pos="i" @needUpdate="needUpdate">
           </LineSetting>
         </div>
@@ -23,8 +20,10 @@
       <div class="top-toolbar">
         <div class="result">
           <div class="button">
-            <v-btn color="primary" variant="text" icon="mdi-content-save" width="36" height="36" v-on:click="saveCurrentStatus"/>
-            <v-btn color="primary" variant="text" icon="mdi-upload" width="36" height="36" v-on:click="loadCurrentStatus"/>
+            <v-btn color="primary" variant="text" icon="mdi-content-save" width="36" height="36"
+                   v-on:click="saveCurrentStatus"/>
+            <v-btn color="primary" variant="text" icon="mdi-upload" width="36" height="36"
+                   v-on:click="loadCurrentStatus"/>
           </div>
           <v-dialog v-model="dialog" scrollable>
             <template v-slot:activator="{ props }">
@@ -138,22 +137,6 @@ export default {
     this.isLoading = -1;
   },
 
-  updated(){
-    if(this.isLoading == -1 && !this.addedEventListener){
-      const topScrollbar = document.querySelector('.top-scrollbar');
-      const body = document.querySelector('main');
-      topScrollbar.addEventListener('scroll', (event) => {
-        const scrollLeft = event.target.scrollLeft;
-        body.scrollLeft = scrollLeft;
-      });
-      body.addEventListener('scroll', (event) => {
-        const scrollLeft = event.target.scrollLeft;
-        topScrollbar.scrollLeft = scrollLeft;
-      });
-      this.addedEventListener = true;
-    }
-  },
-
   data() {
     return {
       isLoading: 0,
@@ -223,6 +206,7 @@ export default {
 *::-webkit-scrollbar {
   -webkit-appearance: none;
 }
+
 *::-webkit-scrollbar:vertical {
   width: 10px;
 }
@@ -262,27 +246,6 @@ export default {
   height: 100%;
 }
 
-main {
-  overflow-x: auto;
-}
-
-main::-webkit-scrollbar {
-  display: none;
-}
-
-.top-scrollbar {
-  overflow-x: auto;
-  height: 18px;
-  position: sticky;
-  top: 40px;
-  z-index: 1;
-  background-color: v-bind(backgroundColor);
-}
-
-.minimum-width {
-  min-width: 800px;
-}
-
 .result {
   display: flex;
   justify-content: space-between;
@@ -292,7 +255,7 @@ main::-webkit-scrollbar {
   background-color: v-bind(backgroundColor);
 }
 
-.button{
+.button {
   display: flex;
   align-content: stretch;
 }
@@ -336,14 +299,14 @@ body {
   padding-bottom: 20px;
 }
 
-li{
+li {
   margin-top: 12px;
   padding-top: 0;
   margin-left: 2em;
   padding-left: 0;
 }
 
-blockquote{
+blockquote {
   border-left: 6px solid #ccc;
   margin: 6px;
   padding: 6px;

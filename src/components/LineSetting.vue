@@ -37,17 +37,16 @@ export default {
     let color = "#1fe0";
     let colorLine;
     let colorText;
-    if(preset['background_color']){
-      let colorBefore = (preset['background_color'] ?? 0xFFFFFFFF).toString(16);
-      color = '#' + colorBefore.substring(2) + colorBefore.substring(0, 2);
+    if (preset['background_color']) {
+      color = this.$getColor(preset['background_color'], 0xFFFFFFFF);
     }
     if (color) {
       colorLine = "#000000";
       colorText = "#FFFFFF";
-    }else if (this.getLuminance(color) > 0.5) {
+    } else if (this.getLuminance(color) > 0.5) {
       colorLine = "#FFFFFF";
       colorText = "#000000";
-    }else{
+    } else {
       colorLine = "#000000";
       colorText = "#FFFFFF";
     }
@@ -62,7 +61,7 @@ export default {
       preset: preset,
       colorLine: colorLine + "FF",
       colorText: colorText + "FF",
-      maxSelect: lineOption.maxSelect
+      maxSelect: lineOption.maxSelect,
     }
   },
   methods: {
@@ -101,10 +100,9 @@ export default {
   padding: v-bind(marginVertical) 0px;
   background-color: v-bind(colorBackground);
 }
-
 .wrapper {
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   grid-template-rows: repeat(auto-fill, min-content);
   column-gap: 8px;
   row-gap: v-bind(marginVertical);
@@ -112,7 +110,19 @@ export default {
   padding: 4px 0px;
 }
 
-.line_text{
+@media screen and (min-width: 850px){
+  .wrapper {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(auto-fill, min-content);
+    column-gap: 8px;
+    row-gap: v-bind(marginVertical);
+    grid-auto-flow: row;
+    padding: 4px 0px;
+  }
+}
+
+.line_text {
   color: v-bind(colorText);
   text-align: center;
   font-weight: bold;

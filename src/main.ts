@@ -8,46 +8,54 @@ import common from "./fn_common";
 
 loadFonts();
 
+type stateType = {
+    platformDesign: Object,
+    nodePresets: Object,
+    linePresets: Object,
+    isSmallDisplay: boolean,
+}
+
 const store = createStore({
-    state() {
+    state() :stateType {
         return {
             platformDesign: {},
             nodePresets: {},
             linePresets: {},
+            isSmallDisplay: false,
         }
     },
     mutations: {
-        setPlatformDesign(state, platformDesign) {
-            // @ts-ignore
+        setPlatformDesign(state, platformDesign: Object) {
             state.platformDesign = platformDesign;
         },
-        setNodePresets(state, presetList) {
-            // @ts-ignore
+        setNodePresets(state, presetList: [Object]) {
             presetList.forEach(function (e) {
                 // @ts-ignore
-                state.nodePresets[e['name']] = e;
+                state.nodePresets[e.name] = e;
             })
         },
-        setLinePresets(state, presetList) {
-            // @ts-ignore
+        setLinePresets(state, presetList: Map<any, any>) {
             presetList.forEach(function (e) {
                 // @ts-ignore
-                state.linePresets[e['name']] = e;
+                state.linePresets[e.name] = e;
             })
+        },
+        setSmallDisplay(state, bool: boolean) {
+            state.isSmallDisplay = bool;
         }
     },
     getters: {
-        getPlatformDesign(state) {
-            // @ts-ignore
+        getPlatformDesign(state): Object {
             return state.platformDesign;
         },
-        getNodePresets(state) {
-            // @ts-ignore
+        getNodePresets(state): Object {
             return state.nodePresets;
         },
-        getLinePresets(state) {
-            // @ts-ignore
+        getLinePresets(state): Object {
             return state.linePresets;
+        },
+        getSmallDisplay(state): boolean {
+            return state.isSmallDisplay;
         },
     }
 })
