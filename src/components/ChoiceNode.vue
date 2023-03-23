@@ -1,53 +1,55 @@
 <template>
   <div v-if="choiceNodeOption['isOccupySpace'] && !visible" class="gridStyle"/>
   <div v-else-if="visible" class="gridStyle">
-    <v-card :class="['card', {'outline': select > 0}]"
-            v-on:click="click"
-            :disabled="choiceStatus === 'closed'" :elevation="preset.elevation"
-            :color="colorNode">
-      <div class="container padding">
-        <ChoiceNodeContents :imagePosition="preset['imagePosition']" :title="title" :renderAsResult="!renderChild"
-                            :preset="preset">
-          <template v-slot:contents>
-            <p v-html="contentsHtml" class="container content_font"></p>
-          </template>
-          <template v-slot:image>
-            <v-img v-if="renderChild" :src="image" :max-height="imageMaxHeight" class="rounded-xl">
-              <template v-slot:placeholder>
-                <v-row class="fill-height ma-0" align="center" justify="center">
-                  <v-progress-circular indeterminate color="primary"/>
-                </v-row>
-              </template>
-            </v-img>
-            <img v-else :src="image" class="image-result"/>
-          </template>
-        </ChoiceNodeContents>
-        <div v-if="choiceMode === 'multiSelect'">
-          <div v-if="choiceNodeOption.showAsSlider" class="multi-select-slider">
-            <v-slider :min="0" :max="choiceMaximumStatus" :step="1" thumb-label v-on:update:model-value="click_slider"
-                      :model-value="select"></v-slider>
-            <p class="text-center">{{ select }}</p>
+    <div id="outline_padding">
+      <v-card :class="['card', {'outline': outline === '' && select > 0}]"
+              v-on:click="click"
+              :disabled="choiceStatus === 'closed'" :elevation="preset.elevation"
+              :color="colorNode">
+        <div class="container padding">
+          <ChoiceNodeContents :imagePosition="preset['imagePosition']" :title="title" :renderAsResult="!renderChild"
+                              :preset="preset">
+            <template v-slot:contents>
+              <p v-html="contentsHtml" class="container content_font"></p>
+            </template>
+            <template v-slot:image>
+              <v-img v-if="renderChild" :src="image" :max-height="imageMaxHeight" class="rounded-xl">
+                <template v-slot:placeholder>
+                  <v-row class="fill-height ma-0" align="center" justify="center">
+                    <v-progress-circular indeterminate color="primary"/>
+                  </v-row>
+                </template>
+              </v-img>
+              <img v-else :src="image" class="image-result"/>
+            </template>
+          </ChoiceNodeContents>
+          <div v-if="choiceMode === 'multiSelect'">
+            <div v-if="choiceNodeOption.showAsSlider" class="multi-select-slider">
+              <v-slider :min="0" :max="choiceMaximumStatus" :step="1" thumb-label v-on:update:model-value="click_slider"
+                        :model-value="select"></v-slider>
+              <p class="text-center">{{ select }}</p>
+            </div>
+            <div v-else class="multi-select">
+              <v-btn v-on:click="click_down" variant="tonal">
+                <v-icon icon="mdi:mdi-chevron-left"/>
+              </v-btn>
+              <p class="text-center">
+                {{ select }}
+              </p>
+              <v-btn v-on:click="click_up" variant="tonal">
+                <v-icon icon="mdi:mdi-chevron-right"/>
+              </v-btn>
+            </div>
           </div>
-          <div v-else class="multi-select">
-            <v-btn v-on:click="click_down" variant="tonal">
-              <v-icon icon="mdi:mdi-chevron-left"/>
-            </v-btn>
-            <p class="text-center">
-              {{ select }}
-            </p>
-            <v-btn v-on:click="click_up" variant="tonal">
-              <v-icon icon="mdi:mdi-chevron-right"/>
-            </v-btn>
+          <div class="wrapper" v-if="childLength > 0 && renderChild">
+            <ChoiceNode class="item" v-for="(n, i) in childLength" ref="choiceNodeChild" :key="n"
+                        :currentPos="[...currentPos, i]" :render-child="renderChild" :clickable="clickable"
+                        @needUpdate="needUpdate">
+            </ChoiceNode>
           </div>
         </div>
-        <div class="wrapper" v-if="childLength > 0 && renderChild">
-          <ChoiceNode class="item" v-for="(n, i) in childLength" ref="choiceNodeChild" :key="n"
-                      :currentPos="[...currentPos, i]" :render-child="renderChild" :clickable="clickable"
-                      @needUpdate="needUpdate">
-          </ChoiceNode>
-        </div>
-      </div>
-    </v-card>
+      </v-card>
+    </div>
   </div>
 
 </template>
@@ -78,9 +80,7 @@ export default {
     let preset = this.$store.getters.getNodePresets[choiceNodeOption['presetName']];
 
     let colorSelectNode = this.$getColor(preset.colorSelectNode, 0xFF40C4FF);
-
-    let colorNode = (preset.colorNode ?? preset.colorNode ?? 0xFFFFFFFF).toString(16);
-    colorNode = '#' + colorNode.substring(2) + colorNode.substring(0, 2);
+    let colorNode = this.$getColor(preset.colorNode, 0xFFFFFFFF);
 
     let choiceStatus = window.getChoiceStatus(this.currentPos);
     let choiceMode = window.getChoiceNodeMode(this.currentPos);
@@ -90,6 +90,11 @@ export default {
     }
 
     let visible = choiceStatus !== 'hide' && choiceMode !== 'onlyCode';
+
+    let outline = "";
+    if (preset.outline !== "none") {
+      outline = `${preset.outlineWidth}px ${preset.outline} ${select > 0 ? colorSelectNode : colorNode}`;
+    }
     return {
       image: imagePos.replaceAll(" ", "%20"),
       imageMaxHeight: preset['maximizingImage'] ? '80vh' : '50vh',
@@ -109,10 +114,12 @@ export default {
       preset: preset,
       round: preset.round + "px",
       padding: preset.padding + "px",
+      outline: outline,
+      outlinePadding: (preset.outlinePadding + 2) + "px",
     }
   },
   methods: {
-    htmlFromQuill(data){
+    htmlFromQuill(data) {
       let modalValue = "";
       if (data && data !== "") {
         let delta = JSON.parse(data);
@@ -159,13 +166,17 @@ export default {
     },
     updateChild() {
       let newContents = window.getContents(this.currentPos);
-      if(this.contentsString !== newContents){
+      if (this.contentsString !== newContents) {
         this.contentsString = newContents;
         this.contentsHtml = this.htmlFromQuill(newContents);
       }
       this.select = window.getSelect(this.currentPos);
       this.choiceStatus = window.getChoiceStatus(this.currentPos);
       this.visible = this.choiceStatus !== 'hide' && this.choiceMode !== 'onlyCode';
+
+      if (this.preset.outline !== "none") {
+        this.outline = `${this.preset.outlineWidth}px ${this.preset.outline} ${this.select > 0 ? this.colorOutline : this.colorNode}`;
+      }
 
       if (!this.choiceNodeOption['occupySpace'] && this.choiceStatus === 'hide') {
         this.gridColumn = 0;
@@ -196,6 +207,12 @@ export default {
   background-color: v-bind(colorNode);
   height: 100%;
   border-radius: v-bind(round);
+}
+
+#outline_padding{
+  border-radius: v-bind(round);
+  border: v-bind(outline);
+  padding: v-bind(outlinePadding)
 }
 
 .outline {
@@ -232,7 +249,7 @@ export default {
   flex-direction: column;
 }
 
-.padding{
+.padding {
   padding: v-bind(padding);
 }
 
