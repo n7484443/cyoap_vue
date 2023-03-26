@@ -6,12 +6,15 @@
   <v-app v-else class="default-font-size default-padding" :full-height="true">
     <div class="background-color">
       <body class="background">
-      <main>
-        <div v-for="(n, i) in child" :key="n">
-          <LineSetting ref="lineSetting" :pos="i" @needUpdate="needUpdate">
-          </LineSetting>
-        </div>
-      </main>
+        <h5 class="version-right">
+          {{ version }}
+        </h5>
+        <main>
+          <div v-for="(n, i) in child" :key="n">
+            <LineSetting ref="lineSetting" :pos="i" @needUpdate="needUpdate">
+            </LineSetting>
+          </div>
+        </main>
       </body>
       <div class="bottom-variable">
         <HorizontalScroll ref="horizontalScroll">
@@ -154,6 +157,7 @@ export default {
       save_as_image: this.$getTranslation('save_as_image'),
       close: this.$getTranslation('close'),
       addedEventListener: false,
+      version: 'flutter_vue version : ' + APP_VERSION
     }
   },
   methods: {
@@ -311,5 +315,9 @@ blockquote {
   margin: 6px;
   padding: 6px;
 
+}
+
+.version-right{
+  text-align: end;
 }
 </style>

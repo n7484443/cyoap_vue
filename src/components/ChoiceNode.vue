@@ -210,9 +210,11 @@ export default {
 }
 
 #outline_padding{
+  width: 100%;
+  height: 100%;
   border-radius: v-bind(round);
   border: v-bind(outline);
-  padding: v-bind(outlinePadding)
+  padding: v-bind(outlinePadding);
 }
 
 .outline {

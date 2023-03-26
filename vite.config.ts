@@ -9,7 +9,7 @@ export default defineConfig({
     server: {
         proxy: {
             '/dist': {
-                target: 'https://interactiveweb.neocities.org/test',
+                target: 'https://yabeogjiyabaeeeabcdefg.on.drv.tw/su',
                 changeOrigin: true,
                 secure: false,
             }
@@ -24,6 +24,9 @@ export default defineConfig({
             autoImport: true,
         }),
     ],
+    define: {
+        APP_VERSION: JSON.stringify(process.env.npm_package_version),
+    },
     resolve: {
         alias: {
             '@': fileURLToPath(new URL('./src', import.meta.url))
