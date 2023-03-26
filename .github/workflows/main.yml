@@ -15,16 +15,14 @@ jobs:
 
       - run: npm run build
 
-      - name: Get latest release version number
-        id: get_version
-        uses: battila7/get-version-action@v2
-
       - run: mkdir ./dist/dist
 
-      - run: 7z a dist/cyoap_vue_${{ steps.get_version.outputs.version-without-v }}.zip ./dist/*
+      - run: |
+          $version= "${{ github.ref_name }}".replace('v', '')
+          7z a dist/cyoap_vue_$version.zip ./dist/*
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            dist/cyoap_vue_${{ steps.get_version.outputs.version-without-v }}.zip
+            dist/cyoap_vue_$version.zip
