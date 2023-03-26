@@ -62,10 +62,12 @@ export default {
       colorLine: colorLine + "FF",
       colorText: colorText + "FF",
       maxSelect: lineOption.maxSelect,
+      maxWidth: this.$store.getters.getCurrentMaxWidth,
     }
   },
   methods: {
     updateChild() {
+      this.maxWidth = this.$store.getters.getCurrentMaxWidth;
       this.choiceStatus = window.getChoiceStatus(this.currentPos);
       if (this.$refs.choiceNode) {
         this.$refs.choiceNode.forEach(function (i) {
@@ -102,24 +104,11 @@ export default {
 }
 .wrapper {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: repeat(auto-fill, min-content);
+  grid-template-columns: repeat(v-bind(maxWidth), 1fr);
   column-gap: 8px;
   row-gap: v-bind(marginVertical);
   grid-auto-flow: row;
   padding: 4px 0px;
-}
-
-@media screen and (min-width: 850px){
-  .wrapper {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: repeat(auto-fill, min-content);
-    column-gap: 8px;
-    row-gap: v-bind(marginVertical);
-    grid-auto-flow: row;
-    padding: 4px 0px;
-  }
 }
 
 .line_text {

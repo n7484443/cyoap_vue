@@ -9,7 +9,7 @@ export default defineConfig({
     server: {
         proxy: {
             '/dist': {
-                target: 'https://yabeogjiyabaeeeabcdefg.on.drv.tw/su',
+                target: 'https://interactiveweb.neocities.org/',
                 changeOrigin: true,
                 secure: false,
             }

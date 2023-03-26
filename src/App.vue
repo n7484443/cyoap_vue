@@ -141,6 +141,15 @@ export default {
   },
 
   data() {
+    this.$store.commit('setSmallDisplay', window.innerWidth);
+    window.addEventListener('resize', () => {
+      let before = this.$store.getters.getCurrentMaxWidth;
+      this.$store.commit('setSmallDisplay', window.innerWidth);
+      let after = this.$store.getters.getCurrentMaxWidth;
+      if(before !== after){
+        this.needUpdate();
+      }
+    });
     return {
       isLoading: 0,
       isLoadingMax: 100,

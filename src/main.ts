@@ -40,8 +40,8 @@ const store = createStore({
                 state.linePresets[e.name] = e;
             })
         },
-        setSmallDisplay(state, bool: boolean) {
-            state.isSmallDisplay = bool;
+        setSmallDisplay(state, size: number) {
+            state.isSmallDisplay = size < 1000;
         }
     },
     getters: {
@@ -54,8 +54,8 @@ const store = createStore({
         getLinePresets(state): Object {
             return state.linePresets;
         },
-        getSmallDisplay(state): boolean {
-            return state.isSmallDisplay;
+        getCurrentMaxWidth(state): number {
+            return state.isSmallDisplay ? 6 : 12;
         },
     }
 })

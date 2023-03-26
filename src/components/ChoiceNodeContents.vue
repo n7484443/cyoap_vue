@@ -1,10 +1,19 @@
 <template>
   <div v-if="renderAsResult || imagePosition === 0">
-    <div v-if="!hideTitle" class="title_color title_font">
-      {{ title }}
+    <div v-if="titlePosition">
+      <div v-if="!hideTitle" class="title_color title_font">
+        {{ title }}
+      </div>
+      <slot name="image"></slot>
+      <slot name="contents"></slot>
     </div>
-    <slot name="image"></slot>
-    <slot name="contents"></slot>
+    <div v-else>
+      <slot name="image"></slot>
+      <div v-if="!hideTitle" class="title_color title_font">
+        {{ title }}
+      </div>
+      <slot name="contents"></slot>
+    </div>
   </div>
 
   <div v-else-if="imagePosition === 1">
@@ -46,8 +55,7 @@ export default {
     preset: Object
   },
   data() {
-    let color = (this.preset.colorTitle ?? 0xFF000000).toString(16);
-    color = '#' + color.substring(2) + color.substring(0, 2);
+    let color = this.$getColor(this.preset.colorTitle, 0xFF000000);
     return {
       titlePosition: this.preset.titlePosition,
       titleOutline: this.preset.titleOutline,

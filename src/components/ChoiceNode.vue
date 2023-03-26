@@ -85,9 +85,6 @@ export default {
     let choiceStatus = window.getChoiceStatus(this.currentPos);
     let choiceMode = window.getChoiceNodeMode(this.currentPos);
     let gridColumn = window.getSize(this.currentPos);
-    if (!choiceNodeOption['occupySpace'] && choiceStatus === 'hide') {
-      gridColumn = 0;
-    }
 
     let visible = choiceStatus !== 'hide' && choiceMode !== 'onlyCode';
 
@@ -101,7 +98,8 @@ export default {
       title: window.getTitle(this.currentPos),
       contentsHtml: contentsHtml,
       contentsString: contentsString,
-      gridColumn: gridColumn,
+      originalWidth: gridColumn,
+      viewWidth: Math.min(gridColumn, this.$store.getters.getCurrentMaxWidth),
       select: window.getSelect(this.currentPos),
       choiceStatus: choiceStatus,
       choiceMode: choiceMode,
@@ -173,15 +171,11 @@ export default {
       this.select = window.getSelect(this.currentPos);
       this.choiceStatus = window.getChoiceStatus(this.currentPos);
       this.visible = this.choiceStatus !== 'hide' && this.choiceMode !== 'onlyCode';
+      this.viewWidth = Math.min(this.originalWidth, this.$store.getters.getCurrentMaxWidth);
+      console.log(this.viewWidth);
 
       if (this.preset.outline !== "none") {
         this.outline = `${this.preset.outlineWidth}px ${this.preset.outline} ${this.select > 0 ? this.colorOutline : this.colorNode}`;
-      }
-
-      if (!this.choiceNodeOption['occupySpace'] && this.choiceStatus === 'hide') {
-        this.gridColumn = 0;
-      } else {
-        this.gridColumn = window.getSize(this.currentPos);
       }
       if (this.$refs.choiceNodeChild) {
         this.$refs.choiceNodeChild.forEach(function (i) {
@@ -197,10 +191,10 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style scoped >
 
 .gridStyle {
-  grid-column: auto / span v-bind(gridColumn);
+  grid-column: auto / span v-bind(viewWidth);
 }
 
 .card {
@@ -229,7 +223,7 @@ export default {
 
 .wrapper {
   display: grid;
-  grid-template-columns: repeat(v-bind(gridColumn), 1fr);
+  grid-template-columns: repeat(v-bind(viewWidth), 1fr);
   grid-template-rows: repeat(auto-fill, min-content);
   column-gap: 8px;
   row-gap: 8px;
