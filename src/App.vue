@@ -97,6 +97,7 @@ export default {
       "Black Han Sans": "Black Han Sans",
       "Black And White Picture": "Black And White Picture",
       "Neo 둥근모": 'NeoDunggeunmo',
+      "IBM Plex Sans KR": "IBM Plex Sans KR"
     };
     let design = JSON.parse(window.getPlatformDesign());
     this.$store.commit('setPlatformDesign', design);
