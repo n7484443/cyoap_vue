@@ -25,20 +25,38 @@ export default {
         return {
             posList: JSON.parse(window.getSelectedPos()).map((n) => n['pos']),
             backgroundColor: color,
+            resultSize: store.isSmallDisplay,
         }
     },
+    computed: {
+        maxWidth() {
+            if(!useStore().isSmallDisplay){
+                return this.resultSize ? 4 : 6;
+            }
+            return this.resultSize ? 2 : 4;
+        },
+        minWidth(){
+            return this.resultSize ? "" : "800px";
+        }
+    },
+    methods: {
+        changeResultSize(){
+            this.resultSize = !this.resultSize;
+        }
+    }
 }
 </script>
 
 <style scoped>
 .padding {
-    padding: 8px;
+    padding: 3px;
     background-color: v-bind(backgroundColor);
+    min-width: v-bind(minWidth);
 }
 
 .wrapper {
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(v-bind(maxWidth), 1fr);
     grid-template-rows: repeat(auto-fill, min-content);
     column-gap: 8px;
     row-gap: 8px;

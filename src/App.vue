@@ -37,10 +37,11 @@
                         </template>
                         <v-card>
                             <v-card-text>
-                                <SelectedResult id="capture"></SelectedResult>
+                                <SelectedResult id="capture" ref="selectedResult"></SelectedResult>
                             </v-card-text>
                             <v-card-actions>
                                 <v-btn color="primary" @click="saveAsImage">{{ save_as_image }}</v-btn>
+                                <v-btn color="primary" @click="changeResultSize">{{ change_result_size }}</v-btn>
                                 <v-btn color="primary" @click="dialog = false">{{ close }}</v-btn>
                             </v-card-actions>
                         </v-card>
@@ -173,6 +174,7 @@ export default {
             marginVertical: '8px',
             summary: this.$getTranslation('summary'),
             save_as_image: this.$getTranslation('save_as_image'),
+            change_result_size: this.$getTranslation('change_result_size'),
             close: this.$getTranslation('close'),
             addedEventListener: false,
             version: 'flutter_vue version : ' + APP_VERSION
@@ -220,6 +222,9 @@ export default {
                 reader.readAsText(file);
             };
             input.click();
+        },
+        changeResultSize(){
+            this.$refs.selectedResult.changeResultSize();
         }
     }
 }

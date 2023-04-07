@@ -28,12 +28,14 @@ export const translation: translationType = {
     en: {
         'save_as_image': 'Save As Image',
         'close': 'Close',
-        'summary': 'SUMMARIZE'
+        'summary': 'SUMMARIZE',
+        'change_result_size': 'Change Result Size'
     },
     ko: {
         'save_as_image': '이미지로 저장',
         'close': '닫기',
-        'summary': '결과창 보기'
+        'summary': '결과창 보기',
+        'change_result_size': '결과창 크기 변경'
     }
 }
 
