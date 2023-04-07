@@ -177,7 +177,6 @@ export default {
             this.choiceStatus = window.getChoiceStatus(this.currentPos);
             this.visible = this.choiceStatus !== 'hide' && this.choiceMode !== 'onlyCode';
             this.viewWidth = Math.min(this.originalWidth, store.getCurrentMaxWidth);
-            console.log(this.viewWidth);
 
             if (this.preset.outline !== "none") {
                 this.outline = `${this.preset.outlineWidth}px ${this.preset.outline} ${this.select > 0 ? this.colorOutline : this.colorNode}`;

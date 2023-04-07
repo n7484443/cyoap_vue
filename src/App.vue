@@ -5,17 +5,18 @@
     </div>
     <v-app v-else class="default-font-size default-padding" :full-height="true">
         <div class="background-color">
-            <body class="background">
-            <h5 class="version-right">
-                {{ version }}
-            </h5>
-            <main>
-                <div v-for="(n, i) in child" :key="n">
-                    <LineSetting ref="lineSetting" :pos="i" @needUpdate="needUpdate">
-                    </LineSetting>
-                </div>
-            </main>
-            </body>
+            <div class="background">
+                <error-log></error-log>
+                <h5 class="version-right">
+                    {{ version }}
+                </h5>
+                <main>
+                    <div v-for="(n, i) in child" :key="n">
+                        <LineSetting ref="lineSetting" :pos="i" @needUpdate="needUpdate">
+                        </LineSetting>
+                    </div>
+                </main>
+            </div>
             <div class="bottom-variable">
                 <HorizontalScroll ref="horizontalScroll">
                 </HorizontalScroll>
@@ -57,11 +58,13 @@ import WebFont from "webfontloader/webfontloader";
 import SelectedResult from "./components/SelectedResult.vue";
 import domtoimage from "dom-to-image-more";
 import {useStore} from "@/fn_common";
+import ErrorLog from "@/components/ErrorLog.vue";
 
 export default {
     name: 'App',
 
     components: {
+        ErrorLog,
         LineSetting,
         HorizontalScroll,
         SelectedResult
@@ -141,6 +144,8 @@ export default {
         }
         this.marginVertical = design.marginVertical + 'px';
         this.isLoading = -1;
+
+        store.setErrorLog(window.getErrorLog());
     },
 
     data() {
@@ -177,6 +182,7 @@ export default {
         updateChild() {
             this.$refs.horizontalScroll.updateList();
             this.$refs.lineSetting.forEach(i => i.updateChild());
+            useStore().setErrorLog(window.getErrorLog());
         },
         needUpdate() {
             this.updateChild();
@@ -254,6 +260,8 @@ export default {
 }
 
 .background {
+    padding-top: 40px;
+    padding-bottom: 20px;
     background: fixed center v-bind(imageBackground);
     background-size: v-bind(backgroundSize);
 }
@@ -309,11 +317,6 @@ export default {
     top: 0;
     left: 0;
     right: 0;
-}
-
-body {
-    padding-top: 40px;
-    padding-bottom: 20px;
 }
 
 li {

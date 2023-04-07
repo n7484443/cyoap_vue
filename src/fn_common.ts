@@ -44,6 +44,7 @@ export const useStore = defineStore({
         nodePresets: new Map<string, object>(),
         linePresets: new Map<string, object>(),
         isSmallDisplay: false,
+        errorLog: [] as string[],
     }),
     actions: {
         setPlatformDesign(platformDesign: object): void {
@@ -61,6 +62,9 @@ export const useStore = defineStore({
         },
         setSmallDisplay(size: number) {
             this.isSmallDisplay = size < 1000;
+        },
+        setErrorLog(error: string[]) {
+            this.errorLog = error;
         }
     },
     getters: {
@@ -76,5 +80,8 @@ export const useStore = defineStore({
         getCurrentMaxWidth(state): number {
             return state.isSmallDisplay ? 6 : 12;
         },
+        getErrorLog(state): string[] {
+            return state.errorLog;
+        }
     },
 })
