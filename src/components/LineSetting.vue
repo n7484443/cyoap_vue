@@ -6,7 +6,7 @@
                     <div v-if="preset['alwaysVisibleLine']">
                         <v-divider thickness="5" length="100vw" class="line" :color="colorLine">
                         </v-divider>
-                        <div v-if="maxSelect != -1" class="line_text">최대 {{ maxSelect }}개만큼 선택 가능</div>
+                        <div v-if="maxSelect !== -1" class="line_text">최대 {{ maxSelect }}개만큼 선택 가능</div>
                     </div>
                     <div class="wrapper">
                         <ChoiceNode v-for="(n, i) in child" ref="choiceNode" :key="n" :current-pos="[...currentPos, i]"
@@ -36,6 +36,10 @@ export default {
         let currentPos = [this.pos];
         let lineOption = JSON.parse(window.getLineOption(this.pos));
         let preset = store.getLinePresets.get(lineOption.presetName);
+        if (!preset) {
+            store.errorLog.push("Line: preset is not exist. (presetName: " + lineOption.presetName + " on pos " +  this.currentPos + ")");
+            preset = window.getLineDefaultPreset();
+        }
         let color = "#1fe0";
         let colorLine;
         let colorText;

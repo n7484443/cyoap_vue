@@ -81,7 +81,13 @@ export default {
         }
 
         let choiceNodeOption = JSON.parse(window.getChoiceNodeOption(this.currentPos));
-        let preset = store.getNodePresets.get(choiceNodeOption['presetName']);
+        let preset = store.getNodePresets.get(choiceNodeOption['presetName']);;
+        if (!preset) {
+            store.errorLog.push("ChoiceNode: preset is not exist. (presetName: " + choiceNodeOption.presetName +
+                " | pos: " + this.currentPos +
+                " | name: " + window.getTitle(this.currentPos) + ")");
+            preset = window.getNodeDefaultPreset();
+        }
 
         let colorSelectNode = this.$getColor(preset.colorSelectNode, 0xFF40C4FF);
         let colorNode = this.$getColor(preset.colorNode, 0xFFFFFFFF);
