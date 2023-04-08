@@ -18,11 +18,10 @@ jobs:
       - run: mkdir ./dist/dist
 
       - run: |
-          $version= "${{ github.ref_name }}".replace('v', '')
-          7z a dist/cyoap_vue_$version.zip ./dist/*
+          7z a dist/cyoap_vue_${{ github.ref_name }}.zip ./dist/*
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            dist/cyoap_vue_$version.zip
+            dist/cyoap_vue_${{ github.ref_name }}.zip
