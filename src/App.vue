@@ -177,7 +177,7 @@ export default {
             change_result_size: this.$getTranslation('change_result_size'),
             close: this.$getTranslation('close'),
             addedEventListener: false,
-            version: 'flutter_vue version : ' + APP_VERSION
+            version: 'cyoap_vue version : ' + APP_VERSION
         }
     },
     methods: {
