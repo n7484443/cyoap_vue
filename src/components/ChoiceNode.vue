@@ -81,7 +81,7 @@ export default {
         }
 
         let choiceNodeOption = JSON.parse(window.getChoiceNodeOption(this.currentPos));
-        let preset = store.getNodePresets.get(choiceNodeOption['presetName']);;
+        let preset = store.getNodePresets.get(choiceNodeOption['presetName']);
         if (!preset) {
             store.errorLog.push("ChoiceNode: preset is not exist. (presetName: " + choiceNodeOption.presetName +
                 " | pos: " + this.currentPos +
@@ -124,6 +124,7 @@ export default {
             padding: preset.padding + "px",
             outline: outline,
             outlinePadding: (preset.outlinePadding + 2) + "px",
+            mainFont: this.$getFont(preset['mainFont'])
         }
     },
     methods: {
@@ -266,7 +267,7 @@ export default {
 }
 
 .content_font {
-    font-family: v-bind(preset ['mainFont']);
+    font-family: v-bind(mainFont);
 }
 
 </style>

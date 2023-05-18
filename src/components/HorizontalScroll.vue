@@ -18,11 +18,14 @@
 
 <script>
 
+import {useStore} from "@/fn_common";
 export default {
     name: "HorizontalScroll",
     data() {
+        const store = useStore();
         return {
             list: window.getValueList(),
+            font: this.$getFont(store.getPlatformDesign['variableFont'])
         }
     },
     methods: {
@@ -45,4 +48,7 @@ export default {
     justify-content: center; /* 수평 중앙 정렬 */
 }
 
+.variable_font {
+    font-family: v-bind(font);
+}
 </style>

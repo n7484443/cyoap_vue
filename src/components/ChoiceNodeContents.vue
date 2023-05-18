@@ -61,6 +61,7 @@ export default {
             titleOutline: this.preset.titleOutline,
             colorTitle: color,
             hideTitle: this.preset.hideTitle,
+            titleFont: this.$getFont(this.preset['titleFont'])
         }
     }
 }
@@ -86,7 +87,7 @@ export default {
 }
 
 .title_font {
-    font-family: v-bind(preset ['titleFont']);
+    font-family: v-bind(titleFont);
     text-align: center;
     font-size: 1.25rem;
 }

@@ -92,18 +92,22 @@ export default {
         window.loadPlatform(platform, output);
 
         let textFontList = {
-            "jua": "Jua",
-            "notoSans": "Noto Sans KR",
-            "notoSerif": "Noto Serif KR",
-            "나눔고딕": "Nanum Gothic",
-            "나눔손글씨 붓": "Nanum Brush Script",
-            "나눔손글씨 펜": "Nanum Pen Script",
-            "Poor Story": "Poor Story",
-            "East Sea Dokdo": "East Sea Dokdo",
-            "Black Han Sans": "Black Han Sans",
-            "Black And White Picture": "Black And White Picture",
-            "Neo 둥근모": 'NeoDunggeunmo',
-            "IBM Plex Sans KR": "IBM Plex Sans KR"
+            google: {
+                "jua": {families: ['Jua']},
+                "notoSans": {families: ['Noto Sans KR']},
+                "notoSerif": {families: ['Noto Serif KR']},
+                "나눔고딕": {families: ['Nanum Gothic']},
+                "나눔손글씨 붓": {families: ["Nanum Brush Script"]},
+                "나눔손글씨 펜": {families: ["Nanum Pen Script"]},
+                "Poor Story": {families: ["Poor Story"]},
+                "East Sea Dokdo": {families: ["East Sea Dokdo"]},
+                "Black Han Sans": {families: ["Black Han Sans"]},
+                "Black And White Picture": {families: ["Black And White Picture"]},
+                "IBM Plex Sans KR": {families: ["IBM Plex Sans KR"]}
+            },
+            custom: {
+                "Neo 둥근모": {families: ['NeoDunggeunmo']},
+            }
         };
         let design = JSON.parse(window.getPlatformDesign());
         store.setPlatformDesign(design);
@@ -114,14 +118,22 @@ export default {
             fontHashSet.add(e['titleFont']);
             fontHashSet.add(e['mainFont']);
         });
+        fontHashSet.add(design['variableFont']);
+
+        for (let entry in textFontList) {
+            for (let fontName in textFontList[entry]) {
+                if (!fontHashSet.has(fontName)) {
+                    delete textFontList[entry][fontName]
+                }
+            }
+            if(Object.keys(textFontList[entry]).length === 0 && textFontList[entry].constructor === Object){
+                delete textFontList[entry];
+            }
+        }
+
         store.setNodePresets(nodePresetList);
         store.setLinePresets(linePresetList);
-        this.variableFont = textFontList[design['variableFont']];
-        WebFont.load({
-            google: {
-                families: [...fontHashSet, this.variableFont]
-            }
-        });
+        WebFont.load({textFontList});
 
         if (design.backgroundImage) {
             this.imageBackground = "url(/dist/images/" + design.backgroundImage.replaceAll(" ", "%20") + ")";
@@ -165,7 +177,6 @@ export default {
             isLoadingMax: 100,
             modelValue: "",
             child: 0,
-            variableFont: "",
             imageBackground: "",
             backgroundRepeat: "no-repeat",
             backgroundSize: "auto",
@@ -223,7 +234,7 @@ export default {
             };
             input.click();
         },
-        changeResultSize(){
+        changeResultSize() {
             this.$refs.selectedResult.changeResultSize();
         }
     }
@@ -257,11 +268,6 @@ export default {
     justify-content: center;
     align-items: center;
     height: 240px;
-}
-
-.variable_font {
-    font-family: v-bind(variableFont);
-    font-size: 1rem;
 }
 
 .background {

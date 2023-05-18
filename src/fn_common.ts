@@ -1,5 +1,24 @@
 import {defineStore} from 'pinia';
 
+export const textFontList = {
+    google: {
+        "jua": {families: ['Jua']},
+        "notoSans": {families: ['Noto Sans KR']},
+        "notoSerif": {families: ['Noto Serif KR']},
+        "나눔고딕": {families: ['Nanum Gothic']},
+        "나눔손글씨 붓": {families: ["Nanum Brush Script"]},
+        "나눔손글씨 펜": {families: ["Nanum Pen Script"]},
+        "Poor Story": {families: ["Poor Story"]},
+        "East Sea Dokdo": {families: ["East Sea Dokdo"]},
+        "Black Han Sans": {families: ["Black Han Sans"]},
+        "Black And White Picture": {families: ["Black And White Picture"]},
+        "IBM Plex Sans KR": {families: ["IBM Plex Sans KR"]}
+    },
+    custom: {
+        "Neo 둥근모": {families: ['NeoDunggeunmo']},
+    }
+};
+
 export default {
     install: (app: any) => {
         app.config.globalProperties.$getColor = (value: number, defaultColor: number): string => {
@@ -15,6 +34,19 @@ export default {
             }
             return translation[language][input];
         };
+        app.config.globalProperties.$getFont = (font: string): string => {
+            if (font === "default") {
+                font = "notoSans";
+            }
+            for(let key in textFontList){
+                // @ts-ignore
+                let fontObject = textFontList[key][font];
+                if(fontObject){
+                    return fontObject["families"];
+                }
+            }
+            return "Noto Sans KR";
+        }
     }
 }
 
@@ -84,6 +116,6 @@ export const useStore = defineStore({
         },
         getErrorLog(state): string[] {
             return state.errorLog;
-        }
+        },
     },
 })
