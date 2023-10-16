@@ -5,7 +5,7 @@
             <v-card :class="['card', {'outline': outline === '' && select > 0}]"
                     v-on:click="click"
                     :disabled="choiceStatus === 'closed'" :elevation="preset.elevation"
-                    :color="colorNode">
+                    :color="colorCurrent">
                 <div class="container padding">
                     <ChoiceNodeContents :imagePosition="preset['imagePosition']" :title="title"
                                         :renderAsResult="!renderChild"
@@ -86,11 +86,13 @@ export default {
             store.errorLog.push("ChoiceNode: preset is not exist. (presetName: " + choiceNodeOption.presetName +
                 " | pos: " + this.currentPos +
                 " | name: " + window.getTitle(this.currentPos) + ")");
-            preset = window.getNodeDefaultPreset();
+            preset = JSON.parse(window.getNodeDefaultPreset());
         }
-
-        let colorSelectNode = this.$getColor(preset.colorSelectNode, 0xFF40C4FF);
-        let colorNode = this.$getColor(preset.colorNode, 0xFFFFFFFF);
+        let select = window.getSelect(this.currentPos)
+        let colorBase = this.$getColor(preset.colorNode, 0xFFFFFFFF);
+        let colorOutline = this.$getColor(preset.outlineOption.outlineSelectColor, 0xFF40C4FF);
+        let colorSelect = this.$getColor(preset.selectColorOption.selectColor, 0xFF40C4FF);
+        let colorCurrent = select > 0 && this.preset.selectColorOption.enable ? colorSelect : colorBase;
 
         let choiceStatus = window.getChoiceStatus(this.currentPos);
         let choiceMode = window.getChoiceNodeMode(this.currentPos);
@@ -99,8 +101,8 @@ export default {
         let visible = choiceStatus !== 'hide' && choiceMode !== 'onlyCode';
 
         let outline = "";
-        if (preset.outline !== "none") {
-            outline = `${preset.outlineWidth}px ${preset.outline} ${select > 0 ? colorSelectNode : colorNode}`;
+        if (preset.outlineOption.outlineType !== "none") {
+            outline = `${preset.outlineOption.outlineWidth}px ${preset.outlineOption.outlineType} ${select > 0 ? colorOutline : colorBase}`;
         }
         return {
             image: imagePos.replaceAll(" ", "%20"),
@@ -110,20 +112,22 @@ export default {
             contentsString: contentsString,
             originalWidth: gridColumn,
             viewWidth: Math.min(gridColumn, store.getCurrentMaxWidth),
-            select: window.getSelect(this.currentPos),
+            select: select,
             choiceStatus: choiceStatus,
             choiceMode: choiceMode,
             choiceMaximumStatus: window.getMaximumStatus(this.currentPos),
             childLength: window.childLength(this.currentPos),
             choiceNodeOption: choiceNodeOption,
-            colorOutline: colorSelectNode,
-            colorNode: colorNode,
+            colorBase: colorBase,
+            colorCurrent: colorCurrent,
+            colorOutline: colorOutline,
+            colorSelect: colorSelect,
             visible: visible,
             preset: preset,
             round: preset.round + "px",
             padding: preset.padding + "px",
             outline: outline,
-            outlinePadding: (preset.outlinePadding + 2) + "px",
+            outlinePadding: (preset.outlineOption.outlinePadding + 2) + "px",
             mainFont: this.$getFont(preset['mainFont'])
         }
     },
@@ -185,9 +189,10 @@ export default {
             this.visible = this.choiceStatus !== 'hide' && this.choiceMode !== 'onlyCode';
             this.viewWidth = Math.min(this.originalWidth, store.getCurrentMaxWidth);
 
-            if (this.preset.outline !== "none") {
-                this.outline = `${this.preset.outlineWidth}px ${this.preset.outline} ${this.select > 0 ? this.colorOutline : this.colorNode}`;
+            if (this.preset.outlineOption.outlineType !== "none") {
+                this.outline = `${this.preset.outlineOption.outlineWidth}px ${this.preset.outlineOption.outlineType} ${this.select > 0 ? this.colorOutline : this.colorBase}`;
             }
+            this.colorCurrent = this.select > 0 && this.preset.selectColorOption.enable ? this.colorSelect : this.colorBase;
             if (this.$refs.choiceNodeChild) {
                 this.$refs.choiceNodeChild.forEach(function (i) {
                     if (i) {
@@ -209,7 +214,7 @@ export default {
 }
 
 .card {
-    background-color: v-bind(colorNode);
+    background-color: v-bind(colorCurrent);
     height: 100%;
     border-radius: v-bind(round);
 }
