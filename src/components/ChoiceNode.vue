@@ -92,7 +92,7 @@ export default {
         let colorBase = this.$getColor(preset.colorNode, 0xFFFFFFFF);
         let colorOutline = this.$getColor(preset.outlineOption.outlineSelectColor, 0xFF40C4FF);
         let colorSelect = this.$getColor(preset.selectColorOption.selectColor, 0xFF40C4FF);
-        let colorCurrent = select > 0 && this.preset.selectColorOption.enable ? colorSelect : colorBase;
+        let colorCurrent = select > 0 && preset.selectColorOption.enable ? colorSelect : colorBase;
 
         let choiceStatus = window.getChoiceStatus(this.currentPos);
         let choiceMode = window.getChoiceNodeMode(this.currentPos);

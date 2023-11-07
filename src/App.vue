@@ -29,7 +29,7 @@
                         <v-btn color="primary" variant="text" icon="mdi-upload" width="36" height="36"
                                v-on:click="loadCurrentStatus"/>
                     </div>
-                    <v-dialog v-model="dialog" scrollable>
+                    <v-dialog v-model="dialog" :scrollable=true>
                         <template v-slot:activator="{ props }">
                             <v-btn color="primary" class="mx-3" v-bind="props">
                                 {{ summary }}
