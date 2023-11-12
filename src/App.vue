@@ -52,7 +52,7 @@
     </v-app>
 </template>
 
-<script>
+<script lang="ts">
 import LineSetting from './components/LineSetting.vue';
 import HorizontalScroll from "./components/HorizontalScroll.vue";
 import WebFont from "webfontloader/webfontloader";
@@ -74,10 +74,10 @@ export default {
     async created() {
         const store = useStore();
         const url = "dist/";
-        let platform = await fetch(url + "platform.json?time=" + new Date().getTime());
-        platform = await platform.text();
-        let lineData = await fetch(url + "nodes/list.json?time=" + new Date().getTime());
-        lineData = await lineData.json();
+        let platformResponse = await fetch(url + "platform.json?time=" + new Date().getTime());
+        let platform = await platformResponse.text();
+        let lineDataResponse = await fetch(url + "nodes/list.json?time=" + new Date().getTime());
+        let lineData = await lineDataResponse.json();
         let lineSetting = [];
 
         this.isLoadingMax = lineData.length;
@@ -111,12 +111,12 @@ export default {
         };
         let design = JSON.parse(window.getPlatformDesign());
         store.setPlatformDesign(design);
-        let nodePresetList = JSON.parse(window.getNodePresetList());
+        let nodePresetList:ChoiceNodeDesignPreset[] = JSON.parse(window.getNodePresetList());
         let linePresetList = JSON.parse(window.getLinePresetList());
         let fontHashSet = new Set();
         nodePresetList.forEach(function (e) {
-            fontHashSet.add(e['titleFont']);
-            fontHashSet.add(e['mainFont']);
+            fontHashSet.add(e.titleFont);
+            fontHashSet.add(e.mainFont);
         });
         fontHashSet.add(design['variableFont']);
 

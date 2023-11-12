@@ -1,11 +1,11 @@
 <template>
     <div v-if="choiceNodeOption['isOccupySpace'] && !visible" class="gridStyle"/>
     <div v-else-if="visible" class="gridStyle">
-        <div id="outline_padding">
-            <v-card :class="['card', {'outline': outline === '' && select > 0}]"
+        <div class="maxHeight" :style="outlineStyle">
+            <v-card class="maxHeight"
+                    :style="cardStyle"
                     v-on:click="click"
-                    :disabled="choiceStatus === 'closed'" :elevation="preset.elevation"
-                    :color="colorCurrent">
+                    :disabled="choiceStatus === 'closed'" :elevation="preset.elevation">
                 <div class="container padding">
                     <ChoiceNodeContents :imagePosition="preset['imagePosition']" :title="title"
                                         :renderAsResult="!renderChild"
@@ -56,10 +56,11 @@
 
 </template>
 
-<script>
+<script lang="ts">
 import {QuillDeltaToHtmlConverter} from "quill-delta-to-html";
 import ChoiceNodeContents from "@/components/ChoiceNodeContents.vue";
 import {useStore} from "@/fn_common";
+import {ColorOption, ColorType, GradientType, OutlineOption, OutlineType} from "@/node_preset.ts";
 
 export default {
     props: {
@@ -71,6 +72,59 @@ export default {
         ChoiceNodeContents
     },
     name: "ChoiceNode",
+    computed: {
+        currentOutline():OutlineOption {
+            let defaultOutlineOption = this.preset.defaultOutlineOption;
+            let selectOutlineOption = this.preset.selectOutlineOption;
+            return this.select > 0 && this.preset.selectOutlineEnable ? selectOutlineOption : defaultOutlineOption;
+        },
+        currentColor():ColorOption {
+            let defaultColorOption = this.preset.defaultColorOption;
+            let selectColorOption = this.preset.selectColorOption;
+            return this.select > 0 && this.preset.selectColorEnable ? selectColorOption : defaultColorOption;
+        },
+        outlineStyle() {
+            return {
+                "outline-width": this.currentOutline.outlineWidth + "px",
+                "outline-color": this.$getColor(this.currentOutline.outlineColor.color),
+                "outline-style": this.currentOutline.outlineType !== OutlineType.none ? this.currentOutline.outlineType : "",
+                "padding": (this.currentOutline.outlinePadding + 2).toString() + "px",
+                "round": this.preset.round + "px",
+            }
+        },
+        cardStyle(){
+            let outputCss = {
+                "border-radius": this.preset.round.toString() + "px"
+            };
+            if(this.currentColor.colorType === ColorType.solid){
+                outputCss["background-color"] = this.$getColor(this.currentColor.color);
+                return outputCss;
+            }
+            let sx = this.currentColor.gradientData[0].gradientPos.$1;
+            let sy = this.currentColor.gradientData[0].gradientPos.$2;
+            let ex = this.currentColor.gradientData[1].gradientPos.$1;
+            let ey = this.currentColor.gradientData[1].gradientPos.$2;
+            let startColor = this.$getColor(this.currentColor.gradientData[0].color);
+            let endColor = this.$getColor(this.currentColor.gradientData[1].color);
+            let width = Math.abs(ex - sx);
+            let height = Math.abs(ey - sy);
+            let angle = Math.atan2(height * (ex - sx), width * (ey - sy)) * 180 / Math.PI;
+            switch(this.currentColor.gradientType){
+                case GradientType.linear:
+                    angle += 90;
+                    outputCss["background"] = `linear-gradient(${angle}deg, ${startColor}, ${endColor})`;
+                    break;
+                case GradientType.radial:
+                    outputCss["background"] = `radial-gradient(circle at ${sx * 100.0}% ${sy * 100.0}%, ${startColor}, ${endColor})`;
+                    break;
+                case GradientType.sweep:
+                    outputCss["background"] = `conic-gradient(from ${angle - 90}deg at ${sx * 100.0}% ${sy * 100.0}%, ${startColor}, ${endColor}, ${startColor})`;
+                    console.log(outputCss["background"]);
+                    break;
+            }
+            return outputCss;
+        }
+    },
     data() {
         const store = useStore();
         let contentsString = window.getContents(this.currentPos);
@@ -89,10 +143,6 @@ export default {
             preset = JSON.parse(window.getNodeDefaultPreset());
         }
         let select = window.getSelect(this.currentPos)
-        let colorBase = this.$getColor(preset.colorNode, 0xFFFFFFFF);
-        let colorOutline = this.$getColor(preset.outlineOption.outlineSelectColor, 0xFF40C4FF);
-        let colorSelect = this.$getColor(preset.selectColorOption.selectColor, 0xFF40C4FF);
-        let colorCurrent = select > 0 && preset.selectColorOption.enable ? colorSelect : colorBase;
 
         let choiceStatus = window.getChoiceStatus(this.currentPos);
         let choiceMode = window.getChoiceNodeMode(this.currentPos);
@@ -100,10 +150,6 @@ export default {
 
         let visible = choiceStatus !== 'hide' && choiceMode !== 'onlyCode';
 
-        let outline = "";
-        if (preset.outlineOption.outlineType !== "none") {
-            outline = `${preset.outlineOption.outlineWidth}px ${preset.outlineOption.outlineType} ${select > 0 ? colorOutline : colorBase}`;
-        }
         return {
             image: imagePos.replaceAll(" ", "%20"),
             imageMaxHeight: preset['maximizingImage'] ? '80vh' : '50vh',
@@ -118,16 +164,9 @@ export default {
             choiceMaximumStatus: window.getMaximumStatus(this.currentPos),
             childLength: window.childLength(this.currentPos),
             choiceNodeOption: choiceNodeOption,
-            colorBase: colorBase,
-            colorCurrent: colorCurrent,
-            colorOutline: colorOutline,
-            colorSelect: colorSelect,
             visible: visible,
             preset: preset,
-            round: preset.round + "px",
             padding: preset.padding + "px",
-            outline: outline,
-            outlinePadding: (preset.outlineOption.outlinePadding + 2) + "px",
             mainFont: this.$getFont(preset['mainFont'])
         }
     },
@@ -189,10 +228,6 @@ export default {
             this.visible = this.choiceStatus !== 'hide' && this.choiceMode !== 'onlyCode';
             this.viewWidth = Math.min(this.originalWidth, store.getCurrentMaxWidth);
 
-            if (this.preset.outlineOption.outlineType !== "none") {
-                this.outline = `${this.preset.outlineOption.outlineWidth}px ${this.preset.outlineOption.outlineType} ${this.select > 0 ? this.colorOutline : this.colorBase}`;
-            }
-            this.colorCurrent = this.select > 0 && this.preset.selectColorOption.enable ? this.colorSelect : this.colorBase;
             if (this.$refs.choiceNodeChild) {
                 this.$refs.choiceNodeChild.forEach(function (i) {
                     if (i) {
@@ -213,18 +248,8 @@ export default {
     grid-column: auto / span v-bind(viewWidth);
 }
 
-.card {
-    background-color: v-bind(colorCurrent);
+.maxHeight {
     height: 100%;
-    border-radius: v-bind(round);
-}
-
-#outline_padding {
-    width: 100%;
-    height: 100%;
-    border-radius: v-bind(round);
-    border: v-bind(outline);
-    padding: v-bind(outlinePadding);
 }
 
 .outline {

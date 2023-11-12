@@ -1,4 +1,5 @@
 import {defineStore} from 'pinia';
+import {ChoiceNodeDesignPreset} from "@/node_preset";
 
 export const textFontList = {
     google: {
@@ -21,8 +22,8 @@ export const textFontList = {
 
 export default {
     install: (app: any) => {
-        app.config.globalProperties.$getColor = (value: number, defaultColor: number): string => {
-            let color = (value ?? defaultColor).toString(16);
+        app.config.globalProperties.$getColor = (value: number, defaultColor?: number): string => {
+            let color = (value ?? defaultColor ?? 0xFF40C4FF).toString(16);
             color = '#' + color.substring(2) + color.substring(0, 2);
             return color;
         };
@@ -75,7 +76,7 @@ export const useStore = defineStore({
     id: 'store',
     state: () => ({
         platformDesign: {},
-        nodePresets: new Map<string, object>(),
+        nodePresets: new Map<string, ChoiceNodeDesignPreset>(),
         linePresets: new Map<string, object>(),
         isSmallDisplay: false,
         errorLog: [] as string[],
@@ -84,7 +85,7 @@ export const useStore = defineStore({
         setPlatformDesign(platformDesign: object): void {
             this.platformDesign = platformDesign;
         },
-        setNodePresets(presetList: { name: string }[]) {
+        setNodePresets(presetList: ChoiceNodeDesignPreset[]) {
             for (let preset of presetList) {
                 this.nodePresets.set(preset.name, preset);
             }
@@ -105,7 +106,7 @@ export const useStore = defineStore({
         getPlatformDesign(state): object {
             return state.platformDesign;
         },
-        getNodePresets(state): Map<string, object> {
+        getNodePresets(state): Map<string, ChoiceNodeDesignPreset> {
             return state.nodePresets;
         },
         getLinePresets(state): Map<string, object> {
