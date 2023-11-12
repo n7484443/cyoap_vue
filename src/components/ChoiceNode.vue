@@ -83,11 +83,11 @@ export default {
             let selectColorOption = this.preset.selectColorOption;
             return this.select > 0 && this.preset.selectColorEnable ? selectColorOption : defaultColorOption;
         },
-        outlineStyle() {
+        outlineStyle() {//border 로 구현
             return {
-                "outline-width": this.currentOutline.outlineWidth + "px",
-                "outline-color": this.$getColor(this.currentOutline.outlineColor.color),
-                "outline-style": this.currentOutline.outlineType !== OutlineType.none ? this.currentOutline.outlineType : "",
+                "border-width": this.currentOutline.outlineWidth + "px",
+                "border-color": this.$getColor(this.currentOutline.outlineColor.color),
+                "border-style": this.currentOutline.outlineType !== OutlineType.none ? this.currentOutline.outlineType : "",
                 "padding": (this.currentOutline.outlinePadding + 2).toString() + "px",
                 "round": this.preset.round + "px",
             }
