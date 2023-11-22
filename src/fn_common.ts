@@ -1,5 +1,7 @@
 import {defineStore} from 'pinia';
-import {ChoiceNodeDesignPreset} from "@/node_preset";
+import {PlatformDesignSetting} from "@/preset/design_setting";
+import {ChoiceLineDesignPreset} from "@/preset/line_preset";
+import {ChoiceNodeDesignPreset, ColorOption, ColorType, GradientType} from "@/preset/node_preset";
 
 export const textFontList = {
     google: {
@@ -48,6 +50,35 @@ export default {
             }
             return "Noto Sans KR";
         }
+        app.config.globalProperties.$getCssFromColorOption = (colorOption: ColorOption): Object => {
+            let outputCss: {[key:string]: string} = {};
+            if(colorOption.colorType === ColorType.solid){
+                outputCss["background-color"] = app.config.globalProperties.$getColor(colorOption.color);
+                return outputCss;
+            }
+            let sx = colorOption.gradientData[0].gradientPos.$1;
+            let sy = colorOption.gradientData[0].gradientPos.$2;
+            let ex = colorOption.gradientData[1].gradientPos.$1;
+            let ey = colorOption.gradientData[1].gradientPos.$2;
+            let startColor = app.config.globalProperties.$getColor(colorOption.gradientData[0].color);
+            let endColor = app.config.globalProperties.$getColor(colorOption.gradientData[1].color);
+            let width = Math.abs(ex - sx);
+            let height = Math.abs(ey - sy);
+            let angle = Math.atan2(height * (ex - sx), width * (ey - sy)) * 180 / Math.PI;
+            switch(colorOption.gradientType){
+                case GradientType.linear:
+                    angle += 90;
+                    outputCss["background"] = `linear-gradient(${angle}deg, ${startColor}, ${endColor})`;
+                    break;
+                case GradientType.radial:
+                    outputCss["background"] = `radial-gradient(circle at ${sx * 100.0}% ${sy * 100.0}%, ${startColor}, ${endColor})`;
+                    break;
+                case GradientType.sweep:
+                    outputCss["background"] = `conic-gradient(from ${angle - 90}deg at ${sx * 100.0}% ${sy * 100.0}%, ${startColor}, ${endColor}, ${startColor})`;
+                    break;
+            }
+            return outputCss;
+        }
     }
 }
 
@@ -75,23 +106,19 @@ export const translation: translationType = {
 export const useStore = defineStore({
     id: 'store',
     state: () => ({
-        platformDesign: {},
+        platformDesign: null as PlatformDesignSetting | null,
         nodePresets: new Map<string, ChoiceNodeDesignPreset>(),
-        linePresets: new Map<string, object>(),
+        linePresets: new Map<string, ChoiceLineDesignPreset>(),
         isSmallDisplay: false,
         errorLog: [] as string[],
     }),
     actions: {
-        setPlatformDesign(platformDesign: object): void {
+        setPlatformDesign(platformDesign: PlatformDesignSetting): void {
             this.platformDesign = platformDesign;
-        },
-        setNodePresets(presetList: ChoiceNodeDesignPreset[]) {
-            for (let preset of presetList) {
+            for (let preset of platformDesign.choiceNodePresetList) {
                 this.nodePresets.set(preset.name, preset);
             }
-        },
-        setLinePresets(presetList: { name: string }[]) {
-            for (let preset of presetList) {
+            for (let preset of platformDesign.choiceLinePresetList) {
                 this.linePresets.set(preset.name, preset);
             }
         },
@@ -103,13 +130,13 @@ export const useStore = defineStore({
         }
     },
     getters: {
-        getPlatformDesign(state): object {
-            return state.platformDesign;
+        getPlatformDesign(state): PlatformDesignSetting {
+            return state.platformDesign!;
         },
         getNodePresets(state): Map<string, ChoiceNodeDesignPreset> {
             return state.nodePresets;
         },
-        getLinePresets(state): Map<string, object> {
+        getLinePresets(state): Map<string, ChoiceLineDesignPreset> {
             return state.linePresets;
         },
         getCurrentMaxWidth(state): number {

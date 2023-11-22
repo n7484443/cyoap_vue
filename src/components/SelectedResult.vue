@@ -19,12 +19,8 @@ export default {
     },
     data() {
         const store = useStore();
-        let platformDesign = store.getPlatformDesign;
-        let color = (platformDesign.backgroundColor ?? 0xFFFFFFFF).toString(16);
-        color = '#' + color.substring(2);
         return {
             posList: JSON.parse(window.getSelectedPos()).map((n) => n['pos']),
-            backgroundColor: color,
             resultSize: store.isSmallDisplay,
         }
     },
@@ -50,7 +46,6 @@ export default {
 <style scoped>
 .padding {
     padding: 3px;
-    background-color: v-bind(backgroundColor);
     min-width: v-bind(minWidth);
 }
 

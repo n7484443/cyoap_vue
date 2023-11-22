@@ -60,7 +60,7 @@
 import {QuillDeltaToHtmlConverter} from "quill-delta-to-html";
 import ChoiceNodeContents from "@/components/ChoiceNodeContents.vue";
 import {useStore} from "@/fn_common";
-import {ColorOption, ColorType, GradientType, OutlineOption, OutlineType} from "@/node_preset.ts";
+import {ColorOption, ColorType, GradientType, OutlineOption, OutlineType} from "@/preset/node_preset.ts";
 
 export default {
     props: {
@@ -93,35 +93,8 @@ export default {
             }
         },
         cardStyle(){
-            let outputCss = {
-                "border-radius": this.preset.round.toString() + "px"
-            };
-            if(this.currentColor.colorType === ColorType.solid){
-                outputCss["background-color"] = this.$getColor(this.currentColor.color);
-                return outputCss;
-            }
-            let sx = this.currentColor.gradientData[0].gradientPos.$1;
-            let sy = this.currentColor.gradientData[0].gradientPos.$2;
-            let ex = this.currentColor.gradientData[1].gradientPos.$1;
-            let ey = this.currentColor.gradientData[1].gradientPos.$2;
-            let startColor = this.$getColor(this.currentColor.gradientData[0].color);
-            let endColor = this.$getColor(this.currentColor.gradientData[1].color);
-            let width = Math.abs(ex - sx);
-            let height = Math.abs(ey - sy);
-            let angle = Math.atan2(height * (ex - sx), width * (ey - sy)) * 180 / Math.PI;
-            switch(this.currentColor.gradientType){
-                case GradientType.linear:
-                    angle += 90;
-                    outputCss["background"] = `linear-gradient(${angle}deg, ${startColor}, ${endColor})`;
-                    break;
-                case GradientType.radial:
-                    outputCss["background"] = `radial-gradient(circle at ${sx * 100.0}% ${sy * 100.0}%, ${startColor}, ${endColor})`;
-                    break;
-                case GradientType.sweep:
-                    outputCss["background"] = `conic-gradient(from ${angle - 90}deg at ${sx * 100.0}% ${sy * 100.0}%, ${startColor}, ${endColor}, ${startColor})`;
-                    console.log(outputCss["background"]);
-                    break;
-            }
+            let outputCss = this.$getCssFromColorOption(this.currentColor);
+            outputCss["border-radius"] = this.preset.round.toString() + "px"
             return outputCss;
         }
     },
