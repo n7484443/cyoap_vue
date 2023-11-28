@@ -71,7 +71,7 @@ export default {
                     outputCss["background"] = `linear-gradient(${angle}deg, ${startColor}, ${endColor})`;
                     break;
                 case GradientType.radial:
-                    outputCss["background"] = `radial-gradient(circle at ${sx * 100.0}% ${sy * 100.0}%, ${startColor}, ${endColor})`;
+                    outputCss["background"] = `radial-gradient(circle at ${sx * 100.0}% ${sy * 100.0}%, ${startColor} 0%, ${endColor} ${ex}%`;
                     break;
                 case GradientType.sweep:
                     outputCss["background"] = `conic-gradient(from ${angle - 90}deg at ${sx * 100.0}% ${sy * 100.0}%, ${startColor}, ${endColor}, ${startColor})`;
