@@ -64,17 +64,16 @@ export default {
             let endColor = app.config.globalProperties.$getColor(colorOption.gradientData[1].color);
             let width = Math.abs(ex - sx);
             let height = Math.abs(ey - sy);
-            let angle = Math.atan2(height * (ex - sx), width * (ey - sy)) * 180 / Math.PI;
             switch(colorOption.gradientType){
                 case GradientType.linear:
-                    angle += 90;
+                    let angle = Math.atan2(height * (ex - sx), width * (ey - sy)) * 180 / Math.PI + 90;
                     outputCss["background"] = `linear-gradient(${angle}deg, ${startColor}, ${endColor})`;
                     break;
                 case GradientType.radial:
                     outputCss["background"] = `radial-gradient(circle at ${sx * 100.0}% ${sy * 100.0}%, ${startColor} 0%, ${endColor} ${ex}%`;
                     break;
                 case GradientType.sweep:
-                    outputCss["background"] = `conic-gradient(from ${angle - 90}deg at ${sx * 100.0}% ${sy * 100.0}%, ${startColor}, ${endColor}, ${startColor})`;
+                    outputCss["background"] = `conic-gradient(from ${90}deg at ${sx * 100.0}% ${sy * 100.0}%, ${startColor}, ${endColor}, ${startColor})`;
                     break;
             }
             return outputCss;
