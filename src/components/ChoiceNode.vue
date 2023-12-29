@@ -151,9 +151,9 @@ export default {
                 let converter = new QuillDeltaToHtmlConverter(delta, {
                     inlineStyles: {
                         size: {
-                            'small': 'font-size: 0.77rem',
-                            'large': 'font-size: 1.38rem',
-                            'huge': 'font-size: 1.69rem'
+                            'small': 'font-size: 10px',
+                            'large': 'font-size: 18px',
+                            'huge': 'font-size: 22px'
                         },
                     }
                 });

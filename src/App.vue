@@ -304,7 +304,7 @@ export default {
 }
 
 .default-font-size {
-  font-size: 15px;
+  font-size: 13px;
 }
 
 .bottom-variable {

@@ -41,7 +41,6 @@ export default {
       store.errorLog.push("Line: preset is not exist. (presetName: " + lineOption.presetName + " on pos " + this.currentPos + ")");
       preset = window.getLineDefaultPreset();
     }
-    console.log(preset)
     return {
       isActive: false,
       currentPos: currentPos,

@@ -5,9 +5,9 @@
                 <v-card class="card" variant="outlined">
                     <div class="inner variable_font">
                         <strong>
-                            <h4>
+                            <h3>
                                 {{ n }}
-                            </h4>
+                            </h3>
                         </strong>
                     </div>
                 </v-card>
