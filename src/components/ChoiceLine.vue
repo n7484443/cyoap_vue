@@ -34,7 +34,7 @@ export default {
   name: "LineSetting",
   data() {
     const store = useStore();
-    let currentPos = [this.pos];
+    let currentPos = [0, this.pos];
     let lineOption = JSON.parse(window.getLineOption(this.pos));
     let preset = store.getLinePresets.get(lineOption.presetName);
     if (!preset) {

@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import LineSetting from './components/LineSetting.vue';
+import LineSetting from './components/ChoiceLine.vue';
 import HorizontalScroll from "./components/HorizontalScroll.vue";
 import WebFont from "webfontloader/webfontloader";
 import SelectedResult from "./components/SelectedResult.vue";
