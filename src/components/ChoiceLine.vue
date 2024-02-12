@@ -1,5 +1,5 @@
 <template>
-  <div v-if="choiceStatus !== 'hide'">
+  <div v-if="!choiceStatus.isHide">
     <v-responsive min-height="100">
       <v-lazy v-model="isActive">
         <div class="item" :style="background">
@@ -23,6 +23,7 @@
 import ChoiceNode from "@/components/ChoiceNode.vue";
 import {useStore} from "@/fn_common";
 import {ChoiceLineDesignPreset} from "@/preset/line_preset.js";
+import {OutlineOption} from "@/preset/node_preset";
 
 export default {
   components: {
