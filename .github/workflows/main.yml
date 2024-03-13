@@ -21,7 +21,7 @@ jobs:
           7z a dist/cyoap_vue_${{ github.ref_name }}.zip ./dist/*
 
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2.0.2
         with:
           files: |
             dist/cyoap_vue_${{ github.ref_name }}.zip
