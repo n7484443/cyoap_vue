@@ -89,10 +89,11 @@ export default {
         "border-color": this.$getColor(this.currentOutline.outlineColor.color),
         "border-style": this.currentOutline.outlineType !== OutlineType.none ? this.currentOutline.outlineType : "",
         "padding": (this.currentOutline.outlinePadding + 2).toString() + "px",
-        "round": this.preset.round + "px",
+        "border-radius": this.preset.round + "px",
       }
     },
     cardStyle() {
+      console.log(this.currentColor)
       let outputCss = this.$getCssFromColorOption(this.currentColor);
       outputCss["border-radius"] = this.preset.round.toString() + "px"
       return outputCss;

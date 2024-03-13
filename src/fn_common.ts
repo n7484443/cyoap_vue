@@ -26,7 +26,11 @@ export default {
     install: (app: any) => {
         app.config.globalProperties.$getColor = (value: number, defaultColor?: number): string => {
             let color = (value ?? defaultColor ?? 0xFF40C4FF).toString(16);
+            if(color.length == 6) {
+                color = "00" + color;
+            }
             color = '#' + color.substring(2) + color.substring(0, 2);
+            // console.log(color)
             return color;
         };
         app.config.globalProperties.$getTranslation = (input: string): string => {
