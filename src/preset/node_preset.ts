@@ -42,8 +42,8 @@ export interface ChoiceNodeDesignPreset {
     name: string;
     titlePosition: boolean;
     elevation: number;
-    round: number;
-    padding: number;
+    roundEdge: number[];
+    paddingAround: number[];
     maximizingImage: boolean; //true: 80%, false: 50%
     hideTitle: boolean;
     imagePosition: number; //0:default, 1:image-right 2:image-left

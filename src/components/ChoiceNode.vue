@@ -89,13 +89,17 @@ export default {
         "border-color": this.$getColor(this.currentOutline.outlineColor.color),
         "border-style": this.currentOutline.outlineType !== OutlineType.none ? this.currentOutline.outlineType : "",
         "padding": (this.currentOutline.outlinePadding + 2).toString() + "px",
-        "border-radius": this.preset.round + "px",
+        "border-radius": this.preset.roundEdge.map(function(element:number): string{
+          return element + "px";
+        }).join(" "),
       }
     },
     cardStyle() {
       console.log(this.currentColor)
       let outputCss = this.$getCssFromColorOption(this.currentColor);
-      outputCss["border-radius"] = this.preset.round.toString() + "px"
+      outputCss["border-radius"] = this.preset.roundEdge.map(function(element:number): string{
+        return element + "px";
+      }).join(" ");
       return outputCss;
     },
     isHide() {
@@ -143,7 +147,9 @@ export default {
       childLength: window.childLength(this.currentPos),
       choiceNodeOption: choiceNodeOption,
       preset: preset,
-      padding: preset.padding + "px",
+      paddingAround: preset.paddingAround.map(function(element:number): string{
+        return element + "px";
+      }).join(" "),
       mainFont: this.$getFont(preset['mainFont'])
     }
   },
@@ -263,7 +269,7 @@ export default {
 }
 
 .padding {
-  padding: v-bind(padding);
+  padding: v-bind(paddingAround);
 }
 
 .image-result {
