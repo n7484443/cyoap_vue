@@ -95,7 +95,6 @@ export default {
       }
     },
     cardStyle() {
-      console.log(this.currentColor)
       let outputCss = this.$getCssFromColorOption(this.currentColor);
       outputCss["border-radius"] = this.preset.roundEdge.map(function(element:number): string{
         return element + "px";

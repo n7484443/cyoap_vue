@@ -36,8 +36,8 @@
               </v-btn>
             </template>
             <v-card>
-              <v-card-text :style="background">
-                <SelectedResult id="capture" ref="selectedResult"></SelectedResult>
+              <v-card-text>
+                <SelectedResult ref="selectedResult" :style="background" id="capture"></SelectedResult>
               </v-card-text>
               <v-card-actions>
                 <v-btn color="primary" @click="saveAsImage">{{ save_as_image }}</v-btn>
@@ -198,7 +198,7 @@ export default {
     },
     async saveAsImage() {
       let element = document.querySelector("#capture");
-      let blob = await domtoimage.toBlob(element,);
+      let blob = await domtoimage.toBlob(element, {});
       //blob download as result.png
       let link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
