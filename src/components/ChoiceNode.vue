@@ -1,5 +1,5 @@
 <template>
-  <div v-if="choiceNodeOption['isOccupySpace'] && !visible" class="gridStyle"/>
+  <div v-if="choiceNodeOption['isOccupySpace'] && isHide" class="gridStyle"/>
   <div v-else-if="!isHide" class="gridStyle">
     <div class="maxHeight" :style="outlineStyle">
       <v-card class="maxHeight"
