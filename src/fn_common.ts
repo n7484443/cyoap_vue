@@ -3,30 +3,26 @@ import {PlatformDesignSetting} from "@/preset/design_setting";
 import {ChoiceLineDesignPreset} from "@/preset/line_preset";
 import {ChoiceNodeDesignPreset, ColorOption, ColorType, GradientType} from "@/preset/node_preset";
 
-export const textFontList = {
-    google: {
-        "jua": {families: ['Jua']},
-        "notoSans": {families: ['Noto Sans KR']},
-        "notoSerif": {families: ['Noto Serif KR']},
-        "나눔고딕": {families: ['Nanum Gothic']},
-        "나눔손글씨 붓": {families: ["Nanum Brush Script"]},
-        "나눔손글씨 펜": {families: ["Nanum Pen Script"]},
-        "Poor Story": {families: ["Poor Story"]},
-        "East Sea Dokdo": {families: ["East Sea Dokdo"]},
-        "Black Han Sans": {families: ["Black Han Sans"]},
-        "Black And White Picture": {families: ["Black And White Picture"]},
-        "IBM Plex Sans KR": {families: ["IBM Plex Sans KR"]}
-    },
-    custom: {
-        "Neo 둥근모": {families: ['NeoDunggeunmo']},
-    }
+export const textFontList:{[key:string] : string} = {
+    "jua": 'Jua',
+    "notoSans": 'Noto Sans KR',
+    "notoSerif": 'Noto Serif KR',
+    "나눔고딕": 'Nanum Gothic',
+    "나눔손글씨 붓": "Nanum Brush Script",
+    "나눔손글씨 펜": "Nanum Pen Script",
+    "Poor Story": "Poor Story",
+    "East Sea Dokdo": "East Sea Dokdo",
+    "Black Han Sans": "Black Han Sans",
+    "Black And White Picture": "Black And White Picture",
+    "IBM Plex Sans KR": "IBM Plex Sans KR",
+    "Neo 둥근모": 'NeoDunggeunmo',
 };
 
 export default {
     install: (app: any) => {
         app.config.globalProperties.$getColor = (value: number, defaultColor?: number): string => {
             let color = (value ?? defaultColor ?? 0xFF40C4FF).toString(16);
-            if(color.length == 6) {
+            if (color.length == 6) {
                 color = "00" + color;
             }
             color = '#' + color.substring(2) + color.substring(0, 2);
@@ -45,18 +41,22 @@ export default {
             if (font === "default") {
                 font = "notoSans";
             }
+            if(font in textFontList){
+                return textFontList[font];
+            }
             for(let key in textFontList){
-                // @ts-ignore
-                let fontObject = textFontList[key][font];
-                if(fontObject){
-                    return fontObject["families"];
+                let a = textFontList[key].replaceAll(" ", "").toLowerCase();
+                let b = font.replaceAll(" ", "").toLowerCase()
+                if(a.includes(b)){
+                    return textFontList[key];
                 }
             }
+            console.error(font + " is not found in font list")
             return "Noto Sans KR";
         }
         app.config.globalProperties.$getCssFromColorOption = (colorOption: ColorOption): Object => {
-            let outputCss: {[key:string]: string} = {};
-            if(colorOption.colorType === ColorType.solid){
+            let outputCss: { [key: string]: string } = {};
+            if (colorOption.colorType === ColorType.solid) {
                 outputCss["background-color"] = app.config.globalProperties.$getColor(colorOption.color);
                 return outputCss;
             }
@@ -68,7 +68,7 @@ export default {
             let endColor = app.config.globalProperties.$getColor(colorOption.gradientData[1].color);
             let width = Math.abs(ex - sx);
             let height = Math.abs(ey - sy);
-            switch(colorOption.gradientType){
+            switch (colorOption.gradientType) {
                 case GradientType.linear:
                     let angle = Math.atan2(height * (ex - sx), width * (ey - sy)) * 180 / Math.PI + 90;
                     outputCss["background"] = `linear-gradient(${angle}deg, ${startColor}, ${endColor})`;

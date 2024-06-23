@@ -17,8 +17,7 @@
     "pinia": "^2.1.7",
     "quill-delta-to-html": "^0.12.1",
     "vue": "^3.4.25",
-    "vuetify": "^3.5.17",
-    "webfontloader": "^1.6.28"
+    "vuetify": "^3.5.17"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.10.2",

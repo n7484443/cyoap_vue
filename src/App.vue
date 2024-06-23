@@ -55,7 +55,6 @@
 <script lang="ts">
 import LineSetting from './components/ChoiceLine.vue';
 import HorizontalScroll from "./components/HorizontalScroll.vue";
-import WebFont from "webfontloader/webfontloader";
 import SelectedResult from "./components/SelectedResult.vue";
 import domtoimage from "dom-to-image-more";
 import {useStore} from "@/fn_common";
@@ -93,45 +92,8 @@ export default {
     this.child = output.length;
     window.loadPlatform(platform, output);
 
-    let textFontList = {
-      google: {
-        "jua": {families: ['Jua']},
-        "notoSans": {families: ['Noto Sans KR']},
-        "notoSerif": {families: ['Noto Serif KR']},
-        "나눔고딕": {families: ['Nanum Gothic']},
-        "나눔손글씨 붓": {families: ["Nanum Brush Script"]},
-        "나눔손글씨 펜": {families: ["Nanum Pen Script"]},
-        "Poor Story": {families: ["Poor Story"]},
-        "East Sea Dokdo": {families: ["East Sea Dokdo"]},
-        "Black Han Sans": {families: ["Black Han Sans"]},
-        "Black And White Picture": {families: ["Black And White Picture"]},
-        "IBM Plex Sans KR": {families: ["IBM Plex Sans KR"]}
-      },
-      custom: {
-        "Neo 둥근모": {families: ['NeoDunggeunmo']},
-      }
-    };
     let design: PlatformDesignSetting = JSON.parse(window.getPlatformDesign());
     store.setPlatformDesign(design);
-    let fontHashSet = new Set();
-    design.choiceNodePresetList.forEach(function (e) {
-      fontHashSet.add(e.titleFont);
-      fontHashSet.add(e.mainFont);
-    });
-    fontHashSet.add(design['variableFont']);
-
-    for (let entry in textFontList) {
-      for (let fontName in textFontList[entry]) {
-        if (!fontHashSet.has(fontName)) {
-          delete textFontList[entry][fontName]
-        }
-      }
-      if (Object.keys(textFontList[entry]).length === 0 && textFontList[entry].constructor === Object) {
-        delete textFontList[entry];
-      }
-    }
-
-    WebFont.load({textFontList});
 
     if (design.backgroundImage) {
       this.imageBackground = "url(/dist/images/" + design.backgroundImage.replaceAll(" ", "%20") + ")";

@@ -58,6 +58,7 @@
 
 <script lang="ts">
 import {QuillDeltaToHtmlConverter} from "quill-delta-to-html";
+import {DEFAULT_INLINE_STYLES} from "quill-delta-to-html/src/OpToHtmlConverter";
 import ChoiceNodeContents from "@/components/ChoiceNodeContents.vue";
 import {useStore} from "@/fn_common";
 import {ColorOption, ColorType, GradientType, OutlineOption, OutlineType} from "@/preset/node_preset.ts";
@@ -89,14 +90,14 @@ export default {
         "border-color": this.$getColor(this.currentOutline.outlineColor.color),
         "border-style": this.currentOutline.outlineType !== OutlineType.none ? this.currentOutline.outlineType : "",
         "padding": (this.currentOutline.outlinePadding + 2).toString() + "px",
-        "border-radius": this.preset.roundEdge.map(function(element:number): string{
+        "border-radius": this.preset.roundEdge.map(function (element: number): string {
           return element + "px";
         }).join(" "),
       }
     },
     cardStyle() {
       let outputCss = this.$getCssFromColorOption(this.currentColor);
-      outputCss["border-radius"] = this.preset.roundEdge.map(function(element:number): string{
+      outputCss["border-radius"] = this.preset.roundEdge.map(function (element: number): string {
         return element + "px";
       }).join(" ");
       return outputCss;
@@ -146,7 +147,7 @@ export default {
       childLength: window.childLength(this.currentPos),
       choiceNodeOption: choiceNodeOption,
       preset: preset,
-      paddingAround: preset.paddingAround.map(function(element:number): string{
+      paddingAround: preset.paddingAround.map(function (element: number): string {
         return element + "px";
       }).join(" "),
       mainFont: this.$getFont(preset['mainFont'])
@@ -155,16 +156,24 @@ export default {
   methods: {
     htmlFromQuill(data) {
       let modalValue = "";
+      let old_size = {
+        'small': 'font-size: 10px',
+        'large': 'font-size: 18px',
+        'huge': 'font-size: 22px'
+      };
       if (data && data !== "") {
-        let delta = JSON.parse(data);
-        let converter = new QuillDeltaToHtmlConverter(delta, {
-          inlineStyles: {
-            size: {
-              'small': 'font-size: 10px',
-              'large': 'font-size: 18px',
-              'huge': 'font-size: 22px'
-            },
+        let delta = JSON.parse(data.replaceAll("_regular", ""));
+        DEFAULT_INLINE_STYLES.size = (value, op):string => {
+          if (value in old_size) {
+            return old_size[value]!;
           }
+          return `font-size: ${value}px`;
+        }
+        DEFAULT_INLINE_STYLES.font = (value, op) => {
+          return `font-family: ${this.$getFont(value)}`;
+        }
+        let converter = new QuillDeltaToHtmlConverter(delta, {
+          inlineStyles: DEFAULT_INLINE_STYLES
         });
         modalValue = converter.convert();
       }
