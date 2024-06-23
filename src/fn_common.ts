@@ -70,11 +70,22 @@ export default {
             let height = Math.abs(ey - sy);
             switch (colorOption.gradientType) {
                 case GradientType.linear:
-                    let angle = Math.atan2(height * (ex - sx), width * (ey - sy)) * 180 / Math.PI + 90;
-                    outputCss["background"] = `linear-gradient(${angle}deg, ${startColor}, ${endColor})`;
+                    let angle = (-Math.atan2((ex - sx), (ey - sy)) / Math.PI * 180) + 180;
+                    let sd = Math.sqrt((0.5 - sx)**2 + (0.5 - sy)**2);
+                    let ed = Math.sqrt((0.5 - ex)**2 + (0.5 - ey)**2);
+                    let se = Math.sqrt((ex - sx)**2 + (ey - sy)**2);
+                    let sp = (sd**2 - ed ** 2 + se ** 2) / (2 * se);
+                    let ep = se - sp;
+                    let diagonal = Math.sqrt(2);
+                    // let d = Math.sqrt(sd**2 - sp**2);
+                    let ratio_s = (0.5 - sp / diagonal) * 100.0;
+                    let ratio_e = ((0.5 + ep) / diagonal) * 100.0;
+                    // let start_rotated = Math.sqrt(sx * sx + sy * sy) * width;
+                    // let end_rotated = Math.sqrt(ex * ex + ey * ey) * width;
+                    outputCss["background"] = `linear-gradient(${angle}deg, ${startColor} ${ratio_s}%, ${endColor} ${ratio_e}%)`;
                     break;
                 case GradientType.radial:
-                    outputCss["background"] = `radial-gradient(circle at ${sx * 100.0}% ${sy * 100.0}%, ${startColor} 0%, ${endColor} ${ex}%`;
+                    outputCss["background"] = `radial-gradient(circle at ${sx * 100.0}% ${sy * 100.0}%, ${startColor} 0%, ${endColor} ${ex * 100.0}%`;
                     break;
                 case GradientType.sweep:
                     outputCss["background"] = `conic-gradient(from ${90}deg at ${sx * 100.0}% ${sy * 100.0}%, ${startColor}, ${endColor}, ${startColor})`;
