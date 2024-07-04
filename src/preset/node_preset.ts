@@ -39,21 +39,21 @@ export interface ColorOption {
 }
 
 export interface ChoiceNodeDesignPreset {
-    name: string;
-    titlePosition: boolean;
-    elevation: number;
-    roundEdge: number[];
-    paddingAround: number[];
-    maximizingImage: boolean; //true: 80%, false: 50%
-    hideTitle: boolean;
-    imagePosition: number; //0:default, 1:image-right 2:image-left
-    colorTitle: number;
-    titleFont: string;
-    mainFont: string;
-    defaultOutlineOption: OutlineOption;
-    selectOutlineEnable: boolean;
-    selectOutlineOption: OutlineOption;
-    defaultColorOption: ColorOption;
-    selectColorEnable: boolean;
-    selectColorOption: ColorOption;
+    name: string | null;
+    titlePosition: boolean | null;
+    elevation: number | null;
+    roundEdge: number[] | null;
+    paddingAround: number[] | null;
+    maximizingImage: boolean | null; //true: 80%, false: 50%
+    hideTitle: boolean | null;
+    imagePosition: number | null; //0:default, 1:image-right 2:image-left
+    colorTitle: number | null;
+    titleFont: string | null;
+    mainFont: string | null;
+    defaultOutlineOption: OutlineOption | null;
+    selectOutlineEnable: boolean | null;
+    selectOutlineOption: OutlineOption | null;
+    defaultColorOption: ColorOption | null;
+    selectColorEnable: boolean | null;
+    selectColorOption: ColorOption | null;
 }

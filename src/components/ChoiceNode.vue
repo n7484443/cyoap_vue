@@ -1,6 +1,6 @@
 <template>
-  <div v-if="choiceNodeOption['isOccupySpace'] && isHide" class="gridStyle"/>
-  <div v-else-if="!isHide" class="gridStyle">
+  <div v-if="choiceNodeOption['isOccupySpace'] && isHide" class="maxHeight"/>
+  <div v-else-if="!isHide" class="maxHeight">
     <div class="maxHeight" :style="outlineStyle">
       <v-card class="maxHeight"
               :style="cardStyle"
@@ -43,11 +43,14 @@
               </v-btn>
             </div>
           </div>
-          <div class="wrapper" v-if="childLength > 0 && renderChild">
-            <ChoiceNode class="item" v-for="(n, i) in childLength" ref="choiceNodeChild" :key="n"
-                        :currentPos="[...currentPos, i]" :render-child="renderChild" :clickable="clickable"
-                        @needUpdate="needUpdate">
-            </ChoiceNode>
+          <div v-if="childLength > 0 && renderChild">
+            <WrapCustom ref="wrapCustom" margin-vertical="0.0" :pos="currentPos" :max-children-per-row="viewWidth"
+                        :choice-line-alignment="ChoiceLineAlignment.left" @needUpdate="needUpdate" v-slot="slotProps">
+              <ChoiceNode class="item" :ref="'choiceNodeChild.'+slotProps.index" :render-child="renderChild"
+                          :clickable="clickable"
+                          @needUpdate="needUpdate" :current-pos="slotProps.currentPos">
+              </ChoiceNode>
+            </WrapCustom>
           </div>
         </div>
       </v-card>
@@ -62,18 +65,24 @@ import {DEFAULT_INLINE_STYLES} from "quill-delta-to-html/src/OpToHtmlConverter";
 import ChoiceNodeContents from "@/components/ChoiceNodeContents.vue";
 import {useStore} from "@/fn_common";
 import {ColorOption, ColorType, GradientType, OutlineOption, OutlineType} from "@/preset/node_preset.ts";
+import WrapCustom from "@/components/WrapCustom.vue";
+import {ChoiceLineAlignment} from "@/preset/line_preset";
 
 export default {
   props: {
-    currentPos: Array,
+    currentPos: Object as number[],
     renderChild: Boolean,
     clickable: Boolean,
   },
   components: {
+    WrapCustom,
     ChoiceNodeContents
   },
   name: "ChoiceNode",
   computed: {
+    ChoiceLineAlignment() {
+      return ChoiceLineAlignment
+    },
     currentOutline(): OutlineOption {
       let defaultOutlineOption = this.preset.defaultOutlineOption;
       let selectOutlineOption = this.preset.selectOutlineOption;
@@ -163,7 +172,7 @@ export default {
       };
       if (data && data !== "") {
         let delta = JSON.parse(data.replaceAll("_regular", ""));
-        DEFAULT_INLINE_STYLES.size = (value, op):string => {
+        DEFAULT_INLINE_STYLES.size = (value, op): string => {
           if (value in old_size) {
             return old_size[value]!;
           }
@@ -218,12 +227,10 @@ export default {
       this.choiceStatus = window.getChoiceStatus(this.currentPos);
       this.viewWidth = Math.min(this.originalWidth, store.getCurrentMaxWidth);
 
-      if (this.$refs.choiceNodeChild) {
-        this.$refs.choiceNodeChild.forEach(function (i) {
-          if (i) {
-            i.updateChild();
-          }
-        });
+      for (let i = 0; i < this.childLength; i++) {
+        if(this.$refs['choiceNodeChild.' + i]){
+          this.$refs['choiceNodeChild.' + i].updateChild();
+        }
       }
     },
     needUpdate() {
@@ -233,11 +240,6 @@ export default {
 }
 </script>
 <style scoped>
-
-.gridStyle {
-  grid-column: auto / span v-bind(viewWidth);
-}
-
 .maxHeight {
   height: 100%;
 }
@@ -250,15 +252,6 @@ export default {
 /* Add some padding inside the card container */
 .container {
   padding: 4px;
-}
-
-.wrapper {
-  display: grid;
-  grid-template-columns: repeat(v-bind(viewWidth), 1fr);
-  grid-template-rows: repeat(auto-fill, min-content);
-  column-gap: 8px;
-  row-gap: 8px;
-  grid-auto-flow: row;
 }
 
 .multi-select {

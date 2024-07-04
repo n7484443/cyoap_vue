@@ -8,11 +8,12 @@
             </v-divider>
             <div v-if="lineOption.maxSelect !== -1" class="line_text">최대 {{ lineOption.maxSelect }}개만큼 선택 가능</div>
           </div>
-          <div class="wrapper">
-            <ChoiceNode v-for="(n, i) in child" ref="choiceNode" :key="n" :current-pos="[...currentPos, i]"
-                        :render-child=true :clickable="true" @needUpdate="needUpdate">
+          <WrapCustom ref="wrapCustom" :margin-vertical="marginVertical" :pos="currentPos" :max-children-per-row="maxWidth"
+                      :choice-line-alignment="alignment" @needUpdate="needUpdate" v-slot="slotProps">
+            <ChoiceNode :ref="'choiceNode.'+slotProps.index" :render-child=true :clickable="true"
+                        @needUpdate="$emit('needUpdate')" :current-pos="slotProps.currentPos">
             </ChoiceNode>
-          </div>
+          </WrapCustom>
         </div>
       </v-lazy>
     </v-responsive>
@@ -22,11 +23,12 @@
 <script lang="ts">
 import ChoiceNode from "@/components/ChoiceNode.vue";
 import {useStore} from "@/fn_common";
-import {ChoiceLineDesignPreset} from "@/preset/line_preset.js";
-import {OutlineOption} from "@/preset/node_preset";
+import {ChoiceLineAlignment, choiceLineAlignmentToCSS, SizeData} from "@/preset/line_preset.js";
+import WrapCustom from "@/components/WrapCustom.vue";
 
 export default {
   components: {
+    WrapCustom,
     ChoiceNode,
   },
   props: {
@@ -52,20 +54,23 @@ export default {
       background: this.$getCssFromColorOption(preset!.backgroundColorOption),
       colorText: "#FFFFFFFF",
       lineOption: lineOption,
-      maxWidth: store.getCurrentMaxWidth,
+      maxWidth: Math.min(store.getCurrentMaxWidth, preset?.maxChildrenPerRow ?? 12),
+      alignment: ChoiceLineAlignment[preset?.alignment] ?? ChoiceLineAlignment.left,
+      align: choiceLineAlignmentToCSS(ChoiceLineAlignment[preset?.alignment] ?? ChoiceLineAlignment.left)
     }
   },
   methods: {
     updateChild() {
       const store = useStore();
-      this.maxWidth = store.getCurrentMaxWidth;
+      this.maxWidth = Math.min(store.getCurrentMaxWidth, this.preset?.maxChildrenPerRow ?? 12);
       this.choiceStatus = window.getChoiceStatus(this.currentPos);
-      if (this.$refs.choiceNode) {
-        this.$refs.choiceNode.forEach(function (i) {
-          if (i) {
-            i.updateChild();
-          }
-        });
+      for(let i = 0; i < this.child; i++){
+        if(this.$refs['choiceNode.'+i]){
+          this.$refs['choiceNode.'+i].updateChild();
+        }
+      }
+      if(this.$refs.wrapCustom){
+        this.$refs.wrapCustom.updateLayout();
       }
     },
     needUpdate() {
@@ -78,6 +83,15 @@ export default {
 <style scoped>
 .item {
   padding: v-bind(marginVertical) 0px;
+}
+
+.horizontal {
+  display: grid;
+  grid-template-columns: repeat(v-bind(maxFlex), 1fr);
+  column-gap: 8px;
+  row-gap: v-bind(marginVertical);
+  grid-auto-flow: row;
+  padding: 4px 0px;
 }
 
 .wrapper {
