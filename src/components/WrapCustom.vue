@@ -3,7 +3,7 @@
     <div class="horizontal">
       <div v-for="(n, x) in line" :key="x" :style="{gridColumn: 'auto / span ' + n.width}"
            class="maxHeight">
-        <slot v-if="n.pos" :current-pos="n.pos.data" :index="n.pos.data[n.pos.data.length - 1]">
+        <slot v-if="n.pos" :key="n.pos.data" :current-pos="n.pos.data" :index="n.pos.data[n.pos.data.length - 1]">
         </slot>
       </div>
     </div>
@@ -37,8 +37,6 @@ function updateLayout() {
 onMounted(() => {
   updateLayout();
 })
-
-defineEmits(['needUpdate'])
 
 defineExpose({updateLayout})
 </script>

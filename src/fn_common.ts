@@ -63,7 +63,6 @@ export function getColor(value: number, defaultColor?: number): string{
         color = "00" + color;
     }
     color = '#' + color.substring(2) + color.substring(0, 2);
-    // console.log(color)
     return color;
 }
 
@@ -175,6 +174,9 @@ export const useStore = defineStore({
         },
         setErrorLog(error: string[]) {
             this.errorLog = error;
+        },
+        needUpdate(){
+
         }
     },
     getters: {

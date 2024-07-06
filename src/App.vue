@@ -12,7 +12,7 @@
         </h5>
         <main>
           <div v-for="(n, i) in child" :key="n">
-            <LineSetting ref="lineSetting" :pos="i" @needUpdate="needUpdate">
+            <LineSetting ref="lineSetting" :pos="i">
             </LineSetting>
           </div>
         </main>
@@ -123,7 +123,14 @@ export default {
     window.addEventListener('resize', () => {
       if (this.currentMaxWidth !== getCurrentMaxWidthScreen()) {
         this.currentMaxWidth = getCurrentMaxWidthScreen()
-        this.needUpdate();
+        this.updateChild();
+      }
+    });
+
+    let store = useStore();
+    store.$onAction(({name, store, args, after, onError}) => {
+      if(name == 'needUpdate'){
+        after((_) => this.updateChild());
       }
     });
     return {
@@ -148,12 +155,11 @@ export default {
   },
   methods: {
     updateChild() {
-      this.$refs.horizontalScroll.updateList();
+      if(this.$refs.horizontalScroll){
+        this.$refs.horizontalScroll.updateList();
+      }
       this.$refs.lineSetting.forEach(i => i.updateChild());
       useStore().setErrorLog(window.getErrorLog());
-    },
-    needUpdate() {
-      this.updateChild();
     },
     async saveAsImage() {
       let element = document.querySelector("#capture");

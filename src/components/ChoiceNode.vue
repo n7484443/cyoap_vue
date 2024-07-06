@@ -45,10 +45,9 @@
           </div>
           <div v-if="childLength > 0 && renderChild">
             <WrapCustom ref="wrapCustom" margin-vertical="0.0" :pos="currentPos" :max-children-per-row="viewWidth"
-                        :choice-line-alignment="ChoiceLineAlignment.left" @needUpdate="needUpdate" v-slot="slotProps">
-              <ChoiceNode class="item" :ref="'choiceNodeChild.'+slotProps.index" :render-child="renderChild"
-                          :clickable="clickable"
-                          @needUpdate="needUpdate" :current-pos="slotProps.currentPos">
+                        :choice-line-alignment="ChoiceLineAlignment.left" v-slot="slotProps">
+              <ChoiceNode class="item" :ref="setChoiceNodeChild" :render-child="renderChild"
+                          :clickable="clickable" :current-pos="slotProps.currentPos">
               </ChoiceNode>
             </WrapCustom>
           </div>
@@ -59,183 +58,179 @@
 
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import {QuillDeltaToHtmlConverter} from "quill-delta-to-html";
 import {DEFAULT_INLINE_STYLES} from "quill-delta-to-html/src/OpToHtmlConverter";
 import ChoiceNodeContents from "@/components/ChoiceNodeContents.vue";
-import {getCurrentMaxWidthScreen, getColor, getFont, useStore, getCssFromColorOption} from "@/fn_common";
-import {ColorOption, ColorType, GradientType, OutlineOption, OutlineType} from "@/preset/node_preset.ts";
+import {getColor, getFont, useStore, getCssFromColorOption} from "@/fn_common";
+import {
+  ChoiceNodeDesignPreset,
+  ColorOption,
+  ColorType,
+  GradientType,
+  OutlineOption,
+  OutlineType
+} from "@/preset/node_preset";
 import WrapCustom from "@/components/WrapCustom.vue";
 import {ChoiceLineAlignment} from "@/preset/line_preset";
+import {ref, computed, onBeforeUpdate} from 'vue'
 
-export default {
-  props: {
-    currentPos: Object as number[],
-    renderChild: Boolean,
-    clickable: Boolean,
-  },
-  components: {
-    WrapCustom,
-    ChoiceNodeContents
-  },
-  name: "ChoiceNode",
-  computed: {
-    ChoiceLineAlignment() {
-      return ChoiceLineAlignment
-    },
-    currentOutline(): OutlineOption {
-      let defaultOutlineOption = this.preset.defaultOutlineOption;
-      let selectOutlineOption = this.preset.selectOutlineOption;
-      return this.select > 0 && this.preset.selectOutlineEnable ? selectOutlineOption : defaultOutlineOption;
-    },
-    currentColor(): ColorOption {
-      let defaultColorOption = this.preset.defaultColorOption;
-      let selectColorOption = this.preset.selectColorOption;
-      return this.select > 0 && this.preset.selectColorEnable ? selectColorOption : defaultColorOption;
-    },
-    outlineStyle() {//border 로 구현
-      return {
-        "border-width": this.currentOutline.outlineWidth + "px",
-        "border-color": getColor(this.currentOutline.outlineColor.color),
-        "border-style": this.currentOutline.outlineType !== OutlineType.none ? this.currentOutline.outlineType : "",
-        "padding": (this.currentOutline.outlinePadding + 2).toString() + "px",
-        "border-radius": this.preset.roundEdge.map(function (element: number): string {
-          return element + "px";
-        }).join(" "),
-      }
-    },
-    cardStyle() {
-      let outputCss = getCssFromColorOption(this.currentColor);
-      outputCss["border-radius"] = this.preset.roundEdge.map(function (element: number): string {
-        return element + "px";
-      }).join(" ");
-      return outputCss;
-    },
-    isHide() {
-      return this.choiceStatus.isHide;
-    },
-    isOpen() {
-      return this.choiceStatus.isOpen;
-    }
-  },
-  data() {
-    const store = useStore();
-    let contentsString = window.getContents(this.currentPos);
-    let contentsHtml = this.htmlFromQuill(contentsString);
-    let imagePos = window.getImage(this.currentPos);
-    if (imagePos) {
-      imagePos = "dist/images/" + imagePos;
-    }
+let choiceNodeChild = [];
 
-    let choiceNodeOption = JSON.parse(window.getChoiceNodeOption(this.currentPos));
-    let preset = store.getNodePresets.get(choiceNodeOption['presetName']);
-    if (!preset) {
-      store.errorLog.push("ChoiceNode: preset is not exist. (presetName: " + choiceNodeOption.presetName +
-          " | pos: " + this.currentPos +
-          " | name: " + window.getTitle(this.currentPos) + ")");
-      preset = JSON.parse(window.getNodeDefaultPreset());
-    }
-    let select = window.getSelect(this.currentPos)
+const props = defineProps<{
+  currentPos: number[],
+  renderChild: boolean,
+  clickable: boolean,
+}>();
 
-    let choiceStatus = window.getChoiceStatus(this.currentPos);
-    let choiceMode = window.getChoiceNodeMode(this.currentPos);
-    let gridColumn = window.getSize(this.currentPos);
+const setChoiceNodeChild = (el) => {
+  choiceNodeChild.push(el);
+}
 
-    return {
-      image: imagePos.replaceAll(" ", "%20"),
-      imageMaxHeight: preset['maximizingImage'] ? '80vh' : '50vh',
-      title: window.getTitle(this.currentPos),
-      contentsHtml: contentsHtml,
-      contentsString: contentsString,
-      viewWidth: gridColumn,
-      select: select,
-      choiceStatus: choiceStatus,
-      choiceMode: choiceMode,
-      choiceMaximumStatus: window.getMaximumStatus(this.currentPos),
-      childLength: window.childLength(this.currentPos),
-      choiceNodeOption: choiceNodeOption,
-      preset: preset,
-      paddingAround: preset.paddingAround.map(function (element: number): string {
-        return element + "px";
-      }).join(" "),
-      mainFont: getFont(preset['mainFont'])
-    }
-  },
-  methods: {
-    htmlFromQuill(data) {
-      let modalValue = "";
-      let old_size = {
-        'small': 'font-size: 10px',
-        'large': 'font-size: 18px',
-        'huge': 'font-size: 22px'
-      };
-      if (data && data !== "") {
-        let delta = JSON.parse(data.replaceAll("_regular", ""));
-        DEFAULT_INLINE_STYLES.size = (value, op): string => {
-          if (value in old_size) {
-            return old_size[value]!;
-          }
-          return `font-size: ${value}px`;
-        }
-        DEFAULT_INLINE_STYLES.font = (value, op) => {
-          return `font-family: ${getFont(value)}`;
-        }
-        let converter = new QuillDeltaToHtmlConverter(delta, {
-          inlineStyles: DEFAULT_INLINE_STYLES
-        });
-        modalValue = converter.convert();
-      }
-      return modalValue;
-    },
-    click() {
-      if (this.clickable) {
-        window.select(this.currentPos, 0);
-        window.updatePlatform();
-        this.needUpdate();
-      }
-    },
-    click_down() {
-      if (this.clickable) {
-        window.select(this.currentPos, -1);
-        window.updatePlatform();
-        this.needUpdate();
-      }
-    },
-    click_up() {
-      if (this.clickable) {
-        window.select(this.currentPos, 1);
-        window.updatePlatform();
-        this.needUpdate();
-      }
-    },
-    click_slider(number) {
-      if (this.clickable) {
-        window.select(this.currentPos, number - this.select);
-        window.updatePlatform();
-        this.needUpdate();
-      }
-    },
-    updateChild() {
-      const store = useStore();
-      let newContents = window.getContents(this.currentPos);
-      if (this.contentsString !== newContents) {
-        this.contentsString = newContents;
-        this.contentsHtml = this.htmlFromQuill(newContents);
-      }
-      this.select = window.getSelect(this.currentPos);
-      this.choiceStatus = window.getChoiceStatus(this.currentPos);
+onBeforeUpdate(() => {
+  choiceNodeChild = [];
+});
 
-      for (let i = 0; i < this.childLength; i++) {
-        if(this.$refs['choiceNodeChild.' + i]){
-          this.$refs['choiceNodeChild.' + i].updateChild();
-        }
+const store = useStore();
+let contentsString = ref(window.getContents(props.currentPos));
+let contentsHtml = computed(() => {
+  let modelValue = "";
+  let old_size = {
+    'small': 'font-size: 10px',
+    'large': 'font-size: 18px',
+    'huge': 'font-size: 22px'
+  };
+  if (contentsString.value && contentsString.value !== "") {
+    let delta = JSON.parse(contentsString.value.replaceAll("_regular", ""));
+    DEFAULT_INLINE_STYLES.size = (value, op): string => {
+      if (value in old_size) {
+        return old_size[value]!;
       }
-    },
-    needUpdate() {
-      this.$emit('needUpdate',);
+      return `font-size: ${value}px`;
     }
+    DEFAULT_INLINE_STYLES.font = (value, op) => {
+      return `font-family: ${getFont(value)}`;
+    }
+    let converter = new QuillDeltaToHtmlConverter(delta, {
+      inlineStyles: DEFAULT_INLINE_STYLES
+    });
+    modelValue = converter.convert();
+  }
+  return modelValue;
+});
+let imagePos = window.getImage(props.currentPos);
+if (imagePos) {
+  imagePos = "dist/images/" + imagePos;
+}
+const image = ref(imagePos.replaceAll(" ", "%20"))
+
+const choiceNodeOption = ref(JSON.parse(window.getChoiceNodeOption(props.currentPos)))
+let preset = ref<ChoiceNodeDesignPreset>(store.getNodePresets.get(choiceNodeOption.value['presetName'])!);
+if (!preset.value) {
+  store.errorLog.push("ChoiceNode: preset is not exist. (presetName: " + choiceNodeOption.presetName +
+      " | pos: " + props.currentPos +
+      " | name: " + window.getTitle(props.currentPos) + ")");
+  preset.value = JSON.parse(window.getNodeDefaultPreset());
+}
+
+const imageMaxHeight = ref(preset.value['maximizingImage'] ? '80vh' : '50vh')
+const title = ref(window.getTitle(props.currentPos))
+const viewWidth = ref(window.getSize(props.currentPos))
+const select = ref<number>(window.getSelect(props.currentPos))
+const choiceStatus = ref(window.getChoiceStatus(props.currentPos))
+const choiceMode = ref(window.getChoiceNodeMode(props.currentPos))
+const choiceMaximumStatus = ref(window.getMaximumStatus(props.currentPos))
+const childLength = ref(window.childLength(props.currentPos))
+const paddingAround = computed(() => {
+  return preset.value.paddingAround.map(function (element: number): string {
+    return element + "px";
+  }).join(" ");
+});
+const mainFont = ref(getFont(preset.value.mainFont))
+
+const currentOutline = computed<OutlineOption>(() => {
+  let defaultOutlineOption = preset.value.defaultOutlineOption;
+  let selectOutlineOption = preset.value.selectOutlineOption;
+  return (select.value > 0 && preset.value.selectOutlineEnable ? selectOutlineOption : defaultOutlineOption)!;
+});
+const currentColor = computed<ColorOption>(() => {
+  let defaultColorOption = preset.value.defaultColorOption;
+  let selectColorOption = preset.value.selectColorOption;
+  return (select.value > 0 && preset.value.selectColorEnable ? selectColorOption : defaultColorOption)!;
+});
+const outlineStyle = computed(() => {
+  return {
+    "border-width": currentOutline.value.outlineWidth + "px",
+    "border-color": getColor(currentOutline.value.outlineColor.color),
+    "border-style": currentOutline.value.outlineType !== OutlineType.none ? currentOutline.value.outlineType : "",
+    "padding": (currentOutline.value.outlinePadding + 2).toString() + "px",
+    "border-radius": preset.value.roundEdge.map(function (element: number): string {
+      return element + "px";
+    }).join(" "),
+  }
+});
+const cardStyle = computed(() => {
+  let outputCss = getCssFromColorOption(currentColor.value);
+  outputCss["border-radius"] = preset.value.roundEdge.map(function (element: number): string {
+    return element + "px";
+  }).join(" ");
+  return outputCss;
+});
+
+const isHide = computed(() => choiceStatus.value.isHide);
+const isOpen = computed(() => choiceStatus.value.isOpen);
+
+function click() {
+  if (props.clickable) {
+    window.select(props.currentPos, 0);
+    window.updatePlatform();
+    needUpdate();
   }
 }
+
+function click_down() {
+  if (props.clickable) {
+    window.select(props.currentPos, -1);
+    window.updatePlatform();
+    needUpdate();
+  }
+}
+
+function click_up() {
+  if (props.clickable) {
+    window.select(props.currentPos, 1);
+    window.updatePlatform();
+    needUpdate();
+  }
+}
+
+function click_slider(number) {
+  if (props.clickable) {
+    window.select(props.currentPos, number - select);
+    window.updatePlatform();
+    needUpdate();
+  }
+}
+
+function updateChild() {
+  let newContents = window.getContents(props.currentPos);
+  if (contentsString.value !== newContents) {
+    contentsString.value = newContents;
+  }
+  select.value = window.getSelect(props.currentPos);
+  choiceStatus.value = window.getChoiceStatus(props.currentPos);
+
+  for (let element of choiceNodeChild) {
+    element.updateChild();
+  }
+}
+
+function needUpdate() {
+  let store = useStore();
+  store.needUpdate();
+}
+
+defineExpose({updateChild})
 </script>
 <style scoped>
 .maxHeight {

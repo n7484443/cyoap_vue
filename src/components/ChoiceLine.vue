@@ -8,10 +8,11 @@
             </v-divider>
             <div v-if="lineOption.maxSelect !== -1" class="line_text">최대 {{ lineOption.maxSelect }}개만큼 선택 가능</div>
           </div>
-          <WrapCustom ref="wrapCustom" :margin-vertical="marginVertical" :pos="currentPos" :max-children-per-row="maxWidth"
-                      :choice-line-alignment="alignment" @needUpdate="needUpdate" v-slot="slotProps">
+          <WrapCustom ref="wrapCustom" :margin-vertical="marginVertical" :pos="currentPos"
+                      :max-children-per-row="maxWidth"
+                      :choice-line-alignment="alignment" v-slot="slotProps">
             <ChoiceNode :ref="'choiceNode.'+slotProps.index" :render-child=true :clickable="true"
-                        @needUpdate="$emit('needUpdate')" :current-pos="slotProps.currentPos">
+                        :current-pos="slotProps.currentPos">
             </ChoiceNode>
           </WrapCustom>
         </div>
@@ -62,17 +63,18 @@ export default {
   methods: {
     updateChild() {
       this.choiceStatus = window.getChoiceStatus(this.currentPos);
-      for(let i = 0; i < this.child; i++){
-        if(this.$refs['choiceNode.'+i]){
-          this.$refs['choiceNode.'+i].updateChild();
+      for (let i = 0; i < this.child; i++) {
+        if (this.$refs['choiceNode.' + i]) {
+          this.$refs['choiceNode.' + i].updateChild();
         }
       }
-      if(this.$refs.wrapCustom){
+      if (this.$refs.wrapCustom) {
         this.$refs.wrapCustom.updateLayout();
       }
     },
     needUpdate() {
-      this.$emit('needUpdate',);
+      let store = useStore();
+      store.needUpdate();
     },
   }
 }
