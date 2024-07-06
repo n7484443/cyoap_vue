@@ -13,9 +13,8 @@
 <script setup lang="ts">
 import {ChoiceLineAlignment, SizeData} from '@/preset/line_preset';
 import {ref, onMounted} from 'vue'
-import ChoiceNode from "@/components/ChoiceNode.vue";
 import {Pos} from "@/preset/default_types";
-import {useStore} from "@/fn_common";
+import {getCurrentMaxWidthScreen} from "@/fn_common";
 
 const props = defineProps<{
   pos: Pos,
@@ -31,7 +30,7 @@ const layout = ref<SizeData[][]>();
 const items = ref(null);
 
 function updateLayout() {
-  let encodedJson = window.getSizeDataList(props.pos, ChoiceLineAlignment[props.choiceLineAlignment], props.maxChildrenPerRow)
+  let encodedJson = window.getSizeDataList(props.pos, ChoiceLineAlignment[props.choiceLineAlignment], Math.min(props.maxChildrenPerRow, getCurrentMaxWidthScreen()))
   let decodedJson: { list: SizeData[][], max: number } = JSON.parse(encodedJson)
   layout.value = decodedJson.list;
   maxFlex.value = decodedJson.max;

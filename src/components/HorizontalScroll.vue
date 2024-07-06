@@ -16,24 +16,17 @@
     </v-card>
 </template>
 
-<script>
+<script setup lang="ts">
+import {useStore, getFont} from "@/fn_common";
+import {ref} from 'vue'
 
-import {useStore} from "@/fn_common";
-export default {
-    name: "HorizontalScroll",
-    data() {
-        const store = useStore();
-        return {
-            list: window.getValueList(),
-            font: this.$getFont(store.getPlatformDesign['variableFont'])
-        }
-    },
-    methods: {
-        updateList() {
-            this.list = window.getValueList();
-        }
-    }
+const store = useStore();
+const list = ref(window.getValueList());
+const font = ref(getFont(store.getPlatformDesign['variableFont']));
+function updateList() {
+  list.value = window.getValueList();
 }
+defineExpose({updateList})
 </script>
 
 <style scoped>

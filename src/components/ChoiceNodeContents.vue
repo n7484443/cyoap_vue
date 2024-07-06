@@ -46,6 +46,8 @@
 </template>
 
 <script>
+import {getColor, getFont} from "@/fn_common";
+
 export default {
     name: "ChoiceNodeContents",
     props: {
@@ -55,13 +57,13 @@ export default {
         preset: Object
     },
     data() {
-        let color = this.$getColor(this.preset.colorTitle, 0xFF000000);
+        let color = getColor(this.preset.colorTitle, 0xFF000000);
         return {
             titlePosition: this.preset.titlePosition,
             titleOutline: this.preset.titleOutline,
             colorTitle: color,
             hideTitle: this.preset.hideTitle,
-            titleFont: this.$getFont(this.preset['titleFont'])
+            titleFont: getFont(this.preset['titleFont'])
         }
     }
 }

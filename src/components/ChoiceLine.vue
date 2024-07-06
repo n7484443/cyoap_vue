@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import ChoiceNode from "@/components/ChoiceNode.vue";
-import {useStore} from "@/fn_common";
+import {getCssFromColorOption, getCurrentMaxWidthScreen, useStore} from "@/fn_common";
 import {ChoiceLineAlignment, choiceLineAlignmentToCSS, SizeData} from "@/preset/line_preset.js";
 import WrapCustom from "@/components/WrapCustom.vue";
 
@@ -51,18 +51,16 @@ export default {
       choiceStatus: window.getChoiceStatus(currentPos),
       marginVertical: store.getPlatformDesign.marginVertical + 'px',
       preset: preset,
-      background: this.$getCssFromColorOption(preset!.backgroundColorOption),
+      background: getCssFromColorOption(preset!.backgroundColorOption),
       colorText: "#FFFFFFFF",
       lineOption: lineOption,
-      maxWidth: Math.min(store.getCurrentMaxWidth, preset?.maxChildrenPerRow ?? 12),
+      maxWidth: preset?.maxChildrenPerRow ?? 12,
       alignment: ChoiceLineAlignment[preset?.alignment] ?? ChoiceLineAlignment.left,
       align: choiceLineAlignmentToCSS(ChoiceLineAlignment[preset?.alignment] ?? ChoiceLineAlignment.left)
     }
   },
   methods: {
     updateChild() {
-      const store = useStore();
-      this.maxWidth = Math.min(store.getCurrentMaxWidth, this.preset?.maxChildrenPerRow ?? 12);
       this.choiceStatus = window.getChoiceStatus(this.currentPos);
       for(let i = 0; i < this.child; i++){
         if(this.$refs['choiceNode.'+i]){

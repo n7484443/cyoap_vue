@@ -4443,7 +4443,7 @@ p=j}else if(j===b){B.b.n(f,k)
 B.b.n(g,f)
 f=A.l(new Array(0),q)
 p=0}else{i=b-p
-switch(a){case B.n:B.b.n(f,new A.ad(i*2,h))
+if(i!==0)switch(a){case B.n:B.b.n(f,new A.ad(i*2,h))
 break
 case B.u:B.b.aj(f,0,new A.ad(i,h))
 B.b.n(f,new A.ad(i,h))
@@ -4452,7 +4452,7 @@ case B.v:B.b.aj(f,0,new A.ad(i*2,h))
 break}B.b.n(g,f)
 f=A.l(new Array(0),q)
 B.b.n(f,k)
-p=l}}if(p<b){i=b-p
+p=l}}if(p!==0&&p<b){i=b-p
 switch(a){case B.n:B.b.n(f,new A.ad(i*2,h))
 break
 case B.u:B.b.aj(f,0,new A.ad(i,h))

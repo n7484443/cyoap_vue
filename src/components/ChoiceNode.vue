@@ -63,7 +63,7 @@
 import {QuillDeltaToHtmlConverter} from "quill-delta-to-html";
 import {DEFAULT_INLINE_STYLES} from "quill-delta-to-html/src/OpToHtmlConverter";
 import ChoiceNodeContents from "@/components/ChoiceNodeContents.vue";
-import {useStore} from "@/fn_common";
+import {getCurrentMaxWidthScreen, getColor, getFont, useStore, getCssFromColorOption} from "@/fn_common";
 import {ColorOption, ColorType, GradientType, OutlineOption, OutlineType} from "@/preset/node_preset.ts";
 import WrapCustom from "@/components/WrapCustom.vue";
 import {ChoiceLineAlignment} from "@/preset/line_preset";
@@ -96,7 +96,7 @@ export default {
     outlineStyle() {//border 로 구현
       return {
         "border-width": this.currentOutline.outlineWidth + "px",
-        "border-color": this.$getColor(this.currentOutline.outlineColor.color),
+        "border-color": getColor(this.currentOutline.outlineColor.color),
         "border-style": this.currentOutline.outlineType !== OutlineType.none ? this.currentOutline.outlineType : "",
         "padding": (this.currentOutline.outlinePadding + 2).toString() + "px",
         "border-radius": this.preset.roundEdge.map(function (element: number): string {
@@ -105,7 +105,7 @@ export default {
       }
     },
     cardStyle() {
-      let outputCss = this.$getCssFromColorOption(this.currentColor);
+      let outputCss = getCssFromColorOption(this.currentColor);
       outputCss["border-radius"] = this.preset.roundEdge.map(function (element: number): string {
         return element + "px";
       }).join(" ");
@@ -147,8 +147,7 @@ export default {
       title: window.getTitle(this.currentPos),
       contentsHtml: contentsHtml,
       contentsString: contentsString,
-      originalWidth: gridColumn,
-      viewWidth: Math.min(gridColumn, store.getCurrentMaxWidth),
+      viewWidth: gridColumn,
       select: select,
       choiceStatus: choiceStatus,
       choiceMode: choiceMode,
@@ -159,7 +158,7 @@ export default {
       paddingAround: preset.paddingAround.map(function (element: number): string {
         return element + "px";
       }).join(" "),
-      mainFont: this.$getFont(preset['mainFont'])
+      mainFont: getFont(preset['mainFont'])
     }
   },
   methods: {
@@ -179,7 +178,7 @@ export default {
           return `font-size: ${value}px`;
         }
         DEFAULT_INLINE_STYLES.font = (value, op) => {
-          return `font-family: ${this.$getFont(value)}`;
+          return `font-family: ${getFont(value)}`;
         }
         let converter = new QuillDeltaToHtmlConverter(delta, {
           inlineStyles: DEFAULT_INLINE_STYLES
@@ -225,7 +224,6 @@ export default {
       }
       this.select = window.getSelect(this.currentPos);
       this.choiceStatus = window.getChoiceStatus(this.currentPos);
-      this.viewWidth = Math.min(this.originalWidth, store.getCurrentMaxWidth);
 
       for (let i = 0; i < this.childLength; i++) {
         if(this.$refs['choiceNodeChild.' + i]){

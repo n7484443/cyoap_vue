@@ -57,7 +57,7 @@ import LineSetting from './components/ChoiceLine.vue';
 import HorizontalScroll from "./components/HorizontalScroll.vue";
 import SelectedResult from "./components/SelectedResult.vue";
 import domtoimage from "dom-to-image-more";
-import {useStore} from "@/fn_common";
+import {getCssFromColorOption, getCurrentMaxWidthScreen, getTranslation, useStore} from "@/fn_common";
 import ErrorLog from "@/components/ErrorLog.vue";
 import {PlatformDesignSetting} from "@/preset/design_setting";
 import {ChoiceNodeDesignPreset, ColorOption, ColorType} from "@/preset/node_preset";
@@ -98,7 +98,7 @@ export default {
     if (design.backgroundImage) {
       this.imageBackground = "url(/dist/images/" + design.backgroundImage.replaceAll(" ", "%20") + ")";
     }
-    this.background = this.$getCssFromColorOption(design.backgroundColorOption);
+    this.background = getCssFromColorOption(design.backgroundColorOption);
     switch (design['backgroundAttribute']) {
       case "fit":
         this.backgroundSize = "contain";
@@ -120,13 +120,9 @@ export default {
   },
 
   data() {
-    const store = useStore();
-    store.setSmallDisplay(window.innerWidth);
     window.addEventListener('resize', () => {
-      let before = store.getCurrentMaxWidth;
-      store.setSmallDisplay(window.innerWidth);
-      let after = store.getCurrentMaxWidth;
-      if (before !== after) {
+      if (this.currentMaxWidth !== getCurrentMaxWidthScreen()) {
+        this.currentMaxWidth = getCurrentMaxWidthScreen()
         this.needUpdate();
       }
     });
@@ -141,12 +137,13 @@ export default {
       background: "",
       dialog: false,
       marginVertical: '8px',
-      summary: this.$getTranslation('summary'),
-      save_as_image: this.$getTranslation('save_as_image'),
-      change_result_size: this.$getTranslation('change_result_size'),
-      close: this.$getTranslation('close'),
+      summary: getTranslation('summary'),
+      save_as_image: getTranslation('save_as_image'),
+      change_result_size: getTranslation('change_result_size'),
+      close: getTranslation('close'),
       addedEventListener: false,
-      version: 'cyoap_vue version : ' + APP_VERSION
+      version: 'cyoap_vue version : ' + APP_VERSION,
+      currentMaxWidth: getCurrentMaxWidthScreen()
     }
   },
   methods: {
