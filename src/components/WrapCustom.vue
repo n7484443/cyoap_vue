@@ -1,7 +1,7 @@
 <template>
-  <div v-for="(line, y) in layout" ref="vertical" :key="y">
+  <div v-for="(line, y) in layout" :key="y">
     <div class="horizontal">
-      <div v-for="(n, x) in line" :key="x" ref="items" :style="{gridColumn: 'auto / span ' + n.width}"
+      <div v-for="(n, x) in line" :key="x" :style="{gridColumn: 'auto / span ' + n.width}"
            class="maxHeight">
         <slot v-if="n.pos" :current-pos="n.pos.data" :index="n.pos.data[n.pos.data.length - 1]">
         </slot>
@@ -23,11 +23,9 @@ const props = defineProps<{
   marginVertical: string,
 }>();
 
-const maxWidth = ref(props.maxChildrenPerRow);
 const maxFlex = ref(0);
 const marginVertical = ref(props.marginVertical);
 const layout = ref<SizeData[][]>();
-const items = ref(null);
 
 function updateLayout() {
   let encodedJson = window.getSizeDataList(props.pos, ChoiceLineAlignment[props.choiceLineAlignment], Math.min(props.maxChildrenPerRow, getCurrentMaxWidthScreen()))
@@ -46,16 +44,6 @@ defineExpose({updateLayout})
 </script>
 
 <style scoped>
-.wrapper {
-  display: grid;
-  grid-template-columns: repeat(v-bind(maxWidth), 1fr);
-  column-gap: 8px;
-  row-gap: v-bind(marginVertical);
-  grid-auto-flow: row;
-  justify-items: v-bind(align);
-  padding: 4px 0px;
-}
-
 .horizontal {
   display: grid;
   grid-template-columns: repeat(v-bind(maxFlex), 1fr);
