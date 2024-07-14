@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia';
 import {PlatformDesignSetting} from "@/preset/design_setting";
-import {ChoiceLineDesignPreset} from "@/preset/line_preset";
+import {ChoiceLineDesignPreset, SizeData} from "@/preset/line_preset";
 import {ChoiceNodeDesignPreset, ColorOption, ColorType, GradientType} from "@/preset/node_preset";
 
 export const textFontList:{[key:string] : string} = {
@@ -131,6 +131,16 @@ export function getCssFromColorOption(colorOption: ColorOption): Object{
             break;
     }
     return outputCss;
+}
+
+export function isEqualSizeDataList(a: SizeData[][]|undefined, b: SizeData[][]|undefined){
+    if(a === undefined && b === undefined){
+        return true;
+    }
+    if(a === undefined || b === undefined){
+        return false;
+    }
+    return JSON.stringify(a) === JSON.stringify(b);
 }
 
 type translationType = {

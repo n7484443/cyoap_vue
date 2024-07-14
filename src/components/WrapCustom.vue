@@ -14,7 +14,7 @@
 import {ChoiceLineAlignment, SizeData} from '@/preset/line_preset';
 import {ref, onMounted} from 'vue'
 import {Pos} from "@/preset/default_types";
-import {getCurrentMaxWidthScreen} from "@/fn_common";
+import {getCurrentMaxWidthScreen, isEqualSizeDataList} from "@/fn_common";
 
 const props = defineProps<{
   pos: Pos,
@@ -28,17 +28,23 @@ const marginVertical = ref(props.marginVertical);
 const layout = ref<SizeData[][]>();
 
 function updateLayout() {
+  actualMaxWidth.value = Math.min(props.maxChildrenPerRow, getCurrentMaxWidthScreen());
   let encodedJson = window.getSizeDataList(props.pos, ChoiceLineAlignment[props.choiceLineAlignment], Math.min(props.maxChildrenPerRow, getCurrentMaxWidthScreen()))
   let decodedJson: { list: SizeData[][], max: number } = JSON.parse(encodedJson)
-  layout.value = decodedJson.list;
+
+  if(!isEqualSizeDataList(layout.value, decodedJson.list)) {
+    layout.value = decodedJson.list;
+  }
   maxFlex.value = decodedJson.max;
 }
+
+const actualMaxWidth = ref(0);
 
 onMounted(() => {
   updateLayout();
 })
 
-defineExpose({updateLayout})
+defineExpose({updateLayout, actualMaxWidth})
 </script>
 
 <style scoped>

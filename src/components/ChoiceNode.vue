@@ -8,13 +8,13 @@
               :disabled="!isOpen" :elevation="preset.elevation">
         <div class="container padding">
           <ChoiceNodeContents :imagePosition="preset['imagePosition']" :title="title"
-                              :renderAsResult="!renderChild"
+                              :renderAsResult="!props.renderChild"
                               :preset="preset">
             <template v-slot:contents>
               <p v-html="contentsHtml" class="container content_font"></p>
             </template>
             <template v-slot:image>
-              <v-img v-if="renderChild" :src="image" :max-height="imageMaxHeight" class="rounded-xl">
+              <v-img v-if="props.renderChild" :src="image" :max-height="imageMaxHeight" class="rounded-xl">
                 <template v-slot:placeholder>
                   <v-row class="fill-height ma-0" align="center" justify="center">
                     <v-progress-circular indeterminate color="primary"/>
@@ -43,10 +43,10 @@
               </v-btn>
             </div>
           </div>
-          <div v-if="childLength > 0 && renderChild">
+          <div v-if="childLength > 0 && props.renderChild">
             <WrapCustom ref="wrapCustom" margin-vertical="0.0" :pos="currentPos" :max-children-per-row="viewWidth"
                         :choice-line-alignment="ChoiceLineAlignment.left" v-slot="slotProps">
-              <ChoiceNode class="item" :ref="setChoiceNodeChild" :render-child="renderChild"
+              <ChoiceNode class="item" :ref="el => choiceNodeChild[slotProps.index] = el " :render-child="props.renderChild"
                           :clickable="clickable" :current-pos="slotProps.currentPos">
               </ChoiceNode>
             </WrapCustom>
@@ -75,21 +75,12 @@ import WrapCustom from "@/components/WrapCustom.vue";
 import {ChoiceLineAlignment} from "@/preset/line_preset";
 import {ref, computed, onBeforeUpdate} from 'vue'
 
-let choiceNodeChild = [];
-
 const props = defineProps<{
   currentPos: number[],
   renderChild: boolean,
   clickable: boolean,
 }>();
-
-const setChoiceNodeChild = (el) => {
-  choiceNodeChild.push(el);
-}
-
-onBeforeUpdate(() => {
-  choiceNodeChild = [];
-});
+const wrapCustom = ref(null);
 
 const store = useStore();
 let contentsString = ref(window.getContents(props.currentPos));
@@ -136,11 +127,13 @@ if (!preset.value) {
 const imageMaxHeight = ref(preset.value['maximizingImage'] ? '80vh' : '50vh')
 const title = ref(window.getTitle(props.currentPos))
 const viewWidth = ref(window.getSize(props.currentPos))
-const select = ref<number>(window.getSelect(props.currentPos))
+const select = ref(window.getSelect(props.currentPos))
 const choiceStatus = ref(window.getChoiceStatus(props.currentPos))
 const choiceMode = ref(window.getChoiceNodeMode(props.currentPos))
 const choiceMaximumStatus = ref(window.getMaximumStatus(props.currentPos))
 const childLength = ref(window.childLength(props.currentPos))
+
+const choiceNodeChild = ref(Array(childLength.value));
 const paddingAround = computed(() => {
   return preset.value.paddingAround.map(function (element: number): string {
     return element + "px";
@@ -217,11 +210,16 @@ function updateChild() {
   if (contentsString.value !== newContents) {
     contentsString.value = newContents;
   }
-  select.value = window.getSelect(props.currentPos);
   choiceStatus.value = window.getChoiceStatus(props.currentPos);
+  select.value = window.getSelect(props.currentPos);
 
-  for (let element of choiceNodeChild) {
-    element.updateChild();
+  if(wrapCustom.value){
+    wrapCustom.value.updateLayout();
+    for (let i = 0; i < childLength.value; i++) {
+      if(choiceNodeChild.value[i]){
+        choiceNodeChild.value[i].updateChild();
+      }
+    }
   }
 }
 
