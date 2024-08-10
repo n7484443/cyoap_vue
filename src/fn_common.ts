@@ -16,6 +16,7 @@ export const textFontList:{[key:string] : string} = {
     "Black And White Picture": "Black And White Picture",
     "IBM Plex Sans KR": "IBM Plex Sans KR",
     "Neo 둥근모": 'NeoDunggeunmo',
+    "NeoDGM": 'NeoDunggeunmo',
 };
 
 export function isSmallDisplay(): boolean{
