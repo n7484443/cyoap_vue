@@ -36,12 +36,26 @@
               </v-btn>
             </template>
             <v-card>
-              <v-card-text>
-                <SelectedResult ref="selectedResult" :style="background" id="capture"></SelectedResult>
+              <v-card-title>
+                <div class="d-flex flex-wrap">
+                  <v-switch hide-details :label="use_default_font_text" v-model="use_default_font"
+                            color="red"></v-switch>
+                  <v-switch hide-details :label="separate_line_text" v-model="separate_line" color="red"></v-switch>
+                  <v-switch hide-details :label="separate_child_text" v-model="separate_child" color="red"></v-switch>
+                  <v-slider hide-details class="align-content-center" :label="change_result_size" :max="8" :min="1"
+                            :step="1" thumb-label
+                            v-model="result_size" show-ticks="always"></v-slider>
+<!--                  <v-text-field hide-details :label="split_image_text" min="1" :step="1"-->
+<!--                                v-model="split_image" type="number"></v-text-field>-->
+                </div>
+              </v-card-title>
+              <v-card-text :class="use_default_font ? 'selected_result_default_font' : 'selected_result'">
+                <SelectedResult ref="selectedResult" :style="background" id="capture" :result_size="result_size"
+                                :separate_line="separate_line" :separate_child="separate_child"></SelectedResult>
               </v-card-text>
               <v-card-actions>
                 <v-btn color="primary" @click="saveAsImage">{{ save_as_image }}</v-btn>
-                <v-btn color="primary" @click="changeResultSize">{{ change_result_size }}</v-btn>
+                <v-spacer></v-spacer>
                 <v-btn color="primary" @click="dialog = false">{{ close }}</v-btn>
               </v-card-actions>
             </v-card>
@@ -129,7 +143,7 @@ export default {
 
     let store = useStore();
     store.$onAction(({name, store, args, after, onError}) => {
-      if(name == 'needUpdate'){
+      if (name == 'needUpdate') {
         after((_) => this.updateChild());
       }
     });
@@ -146,7 +160,16 @@ export default {
       marginVertical: '8px',
       summary: getTranslation('summary'),
       save_as_image: getTranslation('save_as_image'),
+      use_default_font_text: getTranslation('use_default_font'),
+      use_default_font: false,
+      separate_line_text: getTranslation('separate_line'),
+      separate_line: true,
+      separate_child_text: getTranslation('separate_child'),
+      separate_child: true,
       change_result_size: getTranslation('change_result_size'),
+      split_image: 1,
+      split_image_text: getTranslation('split_image_text'),
+      result_size: useStore().isSmallDisplay ? 6 : 4,
       close: getTranslation('close'),
       addedEventListener: false,
       version: 'cyoap_vue version : ' + APP_VERSION,
@@ -155,7 +178,7 @@ export default {
   },
   methods: {
     updateChild() {
-      if(this.$refs.horizontalScroll){
+      if (this.$refs.horizontalScroll) {
         this.$refs.horizontalScroll.updateList();
       }
       this.$refs.lineSetting.forEach(i => i.updateChild());
@@ -195,9 +218,6 @@ export default {
       };
       input.click();
     },
-    changeResultSize() {
-      this.$refs.selectedResult.changeResultSize();
-    }
   }
 }
 </script>
@@ -306,5 +326,10 @@ blockquote {
 
 .version-right {
   text-align: end;
+}
+
+
+.selected_result_default_font * {
+  font-family: 'Roboto', sans-serif !important;
 }
 </style>

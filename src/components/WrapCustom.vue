@@ -50,7 +50,7 @@ defineExpose({updateLayout, actualMaxWidth})
 <style scoped>
 .horizontal {
   display: grid;
-  grid-template-columns: repeat(v-bind(maxFlex), 1fr);
+  grid-template-columns: repeat(v-bind(maxFlex), minmax(0, 1fr));
   column-gap: 8px;
   row-gap: v-bind(marginVertical);
   grid-auto-flow: row;

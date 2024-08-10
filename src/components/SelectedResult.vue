@@ -1,60 +1,63 @@
 <template>
-    <div class="padding">
-        <div class="wrapper">
-            <div v-for="n in posList" :key="n">
-                <ChoiceNode :current-pos="n" :clickable="false" :render-child="false"></ChoiceNode>
-            </div>
-        </div>
+  <div class="padding">
+    <div v-if="this.separate_line" v-for="(line, y) in posList" :key="y" class="wrapper mt-6">
+      <div v-for="(node, index) in line" :key="index">
+        <ChoiceNode :current-pos="node" :clickable="false" :render-child="!separate_child"></ChoiceNode>
+      </div>
     </div>
+    <div v-else class="wrapper">
+      <div v-for="n in posList" :key="n">
+        <ChoiceNode :current-pos="n" :clickable="false" :render-child="!separate_child"></ChoiceNode>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import ChoiceNode from "@/components/ChoiceNode.vue";
-import {useStore} from "@/fn_common";
+import {isSmallDisplay, useStore} from "@/fn_common";
 
 export default {
-    name: "SelectedResult",
-    components: {
-        ChoiceNode
+  name: "SelectedResult",
+  components: {
+    ChoiceNode
+  },
+  props: {
+    result_size: Number,
+    separate_line: Boolean,
+    separate_child: Boolean
+  },
+  computed: {
+    minWidth() {
+      const store = useStore();
+      if (store.isSmallDisplay) {
+        return "";
+      }
+      return "800px";
     },
-    data() {
-        const store = useStore();
-        return {
-            posList: JSON.parse(window.getSelectedPos()).map((n) => n['pos']),
-            resultSize: store.isSmallDisplay,
-        }
-    },
-    computed: {
-        maxWidth() {
-            if(!useStore().isSmallDisplay){
-                return this.resultSize ? 4 : 6;
-            }
-            return this.resultSize ? 2 : 4;
-        },
-        minWidth(){
-            return this.resultSize ? "" : "800px";
-        }
-    },
-    methods: {
-        changeResultSize(){
-            this.resultSize = !this.resultSize;
-        }
+    posList() {
+      let parsed_pos = JSON.parse(window.getSelectedResult(this.separate_child))
+      if (this.separate_line) {
+        return parsed_pos;
+      }
+      return parsed_pos.flat()
     }
+  },
 }
 </script>
 
 <style scoped>
 .padding {
-    padding: 3px;
-    min-width: v-bind(minWidth);
+  padding: 3px;
+  min-width: v-bind(minWidth);
 }
 
 .wrapper {
-    display: grid;
-    grid-template-columns: repeat(v-bind(maxWidth), 1fr);
-    grid-template-rows: repeat(auto-fill, min-content);
-    column-gap: 8px;
-    row-gap: 8px;
-    grid-auto-flow: row;
+  display: grid;
+  grid-template-columns: repeat(v-bind(result_size), minmax(0, 1fr));
+  grid-template-rows: repeat(auto-fill, min-content);
+  column-gap: 8px;
+  row-gap: 8px;
+  grid-auto-flow: row;
 }
 </style>

@@ -153,12 +153,20 @@ type translationType = {
 export const translation: translationType = {
     en: {
         'save_as_image': 'Save As Image',
+        'use_default_font': 'Use Default Font(Use when there is a problem with saving)',
+        'separate_line': 'Seperate Line',
+        'separate_child': 'Seperate Child',
+        'split_image_text': 'Split Image',
         'close': 'Close',
         'summary': 'SUMMARIZE',
         'change_result_size': 'Change Result Size'
     },
     ko: {
         'save_as_image': '이미지로 저장',
+        'use_default_font': '기본 폰트로 변환(저장에 문제 있을 경우 사용)',
+        'separate_line': '라인 구분',
+        'separate_child': '자식 분리',
+        'split_image_text': '이미지 분할',
         'close': '닫기',
         'summary': '결과창 보기',
         'change_result_size': '결과창 크기 변경'
