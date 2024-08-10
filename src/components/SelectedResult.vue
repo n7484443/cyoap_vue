@@ -1,49 +1,51 @@
 <template>
   <div class="padding">
-    <div v-if="this.separate_line" v-for="(line, y) in posList" :key="y" class="wrapper mt-6">
-      <div v-for="(node, index) in line" :key="index">
-        <ChoiceNode :current-pos="node" :clickable="false" :render-child="!separate_child"></ChoiceNode>
+    <div v-if="separate_line" v-for="(line, y) in posList" :key="y" class="wrapper mt-6">
+      <div v-for="pos in line" :key="pos">
+        <ChoiceNode :current-pos="pos" :clickable="false" :render-child="separate_child ? ChoiceNodeChildRender.self : ChoiceNodeChildRender.selected"></ChoiceNode>
       </div>
     </div>
     <div v-else class="wrapper">
       <div v-for="n in posList" :key="n">
-        <ChoiceNode :current-pos="n" :clickable="false" :render-child="!separate_child"></ChoiceNode>
+        <ChoiceNode :current-pos="n" :clickable="false" :render-child="separate_child ? ChoiceNodeChildRender.self : ChoiceNodeChildRender.selected"></ChoiceNode>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import ChoiceNode from "@/components/ChoiceNode.vue";
+<script setup lang="ts">
+import ChoiceNode, {ChoiceNodeChildRender} from "@/components/ChoiceNode.vue";
 import {isSmallDisplay, useStore} from "@/fn_common";
+import {computed, getCurrentInstance, watch} from 'vue'
 
-export default {
-  name: "SelectedResult",
-  components: {
-    ChoiceNode
-  },
-  props: {
-    result_size: Number,
-    separate_line: Boolean,
-    separate_child: Boolean
-  },
-  computed: {
-    minWidth() {
-      const store = useStore();
-      if (store.isSmallDisplay) {
-        return "";
-      }
-      return "800px";
-    },
-    posList() {
-      let parsed_pos = JSON.parse(window.getSelectedResult(this.separate_child))
-      if (this.separate_line) {
-        return parsed_pos;
-      }
-      return parsed_pos.flat()
-    }
-  },
-}
+const props = defineProps<{
+  result_size: Number,
+  separate_line: Boolean,
+  separate_child: Boolean
+}>();
+
+const minWidth = computed(() => {
+  if (isSmallDisplay()) {
+    return "";
+  }
+  return "800px";
+});
+
+const posList = computed(() => {
+  let parsed_pos = JSON.parse(window.getSelectedResult(props.separate_child))
+  if (props.separate_line) {
+    return parsed_pos;
+  }else{
+    return parsed_pos.flat()
+  }
+});
+
+
+watch(props, () => {
+  const instance = getCurrentInstance();
+  instance?.proxy?.$forceUpdate();
+})
+
 </script>
 
 <style scoped>

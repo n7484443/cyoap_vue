@@ -1,63 +1,72 @@
 <template>
-  <div v-if="choiceNodeOption['isOccupySpace'] && isHide" class="maxHeight"/>
-  <div v-else-if="!isHide" class="maxHeight">
-    <div class="maxHeight" :style="outlineStyle">
-      <v-card class="maxHeight"
-              :style="cardStyle"
-              v-on:click="click"
-              :disabled="!isOpen" :elevation="preset.elevation">
-        <div class="container padding">
-          <ChoiceNodeContents :imagePosition="preset['imagePosition']" :title="title"
-                              :renderAsResult="!props.renderChild"
-                              :preset="preset">
-            <template v-slot:contents>
-              <p v-html="contentsHtml" class="container content_font"></p>
-            </template>
-            <template v-slot:image>
-              <v-img v-if="props.renderChild" :src="image" :max-height="imageMaxHeight" class="rounded-xl">
-                <template v-slot:placeholder>
-                  <v-row class="fill-height ma-0" align="center" justify="center">
-                    <v-progress-circular indeterminate color="primary"/>
-                  </v-row>
-                </template>
-              </v-img>
-              <img v-else :src="image" class="image-result"/>
-            </template>
-          </ChoiceNodeContents>
-          <div v-if="choiceMode === 'multiSelect'">
-            <div v-if="choiceNodeOption.showAsSlider" class="multi-select-slider">
-              <v-slider :min="0" :max="choiceMaximumStatus" :step="1" thumb-label
-                        v-on:update:model-value="click_slider"
-                        :model-value="select"></v-slider>
-              <p class="text-center">{{ select }}</p>
+  <div v-if="renderSelf">
+    <div v-if="choiceNodeOption['isOccupySpace'] && isHide" class="maxHeight"/>
+    <div v-else-if="!isHide" class="maxHeight">
+      <div class="maxHeight" :style="outlineStyle">
+        <v-card class="maxHeight"
+                :style="cardStyle"
+                v-on:click="click"
+                :disabled="!isOpen" :elevation="preset.elevation">
+          <div class="container padding">
+            <ChoiceNodeContents :imagePosition="preset['imagePosition']" :title="title"
+                                :renderAsResult="props.renderChild !== ChoiceNodeChildRender.default"
+                                :preset="preset">
+              <template v-slot:contents>
+                <p v-html="contentsHtml" class="container content_font"></p>
+              </template>
+              <template v-slot:image>
+                <v-img v-if="props.renderChild === ChoiceNodeChildRender.default" :src="image"
+                       :max-height="imageMaxHeight"
+                       class="rounded-xl">
+                  <template v-slot:placeholder>
+                    <v-row class="fill-height ma-0" align="center" justify="center">
+                      <v-progress-circular indeterminate color="primary"/>
+                    </v-row>
+                  </template>
+                </v-img>
+                <img v-else :src="image" class="image-result"/>
+              </template>
+            </ChoiceNodeContents>
+            <div v-if="choiceMode === 'multiSelect'">
+              <div v-if="choiceNodeOption.showAsSlider" class="multi-select-slider">
+                <v-slider :min="0" :max="choiceMaximumStatus" :step="1" thumb-label
+                          v-on:update:model-value="click_slider"
+                          :model-value="select"></v-slider>
+                <p class="text-center">{{ select }}</p>
+              </div>
+              <div v-else class="multi-select">
+                <v-btn v-on:click="click_down" variant="tonal">
+                  <v-icon icon="mdi:mdi-chevron-left"/>
+                </v-btn>
+                <p class="text-center">
+                  {{ select }}
+                </p>
+                <v-btn v-on:click="click_up" variant="tonal">
+                  <v-icon icon="mdi:mdi-chevron-right"/>
+                </v-btn>
+              </div>
             </div>
-            <div v-else class="multi-select">
-              <v-btn v-on:click="click_down" variant="tonal">
-                <v-icon icon="mdi:mdi-chevron-left"/>
-              </v-btn>
-              <p class="text-center">
-                {{ select }}
-              </p>
-              <v-btn v-on:click="click_up" variant="tonal">
-                <v-icon icon="mdi:mdi-chevron-right"/>
-              </v-btn>
+            <div v-if="childLength > 0 && props.renderChild !== ChoiceNodeChildRender.self">
+              <WrapCustom ref="wrapCustom" margin-vertical="0.0" :pos="currentPos" :max-children-per-row="props.renderChild === ChoiceNodeChildRender.selected ? 1 : viewWidth"
+                          :choice-line-alignment="ChoiceLineAlignment.left" v-slot="slotProps">
+                <ChoiceNode class="item" :ref="el => choiceNodeChild[slotProps.index] = el "
+                            :render-child="props.renderChild"
+                            :clickable="clickable" :current-pos="slotProps.currentPos">
+                </ChoiceNode>
+              </WrapCustom>
             </div>
           </div>
-          <div v-if="childLength > 0 && props.renderChild">
-            <WrapCustom ref="wrapCustom" margin-vertical="0.0" :pos="currentPos" :max-children-per-row="viewWidth"
-                        :choice-line-alignment="ChoiceLineAlignment.left" v-slot="slotProps">
-              <ChoiceNode class="item" :ref="el => choiceNodeChild[slotProps.index] = el " :render-child="props.renderChild"
-                          :clickable="clickable" :current-pos="slotProps.currentPos">
-              </ChoiceNode>
-            </WrapCustom>
-          </div>
-        </div>
-      </v-card>
+        </v-card>
+      </div>
     </div>
   </div>
-
 </template>
 
+<script lang="ts">
+export const enum ChoiceNodeChildRender {
+  default, self, selected
+}
+</script>
 <script setup lang="ts">
 import {QuillDeltaToHtmlConverter} from "quill-delta-to-html";
 import {DEFAULT_INLINE_STYLES} from "quill-delta-to-html/src/OpToHtmlConverter";
@@ -75,9 +84,10 @@ import WrapCustom from "@/components/WrapCustom.vue";
 import {ChoiceLineAlignment} from "@/preset/line_preset";
 import {ref, computed, onBeforeUpdate} from 'vue'
 
+
 const props = defineProps<{
   currentPos: number[],
-  renderChild: boolean,
+  renderChild: ChoiceNodeChildRender,
   clickable: boolean,
 }>();
 const wrapCustom = ref(null);
@@ -173,6 +183,16 @@ const cardStyle = computed(() => {
 const isHide = computed(() => choiceStatus.value.isHide);
 const isOpen = computed(() => choiceStatus.value.isOpen);
 
+const renderSelf = computed<boolean>(() => {
+  if(props.renderChild !== ChoiceNodeChildRender.selected){
+    return true;
+  }
+  if(isHide.value || !isOpen.value){
+    return false;
+  }
+  return window.checkSelectedResult(props.currentPos);
+});
+
 function click() {
   if (props.clickable) {
     window.select(props.currentPos, 0);
@@ -213,10 +233,10 @@ function updateChild() {
   choiceStatus.value = window.getChoiceStatus(props.currentPos);
   select.value = window.getSelect(props.currentPos);
 
-  if(wrapCustom.value){
+  if (wrapCustom.value) {
     wrapCustom.value.updateLayout();
     for (let i = 0; i < childLength.value; i++) {
-      if(choiceNodeChild.value[i]){
+      if (choiceNodeChild.value[i]) {
         choiceNodeChild.value[i].updateChild();
       }
     }

@@ -38,11 +38,11 @@
             <v-card>
               <v-card-title>
                 <div class="d-flex flex-wrap">
-                  <v-switch hide-details :label="use_default_font_text" v-model="use_default_font"
+                  <v-switch class="me-6" hide-details :label="use_default_font_text" v-model="use_default_font"
                             color="red"></v-switch>
-                  <v-switch hide-details :label="separate_line_text" v-model="separate_line" color="red"></v-switch>
-                  <v-switch hide-details :label="separate_child_text" v-model="separate_child" color="red"></v-switch>
-                  <v-slider hide-details class="align-content-center" :label="change_result_size" :max="8" :min="1"
+                  <v-switch class="me-6" hide-details :label="separate_line_text" v-model="separate_line" color="red"></v-switch>
+                  <v-switch class="me-6" hide-details :label="separate_child_text" v-model="separate_child" color="red"></v-switch>
+                  <v-slider hide-details class="align-content-center me-6" :label="change_result_size" :max="8" :min="1"
                             :step="1" thumb-label
                             v-model="result_size" show-ticks="always"></v-slider>
 <!--                  <v-text-field hide-details :label="split_image_text" min="1" :step="1"-->
@@ -51,7 +51,7 @@
               </v-card-title>
               <v-card-text :class="use_default_font ? 'selected_result_default_font' : 'selected_result'">
                 <SelectedResult ref="selectedResult" :style="background" id="capture" :result_size="result_size"
-                                :separate_line="separate_line" :separate_child="separate_child"></SelectedResult>
+                                :separate_line="separate_line" :separate_child="separate_child" ></SelectedResult>
               </v-card-text>
               <v-card-actions>
                 <v-btn color="primary" @click="saveAsImage">{{ save_as_image }}</v-btn>

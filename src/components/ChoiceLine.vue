@@ -11,7 +11,7 @@
           <WrapCustom ref="wrapCustom" :margin-vertical="marginVertical" :pos="currentPos"
                       :max-children-per-row="maxWidth"
                       :choice-line-alignment="alignment" v-slot="slotProps">
-            <ChoiceNode :ref="'choiceNode.'+slotProps.index" :render-child=true :clickable="true"
+            <ChoiceNode :ref="'choiceNode.'+slotProps.index" :render-child="ChoiceNodeChildRender.default" :clickable="true"
                         :current-pos="slotProps.currentPos">
             </ChoiceNode>
           </WrapCustom>
@@ -22,12 +22,17 @@
 </template>
 
 <script lang="ts">
-import ChoiceNode from "@/components/ChoiceNode.vue";
+import ChoiceNode, {ChoiceNodeChildRender} from "@/components/ChoiceNode.vue";
 import {getCssFromColorOption, getCurrentMaxWidthScreen, useStore} from "@/fn_common";
 import {ChoiceLineAlignment, choiceLineAlignmentToCSS, SizeData} from "@/preset/line_preset.js";
 import WrapCustom from "@/components/WrapCustom.vue";
 
 export default {
+  computed: {
+    ChoiceNodeChildRender() {
+      return ChoiceNodeChildRender
+    }
+  },
   components: {
     WrapCustom,
     ChoiceNode,

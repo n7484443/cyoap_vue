@@ -9,7 +9,7 @@ export default defineConfig({
     server: {
         proxy: {
             '/dist': {
-                target: 'https://interactiveweb.neocities.org',
+                target: 'https://kikoin.neocities.org/Weapon/',
                 changeOrigin: true,
                 secure: false,
             }
