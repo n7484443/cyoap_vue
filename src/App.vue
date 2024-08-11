@@ -330,6 +330,6 @@ blockquote {
 
 
 .selected_result_default_font * {
-  font-family: 'Roboto', sans-serif !important;
+  font-family: sans-serif !important;
 }
 </style>
