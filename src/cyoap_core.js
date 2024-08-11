@@ -4647,8 +4647,7 @@ return r},
 b0(a){var s,r,q,p,o=this
 if(!o.a_(0))return
 s=o.a5()
-switch(o.b){case B.D:r=o.x+=a
-o.sbN(B.f.ci(r,0,o.r))
+switch(o.b){case B.D:o.sbN(B.f.ci(a,0,o.r))
 break
 case B.C:if(o.x===0&&o.r>=0){r=new A.cw()
 r.aD(o.y)
@@ -5366,16 +5365,17 @@ s=J.G(a)
 return new A.am(A.q(s.h(a,0)),A.iJ(t.P.a(s.h(a,1))))},
 $S:54}
 A.fa.prototype={
-$1(a){if(!(a instanceof A.ar))return
-if(this.a.au(a,!1))B.b.n(this.b,new A.am(a.gJ(),a.x))},
+$1(a){if(!(a instanceof A.ar))return null
+if(this.a.au(a,!1))B.b.n(this.b,new A.am(a.gJ(),a.x))
+return null},
 $S:3}
 A.fb.prototype={
 $1(a){var s,r
-if(!(a instanceof A.ar))return
+if(!(a instanceof A.ar))return null
 if(this.b.au(a,!0)){s=this.a.a
 r=this.c
 if(!(r<s.length))return A.c(s,r)
-J.br(s[r],a.gJ().gB())}},
+J.br(s[r],a.gJ().gB())}return null},
 $S:3}
 A.fc.prototype={
 $1(a){var s,r

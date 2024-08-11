@@ -29,7 +29,7 @@
             </ChoiceNodeContents>
             <div v-if="choiceMode === 'multiSelect'">
               <div v-if="choiceNodeOption.showAsSlider" class="multi-select-slider">
-                <v-slider :min="0" :max="choiceMaximumStatus" :step="1" thumb-label
+                <v-slider :min="0" :max="choiceMaximumStatus" :step="1" thumb-label color="blue"
                           v-on:update:model-value="click_slider"
                           :model-value="select"></v-slider>
                 <p class="text-center">{{ select }}</p>
@@ -194,33 +194,29 @@ const renderSelf = computed<boolean>(() => {
 });
 
 function click() {
-  if (props.clickable) {
+  if (props.clickable && choiceMode.value !== 'multiSelect') {
     window.select(props.currentPos, 0);
-    window.updatePlatform();
     needUpdate();
   }
 }
 
 function click_down() {
   if (props.clickable) {
-    window.select(props.currentPos, -1);
-    window.updatePlatform();
+    window.select(props.currentPos, select.value - 1);
     needUpdate();
   }
 }
 
 function click_up() {
   if (props.clickable) {
-    window.select(props.currentPos, 1);
-    window.updatePlatform();
+    window.select(props.currentPos, select.value + 1);
     needUpdate();
   }
 }
 
 function click_slider(number) {
   if (props.clickable) {
-    window.select(props.currentPos, number - select);
-    window.updatePlatform();
+    window.select(props.currentPos, number);
     needUpdate();
   }
 }
