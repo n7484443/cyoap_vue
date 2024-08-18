@@ -40,18 +40,20 @@
                 <div class="d-flex flex-wrap">
                   <v-switch class="me-6" hide-details :label="use_default_font_text" v-model="use_default_font"
                             color="red"></v-switch>
-                  <v-switch class="me-6" hide-details :label="separate_line_text" v-model="separate_line" color="red"></v-switch>
-                  <v-switch class="me-6" hide-details :label="separate_child_text" v-model="separate_child" color="red"></v-switch>
+                  <v-switch class="me-6" hide-details :label="separate_line_text" v-model="separate_line"
+                            color="red"></v-switch>
+                  <v-switch class="me-6" hide-details :label="separate_child_text" v-model="separate_child"
+                            color="red"></v-switch>
                   <v-slider hide-details class="align-content-center me-6" :label="change_result_size" :max="8" :min="1"
                             :step="1" thumb-label
                             v-model="result_size" show-ticks="always"></v-slider>
-<!--                  <v-text-field hide-details :label="split_image_text" min="1" :step="1"-->
-<!--                                v-model="split_image" type="number"></v-text-field>-->
+                  <!--                  <v-text-field hide-details :label="split_image_text" min="1" :step="1"-->
+                  <!--                                v-model="split_image" type="number"></v-text-field>-->
                 </div>
               </v-card-title>
               <v-card-text :class="use_default_font ? 'selected_result_default_font' : 'selected_result'">
                 <SelectedResult ref="selectedResult" :style="background" id="capture" :result_size="result_size"
-                                :separate_line="separate_line" :separate_child="separate_child" ></SelectedResult>
+                                :separate_line="separate_line" :separate_child="separate_child"></SelectedResult>
               </v-card-text>
               <v-card-actions>
                 <v-btn color="primary" @click="saveAsImage">{{ save_as_image }}</v-btn>
@@ -71,10 +73,11 @@ import LineSetting from './components/ChoiceLine.vue';
 import HorizontalScroll from "./components/HorizontalScroll.vue";
 import SelectedResult from "./components/SelectedResult.vue";
 import domtoimage from "dom-to-image-more";
-import {getCssFromColorOption, getCurrentMaxWidthScreen, getTranslation, useStore} from "@/fn_common";
+import {getCssFromColorOption, getCurrentMaxWidthScreen, getFont, getTranslation, useStore} from "@/fn_common";
 import ErrorLog from "@/components/ErrorLog.vue";
 import {PlatformDesignSetting} from "@/preset/design_setting";
-import {ChoiceNodeDesignPreset, ColorOption, ColorType} from "@/preset/node_preset";
+import Quill from "quill";
+import {ClassAttributor, Scope, StyleAttributor} from "parchment";
 
 export default {
   name: 'App',
@@ -87,6 +90,31 @@ export default {
   },
 
   async created() {
+    function camelize(name) {
+      const parts = name.split("-"),
+          rest = parts.slice(1).map((part) => part[0].toUpperCase() + part.slice(1)).join("");
+      return parts[0] + rest;
+    }
+
+    class FontStyleAttributor extends StyleAttributor {
+      static keys(node) {
+        return (node.getAttribute("style") || "").split(";").map((value) => value.split(":")[0].trim());
+      }
+
+      add(node, value) {
+        value = getFont(value.replaceAll('"', '').replaceAll("'", '').trim());
+        return this.canAdd(node, value) ? (node.style[camelize(this.keyName)] = value, !0) : !1;
+      }
+    }
+
+    const SizeStyle = new ClassAttributor('size', 'font-size', {
+      scope: Scope.INLINE,
+    });
+    const FontStyle = new FontStyleAttributor('font', 'font-family', {
+      scope: Scope.INLINE,
+    });
+    Quill.register(SizeStyle, true);
+    Quill.register(FontStyle, true);
     const store = useStore();
     const url = "dist/";
     let platformResponse = await fetch(url + "platform.json?time=" + new Date().getTime());
@@ -321,7 +349,6 @@ blockquote {
   border-left: 6px solid #ccc;
   margin: 6px;
   padding: 6px;
-
 }
 
 .version-right {
@@ -331,5 +358,10 @@ blockquote {
 
 .selected_result_default_font * {
   font-family: sans-serif !important;
+}
+
+
+p:empty::after {
+  content: '\00a0 '
 }
 </style>

@@ -11,7 +11,7 @@
                               :renderAsResult="props.renderChild !== ChoiceNodeChildRender.default"
                               :preset="preset">
             <template v-slot:contents>
-              <p v-html="contentsHtml" class="container content_font"></p>
+              <div ref="invisibleQuill" class="container content_font" id="content_container"></div>
             </template>
             <template v-slot:image>
               <v-img v-if="props.renderChild === ChoiceNodeChildRender.default" :src="image"
@@ -68,8 +68,6 @@ export const enum ChoiceNodeChildRender {
 }
 </script>
 <script setup lang="ts">
-import {QuillDeltaToHtmlConverter} from "quill-delta-to-html";
-import {DEFAULT_INLINE_STYLES} from "quill-delta-to-html/src/OpToHtmlConverter";
 import ChoiceNodeContents from "@/components/ChoiceNodeContents.vue";
 import {getColor, getFont, useStore, getCssFromColorOption} from "@/fn_common";
 import {
@@ -82,8 +80,8 @@ import {
 } from "@/preset/node_preset";
 import WrapCustom from "@/components/WrapCustom.vue";
 import {ChoiceLineAlignment} from "@/preset/line_preset";
-import {ref, computed, onBeforeUpdate} from 'vue'
-
+import {ref, computed, onBeforeUpdate, onBeforeMount, onMounted, watch} from 'vue'
+import Quill from "quill";
 
 const props = defineProps<{
   currentPos: number[],
@@ -93,32 +91,36 @@ const props = defineProps<{
 const wrapCustom = ref(null);
 
 const store = useStore();
-let contentsString = ref(window.getContents(props.currentPos));
-let contentsHtml = computed(() => {
-  let modelValue = "";
-  let old_size = {
-    'small': 'font-size: 10px',
-    'large': 'font-size: 18px',
-    'huge': 'font-size: 22px'
-  };
+const contentsString = ref(window.getContents(props.currentPos));
+
+const invisibleQuill = ref<HTMLElement | null>(null);
+const quill = ref<Quill | null>(null);
+
+onMounted(() => {
+  quill.value = new Quill(invisibleQuill.value!, {
+    theme: 'bubble',
+    readOnly: true,
+    modules: {
+      toolbar: false
+    }
+  });
   if (contentsString.value && contentsString.value !== "") {
-    let delta = JSON.parse(contentsString.value.replaceAll("_regular", ""));
-    DEFAULT_INLINE_STYLES.size = (value, op): string => {
-      if (value in old_size) {
-        return old_size[value]!;
-      }
-      return `font-size: ${value}px`;
+    if (quill.value) {
+      let delta = JSON.parse(contentsString.value.replaceAll("_regular", ""));
+      quill.value.setContents(delta)
     }
-    DEFAULT_INLINE_STYLES.font = (value, op) => {
-      return `font-family: ${getFont(value)}`;
-    }
-    let converter = new QuillDeltaToHtmlConverter(delta, {
-      inlineStyles: DEFAULT_INLINE_STYLES
-    });
-    modelValue = converter.convert();
   }
-  return modelValue;
-});
+})
+
+watch(contentsString, (newValue) => {
+  if (newValue && newValue !== "") {
+    if (quill.value) {
+      let delta = JSON.parse(newValue.replaceAll("_regular", ""));
+      quill.value.setContents(delta)
+    }
+  }
+}, {immediate: true})
+
 let imagePos = window.getImage(props.currentPos);
 if (imagePos) {
   imagePos = "dist/images/" + imagePos;
@@ -278,7 +280,17 @@ function needUpdate() {
 
 defineExpose({updateChild})
 </script>
-<style scoped>
+<style lang="scss" scoped>
+@for $i from 1 to 100 {
+  #content_container::v-deep(.font-size-#{$i}) {
+    font-size: #{$i}px;
+  }
+}
+
+.content_font {
+  font-family: v-bind(mainFont);
+}
+
 .slider::v-deep(.v-slider-thumb__surface) {
   border-radius: v-bind('sliderThumbShape["border-radius"]');
   position: v-bind('sliderThumbShape["position"]');
@@ -324,9 +336,4 @@ defineExpose({updateChild})
   object-fit: contain;
   width: 100%;
 }
-
-.content_font {
-  font-family: v-bind(mainFont);
-}
-
 </style>
