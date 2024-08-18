@@ -1,72 +1,70 @@
 <template>
-  <div v-if="renderSelf">
-    <div v-if="choiceNodeOption['isOccupySpace'] && isHide" class="maxHeight"/>
-    <div v-else-if="!isHide" class="maxHeight">
-      <div class="maxHeight" :style="outlineStyle">
-        <v-card class="maxHeight"
-                :style="cardStyle"
-                v-on:click="click"
-                :disabled="!isOpen" :elevation="preset.elevation">
-          <div class="container padding">
-            <ChoiceNodeContents :imagePosition="preset['imagePosition']" :title="title"
-                                :renderAsResult="props.renderChild !== ChoiceNodeChildRender.default"
-                                :preset="preset">
-              <template v-slot:contents>
-                <p v-html="contentsHtml" class="container content_font"></p>
-              </template>
-              <template v-slot:image>
-                <v-img v-if="props.renderChild === ChoiceNodeChildRender.default" :src="image"
-                       :max-height="imageMaxHeight"
-                       class="rounded-xl">
-                  <template v-slot:placeholder>
-                    <v-row class="fill-height ma-0" align="center" justify="center">
-                      <v-progress-circular indeterminate color="primary"/>
-                    </v-row>
-                  </template>
-                </v-img>
-                <img v-else :src="image" class="image-result"/>
-              </template>
-            </ChoiceNodeContents>
-            <div v-if="choiceMode === 'multiSelect'">
-              <div v-if="choiceNodeOption.showAsSlider" class="multi-select-slider">
-                <v-slider :min="0" :max="choiceMaximumStatus" :step="1" thumb-label color="blue" hide-details
-                          v-on:update:model-value="click_slider"
-                          :model-value="select" class="slider" :thumb-color="sliderThumbColor"
-                          :track-color="sliderTrackInactiveColor" :track-fill-color="sliderTrackActiveColor"
-                          thumb-size="20px"></v-slider>
-              </div>
-              <div v-else class="multi-select">
-                <v-btn v-on:click="click_down" variant="tonal">
-                  <v-icon icon="mdi:mdi-chevron-left"/>
-                </v-btn>
-                <p class="text-center">
-                  {{ select }}
-                </p>
-                <v-btn v-on:click="click_up" variant="tonal">
-                  <v-icon icon="mdi:mdi-chevron-right"/>
-                </v-btn>
-              </div>
+  <div v-if="isHide && choiceNodeOption['isOccupySpace']" class="maxHeight"/>
+  <div v-else-if="isResultRender" class="maxHeight">
+    <div class="maxHeight" :style="outlineStyle">
+      <v-card class="maxHeight"
+              :style="cardStyle"
+              v-on:click="click"
+              :disabled="!isOpen" :elevation="preset.elevation">
+        <div class="container padding">
+          <ChoiceNodeContents :imagePosition="preset['imagePosition']" :title="title"
+                              :renderAsResult="props.renderChild !== ChoiceNodeChildRender.default"
+                              :preset="preset">
+            <template v-slot:contents>
+              <p v-html="contentsHtml" class="container content_font"></p>
+            </template>
+            <template v-slot:image>
+              <v-img v-if="props.renderChild === ChoiceNodeChildRender.default" :src="image"
+                     :max-height="imageMaxHeight"
+                     class="rounded-xl">
+                <template v-slot:placeholder>
+                  <v-row class="fill-height ma-0" align="center" justify="center">
+                    <v-progress-circular indeterminate color="primary"/>
+                  </v-row>
+                </template>
+              </v-img>
+              <img v-else :src="image" class="image-result"/>
+            </template>
+          </ChoiceNodeContents>
+          <div v-if="choiceMode === 'multiSelect'">
+            <div v-if="choiceNodeOption.showAsSlider" class="multi-select-slider">
+              <v-slider :min="0" :max="choiceMaximumStatus" :step="1" thumb-label color="blue" hide-details
+                        v-on:update:model-value="click_slider"
+                        :model-value="select" class="slider" :thumb-color="sliderThumbColor"
+                        :track-color="sliderTrackInactiveColor" :track-fill-color="sliderTrackActiveColor"
+                        thumb-size="20px"></v-slider>
             </div>
-            <div v-if="childLength > 0 && props.renderChild !== ChoiceNodeChildRender.self">
-              <WrapCustom ref="wrapCustom" margin-vertical="0.0" :pos="currentPos"
-                          :max-children-per-row="props.renderChild === ChoiceNodeChildRender.selected ? 1 : viewWidth"
-                          :choice-line-alignment="ChoiceLineAlignment.left" v-slot="slotProps">
-                <ChoiceNode class="item" :ref="el => choiceNodeChild[slotProps.index] = el "
-                            :render-child="props.renderChild"
-                            :clickable="clickable" :current-pos="slotProps.currentPos">
-                </ChoiceNode>
-              </WrapCustom>
+            <div v-else class="multi-select">
+              <v-btn v-on:click="click_down" variant="tonal">
+                <v-icon icon="mdi:mdi-chevron-left"/>
+              </v-btn>
+              <p class="text-center">
+                {{ select }}
+              </p>
+              <v-btn v-on:click="click_up" variant="tonal">
+                <v-icon icon="mdi:mdi-chevron-right"/>
+              </v-btn>
             </div>
           </div>
-        </v-card>
-      </div>
+          <div v-if="childLength > 0 && props.renderChild !== ChoiceNodeChildRender.onlySelf">
+            <WrapCustom ref="wrapCustom" margin-vertical="0.0" :pos="currentPos"
+                        :max-children-per-row="props.renderChild === ChoiceNodeChildRender.selected ? 1 : viewWidth"
+                        :choice-line-alignment="ChoiceLineAlignment.left" v-slot="slotProps">
+              <ChoiceNode class="item" :ref="el => choiceNodeChild[slotProps.index] = el "
+                          :render-child="props.renderChild"
+                          :clickable="clickable" :current-pos="slotProps.currentPos">
+              </ChoiceNode>
+            </WrapCustom>
+          </div>
+        </div>
+      </v-card>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 export const enum ChoiceNodeChildRender {
-  default, self, selected
+  default, onlySelf, selected
 }
 </script>
 <script setup lang="ts">
@@ -186,14 +184,16 @@ const cardStyle = computed(() => {
 const isHide = computed(() => choiceStatus.value.isHide);
 const isOpen = computed(() => choiceStatus.value.isOpen);
 
-const renderSelf = computed<boolean>(() => {
-  if (props.renderChild !== ChoiceNodeChildRender.selected) {
-    return true;
+const isResultRender = computed<boolean>(() => {
+  switch (props.renderChild) {
+    case ChoiceNodeChildRender.default:
+      return !isHide.value;
+    case ChoiceNodeChildRender.onlySelf:
+    case ChoiceNodeChildRender.selected:
+      return window.checkSelectedResult(props.currentPos);
+    default:
+      return false;
   }
-  if (isHide.value || !isOpen.value) {
-    return false;
-  }
-  return window.checkSelectedResult(props.currentPos);
 });
 
 const sliderThumbColor = computed(() => {
@@ -279,7 +279,7 @@ function needUpdate() {
 defineExpose({updateChild})
 </script>
 <style scoped>
-.slider::v-deep(.v-slider-thumb__surface){
+.slider::v-deep(.v-slider-thumb__surface) {
   border-radius: v-bind('sliderThumbShape["border-radius"]');
   position: v-bind('sliderThumbShape["position"]');
   width: v-bind('sliderThumbShape["width"]');

@@ -2,12 +2,12 @@
   <div class="padding">
     <div v-if="separate_line" v-for="(line, y) in posList" :key="y" class="wrapper mt-6">
       <div v-for="pos in line" :key="pos">
-        <ChoiceNode :current-pos="pos" :clickable="false" :render-child="separate_child ? ChoiceNodeChildRender.self : ChoiceNodeChildRender.selected"></ChoiceNode>
+        <ChoiceNode :current-pos="pos" :clickable="false" :render-child="separate_child ? ChoiceNodeChildRender.onlySelf : ChoiceNodeChildRender.selected"></ChoiceNode>
       </div>
     </div>
     <div v-else class="wrapper">
       <div v-for="n in posList" :key="n">
-        <ChoiceNode :current-pos="n" :clickable="false" :render-child="separate_child ? ChoiceNodeChildRender.self : ChoiceNodeChildRender.selected"></ChoiceNode>
+        <ChoiceNode :current-pos="n" :clickable="false" :render-child="separate_child ? ChoiceNodeChildRender.onlySelf : ChoiceNodeChildRender.selected"></ChoiceNode>
       </div>
     </div>
   </div>
