@@ -12,6 +12,18 @@ export interface OutlineOption {
     outlineWidth: number;
 }
 
+export enum SliderThumbShape {
+    circle = "circle",
+    thinRectangle = "thinRectangle",
+}
+
+export interface SliderOption {
+    sliderThumbColor: ColorOption;
+    sliderTrackActiveColor: ColorOption;
+    sliderTrackInactiveColor: ColorOption;
+    sliderThumbShape: SliderThumbShape;
+}
+
 export enum ColorType {
     solid = "solid",
     gradient = "gradient",
@@ -56,4 +68,5 @@ export interface ChoiceNodeDesignPreset {
     defaultColorOption: ColorOption | null;
     selectColorEnable: boolean | null;
     selectColorOption: ColorOption | null;
+    sliderOption: SliderOption | null;
 }

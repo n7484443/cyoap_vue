@@ -29,10 +29,11 @@
             </ChoiceNodeContents>
             <div v-if="choiceMode === 'multiSelect'">
               <div v-if="choiceNodeOption.showAsSlider" class="multi-select-slider">
-                <v-slider :min="0" :max="choiceMaximumStatus" :step="1" thumb-label color="blue"
+                <v-slider :min="0" :max="choiceMaximumStatus" :step="1" thumb-label color="blue" hide-details
                           v-on:update:model-value="click_slider"
-                          :model-value="select"></v-slider>
-                <p class="text-center">{{ select }}</p>
+                          :model-value="select" class="slider" :thumb-color="sliderThumbColor"
+                          :track-color="sliderTrackInactiveColor" :track-fill-color="sliderTrackActiveColor"
+                          thumb-size="20px"></v-slider>
               </div>
               <div v-else class="multi-select">
                 <v-btn v-on:click="click_down" variant="tonal">
@@ -47,7 +48,8 @@
               </div>
             </div>
             <div v-if="childLength > 0 && props.renderChild !== ChoiceNodeChildRender.self">
-              <WrapCustom ref="wrapCustom" margin-vertical="0.0" :pos="currentPos" :max-children-per-row="props.renderChild === ChoiceNodeChildRender.selected ? 1 : viewWidth"
+              <WrapCustom ref="wrapCustom" margin-vertical="0.0" :pos="currentPos"
+                          :max-children-per-row="props.renderChild === ChoiceNodeChildRender.selected ? 1 : viewWidth"
                           :choice-line-alignment="ChoiceLineAlignment.left" v-slot="slotProps">
                 <ChoiceNode class="item" :ref="el => choiceNodeChild[slotProps.index] = el "
                             :render-child="props.renderChild"
@@ -78,7 +80,7 @@ import {
   ColorType,
   GradientType,
   OutlineOption,
-  OutlineType
+  OutlineType, SliderThumbShape
 } from "@/preset/node_preset";
 import WrapCustom from "@/components/WrapCustom.vue";
 import {ChoiceLineAlignment} from "@/preset/line_preset";
@@ -156,6 +158,7 @@ const currentOutline = computed<OutlineOption>(() => {
   let selectOutlineOption = preset.value.selectOutlineOption;
   return (select.value > 0 && preset.value.selectOutlineEnable ? selectOutlineOption : defaultOutlineOption)!;
 });
+
 const currentColor = computed<ColorOption>(() => {
   let defaultColorOption = preset.value.defaultColorOption;
   let selectColorOption = preset.value.selectColorOption;
@@ -184,13 +187,42 @@ const isHide = computed(() => choiceStatus.value.isHide);
 const isOpen = computed(() => choiceStatus.value.isOpen);
 
 const renderSelf = computed<boolean>(() => {
-  if(props.renderChild !== ChoiceNodeChildRender.selected){
+  if (props.renderChild !== ChoiceNodeChildRender.selected) {
     return true;
   }
-  if(isHide.value || !isOpen.value){
+  if (isHide.value || !isOpen.value) {
     return false;
   }
   return window.checkSelectedResult(props.currentPos);
+});
+
+const sliderThumbColor = computed(() => {
+  return getColor(preset.value.sliderOption?.sliderThumbColor.color ?? 0);
+});
+
+const sliderThumbShape = computed(() => {
+  if (preset.value.sliderOption?.sliderThumbShape === SliderThumbShape.circle) {
+    return {
+      'border-radius': '50%',
+      'position': 'static',
+      'width': '20px',
+      'left': '0',
+    };
+  }
+  return {
+    'border-radius': '2px',
+    'position': 'relative',
+    'width': '10px',
+    'left': '5px',
+  };
+});
+
+const sliderTrackActiveColor = computed(() => {
+  return getColor(preset.value.sliderOption?.sliderTrackActiveColor.color ?? 0);
+});
+
+const sliderTrackInactiveColor = computed(() => {
+  return getColor(preset.value.sliderOption?.sliderTrackInactiveColor.color ?? 0);
 });
 
 function click() {
@@ -247,6 +279,13 @@ function needUpdate() {
 defineExpose({updateChild})
 </script>
 <style scoped>
+.slider::v-deep(.v-slider-thumb__surface){
+  border-radius: v-bind('sliderThumbShape["border-radius"]');
+  position: v-bind('sliderThumbShape["position"]');
+  width: v-bind('sliderThumbShape["width"]');
+  left: v-bind('sliderThumbShape["left"]');
+}
+
 .maxHeight {
   height: 100%;
 }
