@@ -69,6 +69,8 @@ export const enum ChoiceNodeChildRender {
 </script>
 <script setup lang="ts">
 import ChoiceNodeContents from "@/components/ChoiceNodeContents.vue";
+import 'quill/dist/quill.core.css';
+import 'quill/dist/quill.bubble.css';
 import {getColor, getFont, useStore, getCssFromColorOption} from "@/fn_common";
 import {
   ChoiceNodeDesignPreset,
@@ -94,29 +96,29 @@ const store = useStore();
 const contentsString = ref(window.getContents(props.currentPos));
 
 const invisibleQuill = ref<HTMLElement | null>(null);
-const quill = ref<Quill | null>(null);
+let quill:Quill | null = null;
 
 onMounted(() => {
-  quill.value = new Quill(invisibleQuill.value!, {
+  quill = new Quill(invisibleQuill.value!, {
     theme: 'bubble',
     readOnly: true,
     modules: {
-      toolbar: false
-    }
+      toolbar: null
+    },
   });
   if (contentsString.value && contentsString.value !== "") {
-    if (quill.value) {
+    if (quill) {
       let delta = JSON.parse(contentsString.value.replaceAll("_regular", ""));
-      quill.value.setContents(delta)
+      quill.setContents(delta)
     }
   }
 })
 
 watch(contentsString, (newValue) => {
   if (newValue && newValue !== "") {
-    if (quill.value) {
+    if (quill) {
       let delta = JSON.parse(newValue.replaceAll("_regular", ""));
-      quill.value.setContents(delta)
+      quill.setContents(delta)
     }
   }
 }, {immediate: true})

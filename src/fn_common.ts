@@ -155,8 +155,8 @@ export const translation: translationType = {
     en: {
         'save_as_image': 'Save As Image',
         'use_default_font': 'Use Default Font(Use when there is a problem with saving)',
-        'separate_line': 'Seperate Line',
-        'separate_child': 'Seperate Child',
+        'separate_line': 'Separate Line',
+        'separate_child': 'Separate Child',
         'split_image_text': 'Split Image',
         'close': 'Close',
         'summary': 'SUMMARIZE',
