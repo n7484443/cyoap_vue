@@ -4,8 +4,7 @@ import {fileURLToPath, URL} from "node:url";
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 
 export default defineConfig({
-    base: '',
-
+    base: './',
     server: {
         proxy: {
             '/dist': {

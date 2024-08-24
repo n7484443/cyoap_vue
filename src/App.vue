@@ -138,7 +138,7 @@ export default {
     store.setPlatformDesign(design);
 
     if (design.backgroundImage) {
-      this.imageBackground = "url(" + url + "images/" + design.backgroundImage.replaceAll(" ", "%20") + ")";
+      this.imageBackground = "url(../dist/images/" + design.backgroundImage.replaceAll(" ", "%20") + ")";
     }
     this.background = getCssFromColorOption(design.backgroundColorOption);
     switch (design['backgroundAttribute']) {
