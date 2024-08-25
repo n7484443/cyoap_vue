@@ -347,6 +347,7 @@ defineExpose({updateChild})
 }
 .main_border:after {
   content: "";
+  pointer-events: none;
   position: absolute;
   transform: translateZ(1px);
   top: v-bind("outlineDistance.top");
