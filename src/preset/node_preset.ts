@@ -1,3 +1,17 @@
+export interface EdgeValue{
+    top: number,
+    right: number,
+    bottom: number,
+    left: number,
+}
+
+export interface VertexValue{
+    topLeft: number,
+    topRight: number,
+    bottomLeft: number,
+    bottomRight: number,
+}
+
 export enum OutlineType {
     none = "none",
     solid = "solid",
@@ -8,7 +22,8 @@ export enum OutlineType {
 export interface OutlineOption {
     outlineType: OutlineType;
     outlineColor: ColorOption;
-    outlinePadding: number;
+    round: VertexValue;
+    distance: EdgeValue;
     outlineWidth: number;
 }
 
@@ -54,8 +69,8 @@ export interface ChoiceNodeDesignPreset {
     name: string | null;
     titlePosition: boolean | null;
     elevation: number | null;
-    roundEdge: number[] | null;
-    paddingAround: number[] | null;
+    round: VertexValue | null;
+    padding: EdgeValue | null;
     maximizingImage: boolean | null; //true: 80%, false: 50%
     hideTitle: boolean | null;
     imagePosition: number | null; //0:default, 1:image-right 2:image-left

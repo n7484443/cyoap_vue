@@ -1,64 +1,64 @@
 <template>
   <div v-if="isHide && choiceNodeOption['isOccupySpace']" class="maxHeight"/>
   <div v-else-if="isResultRender" class="maxHeight">
-    <div class="maxHeight" :style="outlineStyle">
-      <v-card class="maxHeight"
-              :style="cardStyle"
-              v-on:click="click"
-              :disabled="!isOpen" :elevation="preset.elevation">
-        <div class="container padding">
-          <ChoiceNodeContents :imagePosition="preset['imagePosition']" :title="title"
-                              :renderAsResult="props.renderChild !== ChoiceNodeChildRender.default"
-                              :preset="preset">
-            <template v-slot:contents>
-              <div ref="invisibleQuill" class="container content_font" id="content_container"></div>
-            </template>
-            <template v-slot:image>
-              <v-img v-if="props.renderChild === ChoiceNodeChildRender.default" :src="image"
-                     :max-height="imageMaxHeight"
-                     class="rounded-xl">
-                <template v-slot:placeholder>
-                  <v-row class="fill-height ma-0" align="center" justify="center">
-                    <v-progress-circular indeterminate color="primary"/>
-                  </v-row>
-                </template>
-              </v-img>
-              <img v-else :src="image" class="image-result"/>
-            </template>
-          </ChoiceNodeContents>
-          <div v-if="choiceMode === 'multiSelect'">
-            <div v-if="choiceNodeOption.showAsSlider" class="multi-select-slider">
-              <v-slider :min="0" :max="choiceMaximumStatus" :step="1" thumb-label color="blue" hide-details
-                        v-on:update:model-value="click_slider"
-                        :model-value="select" class="slider" :thumb-color="sliderThumbColor"
-                        :track-color="sliderTrackInactiveColor" :track-fill-color="sliderTrackActiveColor"
-                        thumb-size="20px"></v-slider>
+      <div class="maxHeight main_card main_border">
+        <v-card class="maxHeight "
+                :style="cardStyle"
+                v-on:click="click"
+                :disabled="!isOpen" :elevation="preset.elevation">
+          <div class="container">
+            <ChoiceNodeContents :imagePosition="preset['imagePosition']" :title="title"
+                                :renderAsResult="props.renderChild !== ChoiceNodeChildRender.default"
+                                :preset="preset">
+              <template v-slot:contents>
+                <div ref="invisibleQuill" class="container content_font" id="content_container"></div>
+              </template>
+              <template v-slot:image>
+                <v-img v-if="props.renderChild === ChoiceNodeChildRender.default" :src="image"
+                       :max-height="imageMaxHeight"
+                       class="rounded-xl">
+                  <template v-slot:placeholder>
+                    <v-row class="fill-height ma-0" align="center" justify="center">
+                      <v-progress-circular indeterminate color="primary"/>
+                    </v-row>
+                  </template>
+                </v-img>
+                <img v-else :src="image" class="image-result"/>
+              </template>
+            </ChoiceNodeContents>
+            <div v-if="choiceMode === 'multiSelect'">
+              <div v-if="choiceNodeOption.showAsSlider" class="multi-select-slider">
+                <v-slider :min="0" :max="choiceMaximumStatus" :step="1" thumb-label color="blue" hide-details
+                          v-on:update:model-value="click_slider"
+                          :model-value="select" class="slider" :thumb-color="sliderThumbColor"
+                          :track-color="sliderTrackInactiveColor" :track-fill-color="sliderTrackActiveColor"
+                          thumb-size="20px"></v-slider>
+              </div>
+              <div v-else class="multi-select">
+                <v-btn v-on:click="click_down" variant="tonal">
+                  <v-icon icon="mdi:mdi-chevron-left"/>
+                </v-btn>
+                <p class="text-center">
+                  {{ select }}
+                </p>
+                <v-btn v-on:click="click_up" variant="tonal">
+                  <v-icon icon="mdi:mdi-chevron-right"/>
+                </v-btn>
+              </div>
             </div>
-            <div v-else class="multi-select">
-              <v-btn v-on:click="click_down" variant="tonal">
-                <v-icon icon="mdi:mdi-chevron-left"/>
-              </v-btn>
-              <p class="text-center">
-                {{ select }}
-              </p>
-              <v-btn v-on:click="click_up" variant="tonal">
-                <v-icon icon="mdi:mdi-chevron-right"/>
-              </v-btn>
+            <div v-if="childLength > 0 && props.renderChild !== ChoiceNodeChildRender.onlySelf">
+              <WrapCustom ref="wrapCustom" margin-vertical="0.0" :pos="currentPos"
+                          :max-children-per-row="props.renderChild === ChoiceNodeChildRender.selected ? 1 : viewWidth"
+                          :choice-line-alignment="ChoiceLineAlignment.left" v-slot="slotProps">
+                <ChoiceNode class="item" :ref="el => choiceNodeChild[slotProps.index] = el "
+                            :render-child="props.renderChild"
+                            :clickable="clickable" :current-pos="slotProps.currentPos">
+                </ChoiceNode>
+              </WrapCustom>
             </div>
           </div>
-          <div v-if="childLength > 0 && props.renderChild !== ChoiceNodeChildRender.onlySelf">
-            <WrapCustom ref="wrapCustom" margin-vertical="0.0" :pos="currentPos"
-                        :max-children-per-row="props.renderChild === ChoiceNodeChildRender.selected ? 1 : viewWidth"
-                        :choice-line-alignment="ChoiceLineAlignment.left" v-slot="slotProps">
-              <ChoiceNode class="item" :ref="el => choiceNodeChild[slotProps.index] = el "
-                          :render-child="props.renderChild"
-                          :clickable="clickable" :current-pos="slotProps.currentPos">
-              </ChoiceNode>
-            </WrapCustom>
-          </div>
-        </div>
-      </v-card>
-    </div>
+        </v-card>
+      </div>
   </div>
 </template>
 
@@ -96,7 +96,7 @@ const store = useStore();
 const contentsString = ref(window.getContents(props.currentPos));
 
 const invisibleQuill = ref<HTMLElement | null>(null);
-let quill:Quill | null = null;
+let quill: Quill | null = null;
 
 onMounted(() => {
   quill = new Quill(invisibleQuill.value!, {
@@ -148,10 +148,8 @@ const choiceMaximumStatus = ref(window.getMaximumStatus(props.currentPos))
 const childLength = ref(window.childLength(props.currentPos))
 
 const choiceNodeChild = ref(Array(childLength.value));
-const paddingAround = computed(() => {
-  return preset.value.paddingAround.map(function (element: number): string {
-    return element + "px";
-  }).join(" ");
+const padding = computed(() => {
+  return preset.value.padding.top + "px " + preset.value.padding.right + "px " + preset.value.padding.bottom + "px " + preset.value.padding.left + "px";
 });
 const mainFont = ref(getFont(preset.value.mainFont))
 
@@ -166,22 +164,38 @@ const currentColor = computed<ColorOption>(() => {
   let selectColorOption = preset.value.selectColorOption;
   return (select.value > 0 && preset.value.selectColorEnable ? selectColorOption : defaultColorOption)!;
 });
-const outlineStyle = computed(() => {
+
+const outlineDistance = computed(() => {
+  let distance = currentOutline.value.distance;
+  let width = currentOutline.value.outlineWidth / 2.0;
   return {
-    "border-width": currentOutline.value.outlineWidth + "px",
-    "border-color": getColor(currentOutline.value.outlineColor.color),
-    "border-style": currentOutline.value.outlineType !== OutlineType.none ? currentOutline.value.outlineType : "",
-    "padding": (currentOutline.value.outlinePadding + 2).toString() + "px",
-    "border-radius": preset.value.roundEdge.map(function (element: number): string {
-      return element + "px";
-    }).join(" "),
-  }
+    'top': (distance.top - width) + "px",
+    'right': (distance.right - width) + "px",
+    'bottom': (distance.bottom - width) + "px",
+    'left': (distance.left - width) + "px",
+  };
 });
+
+const outlineRadius = computed(() => {
+  let round = currentOutline.value.round;
+  return round.topLeft + "px " + round.topRight + "px " + round.bottomRight + "px " + round.bottomLeft + "px";
+});
+
+const outlineType = computed(() => {
+  return currentOutline.value.outlineType !== OutlineType.none ? currentOutline.value.outlineType : "";
+});
+
+const outlineWidth = computed(() => {
+  return currentOutline.value.outlineWidth + "px";
+});
+
+const outlineColor = computed(() => {
+  return getColor(currentOutline.value.outlineColor.color);
+});
+
 const cardStyle = computed(() => {
   let outputCss = getCssFromColorOption(currentColor.value);
-  outputCss["border-radius"] = preset.value.roundEdge.map(function (element: number): string {
-    return element + "px";
-  }).join(" ");
+  outputCss["border-radius"] = preset.value.round.topLeft + "px " + preset.value.round.topRight + "px " + preset.value.round.bottomRight + "px " + preset.value.round.bottomLeft + "px";
   return outputCss;
 });
 
@@ -304,11 +318,6 @@ defineExpose({updateChild})
   height: 100%;
 }
 
-.outline {
-  outline-color: v-bind(colorOutline);
-  outline-style: solid;
-}
-
 /* Add some padding inside the card container */
 .container {
   padding: 4px;
@@ -329,8 +338,25 @@ defineExpose({updateChild})
   flex-direction: column;
 }
 
-.padding {
-  padding: v-bind(paddingAround);
+.main_card {
+  padding: v-bind(padding);
+}
+
+.main_border{
+  transform-style: preserve-3d;
+}
+.main_border:after {
+  content: "";
+  position: absolute;
+  transform: translateZ(1px);
+  top: v-bind("outlineDistance.top");
+  left: v-bind("outlineDistance.left");
+  right: v-bind("outlineDistance.right");
+  bottom: v-bind("outlineDistance.bottom");
+  border-style: v-bind(outlineType);
+  border-width: v-bind(outlineWidth);
+  border-color: v-bind(outlineColor);
+  border-radius: v-bind(outlineRadius)
 }
 
 .image-result {
