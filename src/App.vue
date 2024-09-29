@@ -214,7 +214,9 @@ export default {
     },
     async saveAsImage() {
       let element = document.querySelector("#capture");
-      let blob = await domtoimage.toBlob(element, {});
+      let blob = await domtoimage.toBlob(element, {
+        disableEmbedFonts: this.use_default_font
+      });
       //blob download as result.png
       let link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
