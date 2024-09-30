@@ -90,6 +90,19 @@ export default {
   },
 
   async created() {
+    const supportedLang = ['ko', 'en'];
+    function getLanguage() {
+      return navigator.language || navigator.userLanguage || navigator.systemLanguage;
+    }
+    const lang = getLanguage().toLowerCase();
+    document.documentElement.setAttribute('lang', 'en');
+    for(let i = 0; i < supportedLang.length; i++){
+      if(lang.includes(supportedLang[i])){
+        document.documentElement.setAttribute('lang', supportedLang[i]);
+        break;
+      }
+    }
+
     function camelize(name) {
       const parts = name.split("-"),
           rest = parts.slice(1).map((part) => part[0].toUpperCase() + part.slice(1)).join("");
