@@ -139,7 +139,6 @@ if (!preset.value) {
       " | name: " + window.getTitle(props.currentPos) + ")");
   preset.value = JSON.parse(window.getNodeDefaultPreset());
 }
-
 const imageMaxHeight = ref(((preset.value['imageMaxHeightRatio'] ?? 0.5) * 100.0).toString() + 'vh')
 const title = ref(window.getTitle(props.currentPos))
 const viewWidth = ref(window.getSize(props.currentPos))
