@@ -74,12 +74,14 @@ import 'quill/dist/quill.bubble.css';
 import {getColor, getFont, useStore, getCssFromColorOption} from "@/fn_common";
 import {
   ChoiceNodeDesignPreset,
-  ColorOption,
-  ColorType,
-  GradientType,
   OutlineOption,
   OutlineType, SliderThumbShape
 } from "@/preset/node_preset";
+import {
+  ColorOption,
+  ColorType,
+  GradientType,
+} from "@/preset/preset";
 import WrapCustom from "@/components/WrapCustom.vue";
 import {ChoiceLineAlignment} from "@/preset/line_preset";
 import {ref, computed, onBeforeUpdate, onBeforeMount, onMounted, watch} from 'vue'
@@ -138,7 +140,7 @@ if (!preset.value) {
   preset.value = JSON.parse(window.getNodeDefaultPreset());
 }
 
-const imageMaxHeight = ref(preset.value['maximizingImage'] ? '80vh' : '50vh')
+const imageMaxHeight = ref(((preset.value['imageMaxHeightRatio'] ?? 0.5) * 100.0).toString() + 'vh')
 const title = ref(window.getTitle(props.currentPos))
 const viewWidth = ref(window.getSize(props.currentPos))
 const select = ref(window.getSelect(props.currentPos))

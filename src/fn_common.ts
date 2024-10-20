@@ -1,7 +1,8 @@
 import {defineStore} from 'pinia';
 import {PlatformDesignSetting} from "@/preset/design_setting";
 import {ChoiceLineDesignPreset, SizeData} from "@/preset/line_preset";
-import {ChoiceNodeDesignPreset, ColorOption, ColorType, GradientType} from "@/preset/node_preset";
+import {ChoiceNodeDesignPreset} from "@/preset/node_preset";
+import {ColorOption, ColorType, GradientType} from "@/preset/preset";
 import {Pos} from "@/preset/default_types";
 
 export const textFontList:{[key:string] : string} = {
