@@ -185,12 +185,15 @@ export const useStore = defineStore({
     }),
     actions: {
         setPlatformDesign(platformDesign: PlatformDesignSetting): void {
+            platformDesign.choiceNodePresetMap = new Map<string, ChoiceNodeDesignPreset>(Object.entries(platformDesign.choiceNodePresetMap));
+            platformDesign.choiceLinePresetMap = new Map<string, ChoiceLineDesignPreset>(Object.entries(platformDesign.choiceLinePresetMap));
+
             this.platformDesign = platformDesign;
-            for (let preset of platformDesign.choiceNodePresetList) {
-                this.nodePresets.set(preset.name!, preset);
+            for(let [key, value] of platformDesign.choiceNodePresetMap){
+                this.nodePresets.set(key, value);
             }
-            for (let preset of platformDesign.choiceLinePresetList) {
-                this.linePresets.set(preset.name!, preset);
+            for(let [key, value] of platformDesign.choiceLinePresetMap){
+                this.linePresets.set(key, value);
             }
         },
         setErrorLog(error: string[]) {

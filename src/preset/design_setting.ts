@@ -13,7 +13,7 @@ export interface PlatformDesignSetting{
     backgroundImage:string|null;
     backgroundColorOption:ColorOption;
     backgroundAttribute:ImageAttribute;
-    choiceLinePresetList:ChoiceLineDesignPreset[];
-    choiceNodePresetList:ChoiceNodeDesignPreset[];
+    choiceLinePresetMap:Map<string, ChoiceLineDesignPreset>;
+    choiceNodePresetMap:Map<string, ChoiceNodeDesignPreset>;
     marginVertical:number;
 }
