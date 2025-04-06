@@ -29,7 +29,7 @@ const layout = ref<SizeData[][]>();
 
 function updateLayout() {
   actualMaxWidth.value = Math.min(props.maxChildrenPerRow, getCurrentMaxWidthScreen());
-  let encodedJson = window.getSizeDataList(props.pos, ChoiceLineAlignment[props.choiceLineAlignment], Math.min(props.maxChildrenPerRow, getCurrentMaxWidthScreen()))
+  let encodedJson = window.getSizeDataList(props.pos, ChoiceLineAlignment[props.choiceLineAlignment], actualMaxWidth.value)
   let decodedJson: { list: SizeData[][], max: number } = JSON.parse(encodedJson)
 
   if(!isEqualSizeDataList(layout.value, decodedJson.list)) {

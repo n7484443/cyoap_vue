@@ -56,7 +56,7 @@ export function getCurrentMaxWidthScreen(): number{
         case displaySize.medium:
             return 6;
         case displaySize.large:
-            return 12;
+            return 100;
     }
 }
 
